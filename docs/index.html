@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poker Coach - りんたろう専用</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --bg: #0d1117;
@@ -148,6 +150,26 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 .range-info strong { color:var(--text); }
 .range-pct { font-size:18px; font-weight:700; color:var(--accent); margin-bottom:8px; }
 
+/* LOGIN OVERLAY */
+.login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:999; display:flex; align-items:center; justify-content:center; }
+.login-overlay.hidden { display:none; }
+.login-box { text-align:center; padding:40px; }
+.login-box h1 { font-size:28px; margin-bottom:8px; }
+.login-box h1 span { color:var(--green); }
+.login-box p { color:var(--text-dim); margin-bottom:24px; font-size:14px; }
+.login-input { width:200px; padding:14px; font-size:24px; text-align:center; background:var(--card); border:2px solid var(--border); border-radius:10px; color:var(--text); letter-spacing:8px; }
+.login-input:focus { outline:none; border-color:var(--accent); }
+.login-btn { display:block; margin:16px auto 0; padding:12px 48px; background:var(--green); color:#000; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; }
+.login-btn:hover { opacity:.9; }
+.login-error { color:var(--red); font-size:13px; margin-top:8px; min-height:20px; }
+.sync-status { font-size:11px; color:var(--green); margin-left:8px; }
+
+/* EXPORT */
+.export-btn { padding:10px 20px; background:var(--purple); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600; }
+.export-btn:hover { opacity:.9; }
+.export-area { margin-top:12px; }
+.export-textarea { width:100%; height:200px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:12px; font-family:monospace; resize:vertical; }
+
 /* RESPONSIVE */
 @media (max-width:600px) {
   .stat-grid { grid-template-columns:1fr 1fr; }
@@ -160,8 +182,19 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="login-overlay" class="login-overlay">
+  <div class="login-box">
+    <h1><span>♠</span> Poker Coach</h1>
+    <p>PINを設定してデバイス間でデータを同期<br>（初回は好きな4桁を入力）</p>
+    <input id="login-pin" class="login-input" type="text" maxlength="4" placeholder="0000" inputmode="numeric" pattern="[0-9]*">
+    <button class="login-btn" onclick="handleLogin()">START</button>
+    <div id="login-error" class="login-error"></div>
+  </div>
+</div>
+
 <nav class="nav">
-  <div class="nav-brand"><span>♠</span> Poker Coach</div>
+  <div class="nav-brand"><span>♠</span> Poker Coach<span id="sync-indicator" class="sync-status"></span></div>
   <button class="nav-btn active" onclick="showPage('dashboard')">ダッシュボード</button>
   <button class="nav-btn" onclick="showPage('quiz')">ドリル</button>
   <button class="nav-btn" onclick="showPage('sizing')">サイジング特訓</button>
@@ -236,6 +269,16 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
   <div class="card">
     <div class="card-title">今日のアドバイス</div>
     <div id="daily-tip" style="font-size:15px; line-height:1.7; padding:8px 0;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Claude Code 連携</div>
+    <p style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">学習データを出力して Claude Code に貼り付けると、アプリを改良できます。</p>
+    <button class="export-btn" onclick="exportData()">学習データを出力</button>
+    <button class="export-btn" style="background:var(--accent); margin-left:8px;" onclick="copyExport()">コピー</button>
+    <div class="export-area">
+      <textarea id="export-output" class="export-textarea" style="display:none;" readonly></textarea>
+    </div>
   </div>
 </div>
 
@@ -586,7 +629,75 @@ let sizingCorrect = 0;
 let sizingResults = [];
 
 // ============================================================
-// STORAGE
+// FIREBASE INIT
+// ============================================================
+firebase.initializeApp({
+  apiKey: "AIzaSyCwFX8BoUFkX4s_IQJviThspVf105a-hFk",
+  authDomain: "poker-coach-a1cb5.firebaseapp.com",
+  projectId: "poker-coach-a1cb5",
+  storageBucket: "poker-coach-a1cb5.firebasestorage.app",
+  messagingSenderId: "799783693862",
+  appId: "1:799783693862:web:4de76e958a4edee49e80e7"
+});
+const db = firebase.firestore();
+let userPin = '';
+let userDocRef = null;
+
+// ============================================================
+// LOGIN
+// ============================================================
+function handleLogin() {
+  const pin = document.getElementById('login-pin').value.trim();
+  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+    document.getElementById('login-error').textContent = '4桁の数字を入力してください';
+    return;
+  }
+  userPin = pin;
+  userDocRef = db.collection('users').doc('pin_' + pin);
+  localStorage.setItem('poker_pin', pin);
+
+  // Load data from Firestore
+  userDocRef.get().then(doc => {
+    if (doc.exists) {
+      const data = doc.data();
+      if (data.history) localStorage.setItem('poker_history', JSON.stringify(data.history));
+      if (data.catStats) localStorage.setItem('poker_cat_stats', JSON.stringify(data.catStats));
+      if (data.questionStats) localStorage.setItem('poker_q_stats', JSON.stringify(data.questionStats));
+      setSyncStatus('同期済み');
+    } else {
+      // New user - create doc
+      syncToFirestore();
+      setSyncStatus('新規作成');
+    }
+    document.getElementById('login-overlay').classList.add('hidden');
+    updateDashboard();
+  }).catch(err => {
+    console.error(err);
+    document.getElementById('login-error').textContent = '接続エラー。オフラインモードで起動します。';
+    setTimeout(() => {
+      document.getElementById('login-overlay').classList.add('hidden');
+      updateDashboard();
+    }, 1500);
+  });
+}
+
+// Auto-login if PIN saved
+(function autoLogin() {
+  const saved = localStorage.getItem('poker_pin');
+  if (saved) {
+    document.getElementById('login-pin').value = saved;
+    handleLogin();
+  }
+})();
+
+function setSyncStatus(msg) {
+  const el = document.getElementById('sync-indicator');
+  el.textContent = msg;
+  setTimeout(() => el.textContent = '', 3000);
+}
+
+// ============================================================
+// STORAGE (localStorage + Firestore sync)
 // ============================================================
 function getHistory() {
   return JSON.parse(localStorage.getItem('poker_history') || '[]');
@@ -595,6 +706,11 @@ function saveHistory(entry) {
   const h = getHistory();
   h.push(entry);
   localStorage.setItem('poker_history', JSON.stringify(h));
+  // Update per-question stats for spaced repetition
+  if (entry.details) {
+    entry.details.forEach(d => updateQuestionStat(d.id, d.correct));
+  }
+  syncToFirestore();
 }
 function getCategoryStats() {
   return JSON.parse(localStorage.getItem('poker_cat_stats') || '{}');
@@ -605,6 +721,149 @@ function updateCategoryStats(cat, correct, total) {
   s[cat].correct += correct;
   s[cat].total += total;
   localStorage.setItem('poker_cat_stats', JSON.stringify(s));
+}
+
+// Per-question stats for spaced repetition
+function getQuestionStats() {
+  return JSON.parse(localStorage.getItem('poker_q_stats') || '{}');
+}
+function updateQuestionStat(qId, correct) {
+  if (!qId) return;
+  const stats = getQuestionStats();
+  if (!stats[qId]) stats[qId] = { correct:0, wrong:0, streak:0, lastSeen: null };
+  const q = stats[qId];
+  if (correct) { q.correct++; q.streak++; }
+  else { q.wrong++; q.streak = 0; }
+  q.lastSeen = Date.now();
+  stats[qId] = q;
+  localStorage.setItem('poker_q_stats', JSON.stringify(stats));
+}
+
+// Sync to Firestore
+function syncToFirestore() {
+  if (!userDocRef) return;
+  const data = {
+    history: getHistory(),
+    catStats: getCategoryStats(),
+    questionStats: getQuestionStats(),
+    lastSync: new Date().toISOString()
+  };
+  userDocRef.set(data, { merge: true }).then(() => {
+    setSyncStatus('同期済み');
+  }).catch(err => {
+    console.error('Sync error:', err);
+    setSyncStatus('同期失敗');
+  });
+}
+
+// ============================================================
+// SMART QUIZ (Spaced Repetition)
+// ============================================================
+function getSmartOrder(pool) {
+  const qStats = getQuestionStats();
+  const now = Date.now();
+  // Score each question: higher = should be shown sooner
+  const scored = pool.map(q => {
+    const s = qStats[q.id];
+    let priority = 50; // base
+    if (!s) {
+      priority = 60; // never seen = high priority
+    } else {
+      // More wrong = higher priority
+      priority += s.wrong * 15;
+      // Streak of correct answers = lower priority
+      priority -= s.streak * 10;
+      // Not seen recently = higher priority
+      const hoursSince = (now - (s.lastSeen || 0)) / 3600000;
+      priority += Math.min(hoursSince * 0.5, 30);
+      // Low accuracy = higher priority
+      const total = s.correct + s.wrong;
+      if (total > 0) {
+        const accuracy = s.correct / total;
+        priority += (1 - accuracy) * 20;
+      }
+    }
+    // Weak-flagged questions get a boost
+    if (q.weak) priority += 10;
+    return { q, priority };
+  });
+  // Sort by priority (highest first) with some randomness
+  scored.forEach(s => s.priority += Math.random() * 15);
+  scored.sort((a, b) => b.priority - a.priority);
+  return scored.map(s => s.q);
+}
+
+// ============================================================
+// DATA EXPORT
+// ============================================================
+function exportData() {
+  const data = {
+    exportDate: new Date().toISOString(),
+    pin: userPin,
+    totalDrills: getHistory().length,
+    history: getHistory(),
+    categoryStats: getCategoryStats(),
+    questionStats: getQuestionStats(),
+    summary: generateSummary()
+  };
+  const textarea = document.getElementById('export-output');
+  textarea.style.display = 'block';
+  textarea.value = JSON.stringify(data, null, 2);
+}
+
+function copyExport() {
+  const textarea = document.getElementById('export-output');
+  if (!textarea.value) { exportData(); }
+  textarea.select();
+  navigator.clipboard.writeText(textarea.value).then(() => {
+    setSyncStatus('コピー済み');
+  }).catch(() => {
+    textarea.select();
+    document.execCommand('copy');
+    setSyncStatus('コピー済み');
+  });
+}
+
+function generateSummary() {
+  const h = getHistory();
+  const cats = getCategoryStats();
+  const qStats = getQuestionStats();
+  const totalQ = h.reduce((a,e) => a + e.total, 0);
+  const totalC = h.reduce((a,e) => a + e.correct, 0);
+
+  // Most missed questions
+  const missed = Object.entries(qStats)
+    .filter(([id, s]) => s.wrong > 0)
+    .sort((a, b) => {
+      const aRate = a[1].wrong / (a[1].correct + a[1].wrong);
+      const bRate = b[1].wrong / (b[1].correct + b[1].wrong);
+      return bRate - aRate;
+    })
+    .slice(0, 10)
+    .map(([id, s]) => ({
+      id,
+      correct: s.correct,
+      wrong: s.wrong,
+      accuracy: Math.round(s.correct / (s.correct + s.wrong) * 100) + '%',
+      streak: s.streak
+    }));
+
+  const catNames = {preflop:'プリフロップ',flop:'フロップ',turn_river:'ターン/リバー',range:'レンジ読み',bluff_value:'ブラフ/バリュー',tournament:'トーナメント'};
+  const catSummary = {};
+  for (const [key, name] of Object.entries(catNames)) {
+    const s = cats[key];
+    catSummary[name] = s ? { correct:s.correct, total:s.total, accuracy:Math.round(s.correct/s.total*100)+'%' } : '未学習';
+  }
+
+  return {
+    totalQuestionsSolved: totalQ,
+    totalCorrect: totalC,
+    overallAccuracy: totalQ > 0 ? Math.round(totalC/totalQ*100)+'%' : '-',
+    sessionsCount: h.length,
+    categoryBreakdown: catSummary,
+    mostMissedQuestions: missed,
+    lastStudied: h.length > 0 ? h[h.length-1].date : 'なし'
+  };
 }
 
 // ============================================================
@@ -709,8 +968,8 @@ function startQuiz() {
   } else {
     pool = QUESTIONS.filter(q => selected.includes(q.cat));
   }
-  // shuffle
-  pool.sort(() => Math.random() - 0.5);
+  // Smart ordering: prioritize weak/unseen/missed questions
+  pool = getSmartOrder(pool);
   const num = parseInt(document.getElementById('quiz-num').value);
   currentQuiz = num > 0 ? pool.slice(0, num) : pool;
   quizIndex = 0;
