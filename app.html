@@ -380,8 +380,8 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 
 <!-- ========== RANGES ========== -->
 <div id="page-ranges" class="page">
-  <h2>GTO レンジ表</h2>
-  <p style="color:var(--text-dim); margin-bottom:16px;">6max 100BB NLH ソルバーベースのレンジ（GTO Wizard / PioSolver参考）</p>
+  <h2>GTO レンジ表（トーナメント）</h2>
+  <p style="color:var(--text-dim); margin-bottom:16px;">6max トーナメント用 スタック別レンジ（アンティあり前提・GTO Wizard / ICMizer参考）</p>
 
   <div class="card">
     <div class="card-title">シナリオ選択</div>
@@ -1261,87 +1261,294 @@ function handLabel(r, c) {
 
 // Range definitions: each hand can be 'raise','call','3bet','bluff3bet','fold','mixed','mixed-call-3bet'
 const RANGE_DATA = {
-  // ===== OPEN (RFI) =====
-  'utg-open': {
-    title:'UTG オープンレンジ', pct:'17.6%',
-    info:'<strong>オープンサイズ: 2.5BB</strong><br>最もタイトなポジション。プレミアムハンドと強いスーテッドハンドのみ。<br>55はミックス（約50%オープン）。A2sもソルバーによっては含む。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス（約50%）'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,KQo,KJo,QJo',
-      mixed:'55,A2s',
-    })
-  },
-  'hj-open': {
-    title:'HJ オープンレンジ', pct:'21.4%',
-    info:'<strong>オープンサイズ: 2.5BB</strong><br>UTGより広く。小ポケットペア、スーテッドコネクターが追加。<br>44はミックス。K5sも低頻度で含む場合あり。',
+  // ===== OPEN 40BB+ (with antes) =====
+  'open40-utg': {
+    title:'UTG オープン（40BB+）', pct:'~17%',
+    info:'<strong>オープンサイズ: 2.2-2.5BB</strong><br>ディープスタック時はキャッシュに近いレンジ。<br>アンティがあるのでスチール価値はやや高い。タイトに構える。',
     legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AKo,AQo,AJo,ATo,KQo,KJo,KTo,QJo,QTo',
-      mixed:'44,K5s,T8s',
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,AKo,AQo,AJo,ATo,KQo,KJo,QJo',
+      mixed:'55,K8s',
     })
   },
-  'co-open': {
-    title:'CO オープンレンジ', pct:'27.8%',
-    info:'<strong>オープンサイズ: 2.5BB</strong><br>スチールポジションの入口。かなり広くオープン可能。<br>22はミックス（約50%）。A7o, A6oもミックス。',
+  'open40-hj': {
+    title:'HJ オープン（40BB+）', pct:'~21%',
+    info:'<strong>オープンサイズ: 2.2-2.5BB</strong><br>UTGより広く。スーテッドコネクター追加。',
     legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,JTs,J9s,J8s,T9s,T8s,T7s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
-      mixed:'22,A7o,A6o,K2s',
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,AKo,AQo,AJo,ATo,KQo,KJo,KTo,QJo',
+      mixed:'44,K7s,T8s',
     })
   },
-  'btn-open': {
-    title:'BTN オープンレンジ', pct:'43.5%',
-    info:'<strong>オープンサイズ: 2.5BB</strong><br>最も広いオープン。ほぼ半分のハンドでレイズ。<br>22, A2o-A3oはミックス。K7o, K6oも部分的に含む。',
+  'open40-co': {
+    title:'CO オープン（40BB+）', pct:'~28%',
+    info:'<strong>オープンサイズ: 2.2-2.5BB</strong><br>スチールポジションの入口。アンティのおかげで広くオープン可能。',
     legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,JTs,J9s,J8s,J7s,J6s,J5s,J4s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,85s,76s,75s,65s,64s,54s,53s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
-      mixed:'22,A3o,A2o,K7o,K6o,Q8o,J8o,43s',
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo,QTo,JTo',
+      mixed:'33,A8o,K4s',
     })
   },
-  'sb-open': {
-    title:'SB オープンレンジ', pct:'44-50%',
-    info:'<strong>オープンサイズ: 3BB（大きめ）</strong><br>SBはレイズかフォールド。リンプは禁止（GTO）。<br>BBにポジションがないため大きめサイズ。ソルバーは最大62%まで開くが、実戦的には44-50%推奨。',
+  'open40-btn': {
+    title:'BTN オープン（40BB+）', pct:'~43%',
+    info:'<strong>オープンサイズ: 2-2.5BB</strong><br>最も広いオープン。アンティありでほぼ半分のハンドでレイズ。',
     legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,T9s,T8s,T7s,T6s,T5s,T4s,T3s,98s,97s,96s,95s,94s,87s,86s,85s,84s,76s,75s,74s,65s,64s,63s,54s,53s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,QJo,QTo,Q9o,Q8o,Q7o,Q6o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,96o,87o,86o,76o',
-      mixed:'K3o,Q4o,J6o,T6o,95o,85o,75o,64o',
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,87s,86s,76s,75s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o',
+      mixed:'22,A4o,K8o,Q4s,J6s,T6s,64s,53s',
+    })
+  },
+  'open40-sb': {
+    title:'SB オープン（40BB+）', pct:'~48%',
+    info:'<strong>オープンサイズ: 2.5-3BB</strong><br>SBはレイズかフォールド。リンプ禁止。<br>BBにポジションがないため大きめサイズ。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,JTs,J9s,J8s,J7s,J6s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,76s,75s,65s,64s,54s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,QJo,QTo,Q9o,Q8o,Q7o,JTo,J9o,J8o,T9o,T8o,98o,87o',
+      mixed:'Q3s,J5s,T5s,95s,85s,74s,63s,53s,K4o,Q6o,J7o,T7o',
     })
   },
 
-  // ===== 3BET RANGES =====
-  'btn-vs-utg': {
-    title:'BTN 3bet vs UTGオープン', pct:'7-8%',
-    info:'<strong>3betサイズ: 7.5BB（IPなので3x）</strong><br>UTGはタイトなので、バリュー3betは狭く。<br>ブラフ3betにスーテッドAとコネクターを使う。JJ, AQsはミックス。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  // ===== OPEN 25BB =====
+  'open25-utg': {
+    title:'UTG オープン（25BB）', pct:'~14%',
+    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>25BBではフラットコールされると困るため、レンジを絞る。<br>3betされたらフォールドかオールインの判断が必要。',
+    legend:[{c:'raise',l:'レイズ'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
-      threeBet:'AA,KK,QQ,AKs,AKo',
-      bluff3bet:'A5s,A4s,A3s,A2s,98s,87s,76s,65s,54s',
-      'mixed-call-3bet':'JJ,AQs,AQo',
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,AKs,AQs,AJs,ATs,A9s,A5s,A4s,KQs,KJs,QJs,JTs,AKo,AQo,AJo,KQo',
     })
   },
-  'btn-vs-hj': {
-    title:'BTN 3bet vs HJオープン', pct:'9-11%',
-    info:'<strong>3betサイズ: 7.5BB</strong><br>HJは少し広いので3betレンジも広がる。<br>TT, AQo, KQsはミックス。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  'open25-hj': {
+    title:'HJ オープン（25BB）', pct:'~17%',
+    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>UTGより少し広く。3betされたらフォールドかオールインの二択。',
+    legend:[{c:'raise',l:'レイズ'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s',
-      'mixed-call-3bet':'TT,AQo,KQs,AJs',
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A5s,A4s,A3s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,AKo,AQo,AJo,ATo,KQo,KJo',
     })
   },
-  'btn-vs-co': {
-    title:'BTN 3bet vs COオープン', pct:'11-14%',
-    info:'<strong>3betサイズ: 7.5BB</strong><br>COは広めなので3betも広い。TT+をバリュー3bet。<br>99, AQo, AJo, KJs, QJsはミックス。',
+  'open25-co': {
+    title:'CO オープン（25BB）', pct:'~23%',
+    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>スチール意識。3betに対してオールインできるハンドを多めに含む。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo',
+      mixed:'33,K8s,76s',
+    })
+  },
+  'open25-btn': {
+    title:'BTN オープン（25BB）', pct:'~38%',
+    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>ブラインドスチールが重要。広くオープンするが100BBよりやや絞る。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
+      mixed:'K4s,Q7s,T7s,86s,54s',
+    })
+  },
+  'open25-sb': {
+    title:'SB オープン（25BB）', pct:'~42%',
+    info:'<strong>オープンサイズ: 2.5BB or オールイン</strong><br>25BBではSBのレイズ→BB 3bet→SBオールインの展開が多い。<br>オープンするなら3betに対してオールインできる覚悟で。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,87s,86s,76s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,JTo,J9o,T9o,98o',
+      mixed:'Q5s,J6s,T6s,96s,75s,43s',
+    })
+  },
+
+  // ===== PUSH/FOLD 20BB =====
+  'push20-utg': {
+    title:'UTG プッシュレンジ（20BB）', pct:'~12%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>20BBではオープンレイズ→3betされて困る展開を避ける。<br>UTGからは強めのハンドのみプッシュ。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A5s,A4s,KQs,KJs,KTs,QJs,AKo,AQo,AJo,ATo,KQo',
+    })
+  },
+  'push20-hj': {
+    title:'HJ プッシュレンジ（20BB）', pct:'~16%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>UTGより広く。スーテッドAx追加。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
+    })
+  },
+  'push20-co': {
+    title:'CO プッシュレンジ（20BB）', pct:'~22%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>スチール意識。ポケットペアも広く含む。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo',
+    })
+  },
+  'push20-btn': {
+    title:'BTN プッシュレンジ（20BB）', pct:'~35%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>ブラインドスチールが非常に重要。かなり広くプッシュ。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,87s,76s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
+    })
+  },
+  'push20-sb': {
+    title:'SB プッシュレンジ（20BB）', pct:'~45%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>SBからBBへのヘッズアップ。非常に広くプッシュ可能。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,87s,76s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,98o,87o',
+    })
+  },
+
+  // ===== PUSH/FOLD 15BB =====
+  'push15-utg': {
+    title:'UTG プッシュレンジ（15BB）', pct:'~16%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>15BBでは完全プッシュ/フォールド。UTGでも20BBより広くなる。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
+    })
+  },
+  'push15-hj': {
+    title:'HJ プッシュレンジ（15BB）', pct:'~20%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>小ポケットペアとスーテッドAx追加。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,KQs,KJs,KTs,K9s,QJs,QTs,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo',
+    })
+  },
+  'push15-co': {
+    title:'CO プッシュレンジ（15BB）', pct:'~28%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>かなり広くプッシュ。スチール価値が高い。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo',
+    })
+  },
+  'push15-btn': {
+    title:'BTN プッシュレンジ（15BB）', pct:'~42%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>非常に広くプッシュ。ブラインドを奪い続けることが生存の鍵。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
+    })
+  },
+  'push15-sb': {
+    title:'SB プッシュレンジ（15BB）', pct:'~52%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>BB1人相手なので非常に広くプッシュ。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,J6s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,76s,75s,65s,54s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,87o',
+    })
+  },
+
+  // ===== PUSH/FOLD 10BB =====
+  'push10-utg': {
+    title:'UTG プッシュレンジ（10BB）', pct:'~22%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>10BBではかなり広くプッシュ。待っていたら死ぬ。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo',
+    })
+  },
+  'push10-hj': {
+    title:'HJ プッシュレンジ（10BB）', pct:'~28%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>広くプッシュ。Axスーテッド全部含む。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,AKo,AQo,AJo,ATo,A9o,A8o,A5o,KQo,KJo,KTo,QJo,QTo',
+    })
+  },
+  'push10-co': {
+    title:'CO プッシュレンジ（10BB）', pct:'~36%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>後ろに2人＋ブラインドしかいないので広くプッシュ。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
+    })
+  },
+  'push10-btn': {
+    title:'BTN プッシュレンジ（10BB）', pct:'~50%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>ほぼ半分のハンドでプッシュ。生き残りに必須。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,96s,87s,86s,76s,75s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K5o,QJo,QTo,Q9o,Q8o,JTo,J9o,T9o,T8o,98o,87o',
+    })
+  },
+  'push10-sb': {
+    title:'SB プッシュレンジ（10BB）', pct:'~62%',
+    info:'<strong>アクション: オールイン or フォールド</strong><br>BB1人相手。ほぼなんでもプッシュ。',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J7s,J6s,J5s,J4s,T9s,T8s,T7s,T6s,T5s,98s,97s,96s,95s,87s,86s,85s,76s,75s,65s,64s,54s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,K3o,K2o,QJo,QTo,Q9o,Q8o,Q7o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,87o,86o,76o,65o',
+    })
+  },
+
+  // ===== BB CALL vs PUSH =====
+  'bbcall-vs-btn20': {
+    title:'BB コールレンジ vs BTNプッシュ（20BB）', pct:'~14%',
+    info:'<strong>BTNの20BBプッシュに対するBBのコールレンジ。</strong><br>リスクが大きいので強いハンドのみコール。<br>ポットオッズ: 約1.4:1（約42%必要）',
+    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      call:'AA,KK,QQ,JJ,TT,99,88,77,AKs,AQs,AJs,ATs,A9s,KQs,KJs,AKo,AQo,AJo,ATo,KQo',
+      'mixed-call-3bet':'66,A8s,KTs,QJs',
+    })
+  },
+  'bbcall-vs-btn15': {
+    title:'BB コールレンジ vs BTNプッシュ（15BB）', pct:'~20%',
+    info:'<strong>BTNの15BBプッシュに対するBBのコールレンジ。</strong><br>オッズが良くなるので少し広くコール。<br>ポットオッズ: 約1.7:1（約37%必要）',
+    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
+      'mixed-call-3bet':'44,A6s,K9s,T9s',
+    })
+  },
+  'bbcall-vs-btn10': {
+    title:'BB コールレンジ vs BTNプッシュ（10BB）', pct:'~30%',
+    info:'<strong>BTNの10BBプッシュに対するBBのコールレンジ。</strong><br>オッズが非常に良い。広くコール。<br>ポットオッズ: 約2.2:1（約31%必要）',
+    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,KQo,KJo,KTo,QJo,QTo,JTo',
+      'mixed-call-3bet':'22,K7s,Q8s,98s',
+    })
+  },
+  'bbcall-vs-sb20': {
+    title:'BB コールレンジ vs SBプッシュ（20BB）', pct:'~18%',
+    info:'<strong>SBの20BBプッシュに対するBBのコールレンジ。</strong><br>SBはBTNより広くプッシュするのでやや広くコール。',
+    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
+      'mixed-call-3bet':'44,A6s,K9s,T9s',
+    })
+  },
+  'bbcall-vs-sb15': {
+    title:'BB コールレンジ vs SBプッシュ（15BB）', pct:'~25%',
+    info:'<strong>SBの15BBプッシュに対するBBのコールレンジ。</strong><br>SBのプッシュレンジは非常に広い。広めにコール。',
+    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo',
+      'mixed-call-3bet':'33,A3s,K8s,98s',
+    })
+  },
+  'bbcall-vs-sb10': {
+    title:'BB コールレンジ vs SBプッシュ（10BB）', pct:'~38%',
+    info:'<strong>SBの10BBプッシュに対するBBのコールレンジ。</strong><br>SBはほぼなんでもプッシュしている。非常に広くコール。',
+    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,87s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o,98o',
+      'mixed-call-3bet':'K6s,Q7s,76s',
+    })
+  },
+
+  // ===== 3BET (40BB+) =====
+  'threeBet-btn-vs-co': {
+    title:'BTN 3bet vs CO（40BB+）', pct:'~12%',
+    info:'<strong>3betサイズ: 7-8BB</strong><br>COのオープンに対してIPから3bet。<br>トーナメントではフラットコールも多いが、3betでポットを取りに行く。',
     legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
       threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AJs,KQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s,Q9s,K9s',
+      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s,Q9s',
       'mixed-call-3bet':'99,AQo,AJo,KJs,QJs',
     })
   },
-  'sb-vs-btn': {
-    title:'SB 3bet vs BTNオープン', pct:'10-14%',
-    info:'<strong>3betサイズ: 9-10BB（OOPなので大きめ）</strong><br>BTNは広くオープンするので、SBも広く3bet。<br>SBはコールせず3betかフォールド（GTO）。',
+  'threeBet-sb-vs-btn': {
+    title:'SB 3bet vs BTN（40BB+）', pct:'~13%',
+    info:'<strong>3betサイズ: 9-10BB（OOPなので大きめ）</strong><br>SBはコールせず3betかフォールド（GTO）。<br>BTNの広いオープンに対して積極的に3bet。',
     legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
       threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,KQs',
@@ -1349,61 +1556,14 @@ const RANGE_DATA = {
       'mixed-call-3bet':'99,AJs,KJs',
     })
   },
-
-  // ===== BB DEFENSE =====
-  'bb-vs-utg': {
-    title:'BB ディフェンス vs UTGオープン', pct:'22-27%',
-    info:'<strong>UTGはタイトなので、BBは絞って守る。</strong><br>3bet: QQ+, AKs, AKo（バリュー）+ A5s, A4s, K5s（ブラフ）<br>コール: JJ-22, AQs-A2s, KQs-K9s, QJs-Q9s, JTs-J9s, T9s, 98s, 87s, 76s, AQo-ATo, KQo-KJo, QJo<br>JJ, AQsは3betとコールのミックス。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,AKs,AKo',
-      bluff3bet:'A5s,A4s,K5s,Q5s',
-      call:'TT,99,88,77,66,55,44,33,22,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,KQo,KJo,QJo',
-      'mixed-call-3bet':'JJ,AQo',
-    })
-  },
-  'bb-vs-co': {
-    title:'BB ディフェンス vs COオープン', pct:'35-43%',
-    info:'<strong>COは広めなので、BBも広くディフェンス。</strong><br>3bet: JJ+, AKs, AKo, AQs（バリュー）+ A5s-A2s, K5s-K3s, スーコネ（ブラフ）<br>コール: TT-22, 広いスーテッド、AQo-A8o, KJo-KTo, QJo-QTo, JTo<br>TT, AJsは3betとコールのミックス。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,K5s,K4s,K3s,Q5s,J8s,T8s,65s,54s',
-      call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,T9s,98s,97s,87s,86s,76s,75s,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
-      'mixed-call-3bet':'TT,AJs,AQo',
-    })
-  },
-  'bb-vs-btn': {
-    title:'BB ディフェンス vs BTNオープン', pct:'42-56%',
-    info:'<strong>BTNは最も広いので、BBも非常に広くディフェンス。</strong><br>3bet: TT+, AQs+, AKo, KQs（バリュー）+ 広いブラフ3bet<br>コール: 99-22, 非常に広いスーテッド・オフスーテッド<br>99, AJsは3betとコールのミックス。多くのボーダーハンドはミックス戦略。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  'threeBet-bb-vs-btn': {
+    title:'BB 3bet vs BTN（40BB+）', pct:'~10%',
+    info:'<strong>3betサイズ: 9-10BB</strong><br>BBからBTNに対する3bet。コールも多いがバリュー+ブラフの3betレンジを持つ。',
+    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
       threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,KQs',
-      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K9s,K5s,K4s,K3s,Q9s,Q8s,Q7s,Q6s,Q5s,J8s,J7s,J6s,J5s,T7s,97s,87s,76s,65s,54s',
-      call:'88,77,66,55,44,33,22,AJs,ATs,A9s,KJs,KTs,K8s,K7s,K6s,K2s,QJs,QTs,Q4s,Q3s,Q2s,JTs,J9s,J4s,J3s,J2s,T9s,T8s,T6s,T5s,T4s,T3s,98s,96s,95s,86s,85s,75s,74s,64s,53s,43s,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
-      'mixed-call-3bet':'99,AJs,AQo',
-    })
-  },
-  'bb-vs-sb': {
-    title:'BB ディフェンス vs SBオープン', pct:'55-65%',
-    info:'<strong>BBはSBに対してポジションがある＝非常に広くディフェンス。</strong><br>3bet: 99+, AQs+, AKo, KQs, AJs（バリュー）+ 非常に広いブラフ3bet<br>コール: 超広い。ほぼすべてのスーテッド、広いオフスーテッド。<br>BBはSBに対して最も広くプレイする。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,KQs',
-      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,J7s,J6s,J5s,J4s,J3s,T6s,T5s,T4s,96s,95s,85s,84s,75s,74s,64s,53s',
-      call:'88,77,66,55,44,33,22,ATs,A9s,KJs,KTs,QJs,QTs,Q9s,JTs,J9s,J8s,J2s,T9s,T8s,T7s,T3s,98s,97s,87s,86s,76s,65s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,QJo,QTo,Q9o,Q8o,Q7o,Q6o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,96o,87o,86o,76o',
-    })
-  },
-
-  // ===== 4BET =====
-  '4bet': {
-    title:'4bet レンジ（3betに対して）', pct:'3-4%',
-    info:'<strong>4betサイズ: IP 2.5x / OOP 2.75-3x（3betの倍率）</strong><br>バリュー: AA, KK, QQ（ほぼ常に4bet）<br>ミックス: AKs（ほぼ4bet）, AKo（多くは4bet、IPではコールも）, JJ（ポジション次第）<br>ブラフ: A5s, A4s, A3s（ブロッカー+エクイティ）<br>5bet対応: AA=ほぼ常にオールイン, KK=ほぼオールイン, AKs=ミックス',
-    legend:[{c:'threeBet',l:'バリュー4bet'},{c:'bluff3bet',l:'ブラフ4bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ',
-      bluff3bet:'A5s,A4s,A3s',
-      'mixed-call-3bet':'JJ,AKs,AKo,AQs,AQo',
+      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K5s,K4s,K3s,Q6s,Q5s,J7s,J6s,T7s,97s,87s,76s,65s,54s',
+      call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,J8s,T9s,T8s,98s,96s,86s,75s,64s,53s,43s,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
     })
   },
 };
@@ -1437,21 +1597,28 @@ function handToCoord(hand) {
 }
 
 const RANGE_SCENARIOS = {
-  'オープンレンジ (RFI)': ['utg-open','hj-open','co-open','btn-open','sb-open'],
-  '3bet レンジ': ['btn-vs-utg','btn-vs-hj','btn-vs-co','sb-vs-btn'],
-  'BB ディフェンス': ['bb-vs-utg','bb-vs-co','bb-vs-btn','bb-vs-sb'],
-  '4bet レンジ': ['4bet'],
+  'オープン (40BB+)': ['open40-utg','open40-hj','open40-co','open40-btn','open40-sb'],
+  'オープン (25BB)': ['open25-utg','open25-hj','open25-co','open25-btn','open25-sb'],
+  'プッシュ (20BB)': ['push20-utg','push20-hj','push20-co','push20-btn','push20-sb'],
+  'プッシュ (15BB)': ['push15-utg','push15-hj','push15-co','push15-btn','push15-sb'],
+  'プッシュ (10BB)': ['push10-utg','push10-hj','push10-co','push10-btn','push10-sb'],
+  'BBコール vs プッシュ': ['bbcall-vs-btn20','bbcall-vs-btn15','bbcall-vs-btn10','bbcall-vs-sb20','bbcall-vs-sb15','bbcall-vs-sb10'],
+  '3bet (40BB+)': ['threeBet-btn-vs-co','threeBet-sb-vs-btn','threeBet-bb-vs-btn'],
 };
 
 const RANGE_LABELS = {
-  'utg-open':'UTG','hj-open':'HJ','co-open':'CO','btn-open':'BTN','sb-open':'SB',
-  'btn-vs-utg':'BTN vs UTG','btn-vs-hj':'BTN vs HJ','btn-vs-co':'BTN vs CO','sb-vs-btn':'SB vs BTN',
-  'bb-vs-utg':'vs UTG','bb-vs-co':'vs CO','bb-vs-btn':'vs BTN','bb-vs-sb':'vs SB',
-  '4bet':'共通',
+  'open40-utg':'UTG','open40-hj':'HJ','open40-co':'CO','open40-btn':'BTN','open40-sb':'SB',
+  'open25-utg':'UTG','open25-hj':'HJ','open25-co':'CO','open25-btn':'BTN','open25-sb':'SB',
+  'push20-utg':'UTG','push20-hj':'HJ','push20-co':'CO','push20-btn':'BTN','push20-sb':'SB',
+  'push15-utg':'UTG','push15-hj':'HJ','push15-co':'CO','push15-btn':'BTN','push15-sb':'SB',
+  'push10-utg':'UTG','push10-hj':'HJ','push10-co':'CO','push10-btn':'BTN','push10-sb':'SB',
+  'bbcall-vs-btn20':'vs BTN 20BB','bbcall-vs-btn15':'vs BTN 15BB','bbcall-vs-btn10':'vs BTN 10BB',
+  'bbcall-vs-sb20':'vs SB 20BB','bbcall-vs-sb15':'vs SB 15BB','bbcall-vs-sb10':'vs SB 10BB',
+  'threeBet-btn-vs-co':'BTN vs CO','threeBet-sb-vs-btn':'SB vs BTN','threeBet-bb-vs-btn':'BB vs BTN',
 };
 
-let currentRangeScenario = 'オープンレンジ (RFI)';
-let currentRangeKey = 'utg-open';
+let currentRangeScenario = 'オープン (40BB+)';
+let currentRangeKey = 'open40-utg';
 
 function initRangeTabs() {
   const posTabs = document.getElementById('range-position-tabs');
