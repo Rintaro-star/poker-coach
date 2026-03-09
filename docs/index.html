@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poker Coach - りんたろう専用</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --red: #f85149;
+  --orange: #d29922;
+  --purple: #bc8cff;
+  --pink: #f778ba;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
+a { color: var(--accent); text-decoration: none; }
+
+/* NAV */
+.nav { display:flex; align-items:center; gap:8px; padding:12px 20px; background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; overflow-x:auto; }
+.nav-brand { font-weight:700; font-size:18px; margin-right:16px; white-space:nowrap; }
+.nav-brand span { color:var(--green); }
+.nav-btn { padding:8px 16px; border:1px solid var(--border); background:transparent; color:var(--text-dim); border-radius:6px; cursor:pointer; font-size:13px; white-space:nowrap; transition:all .2s; }
+.nav-btn:hover, .nav-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* LAYOUT */
+.page { display:none; padding:20px; max-width:900px; margin:0 auto; }
+.page.active { display:block; }
+h2 { font-size:22px; margin-bottom:16px; }
+h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
+
+/* CARDS */
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:16px; }
+.card-title { font-size:15px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.stat-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; }
+.stat-box { background:var(--bg); border-radius:8px; padding:16px; text-align:center; }
+.stat-val { font-size:32px; font-weight:700; }
+.stat-label { font-size:12px; color:var(--text-dim); margin-top:4px; }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+.badge-green { background:#3fb95022; color:var(--green); }
+.badge-red { background:#f8514922; color:var(--red); }
+.badge-orange { background:#d2992222; color:var(--orange); }
+.badge-purple { background:#bc8cff22; color:var(--purple); }
+
+/* PROGRESS BAR */
+.progress-bar { height:8px; background:var(--bg); border-radius:4px; overflow:hidden; margin:8px 0; }
+.progress-fill { height:100%; border-radius:4px; transition: width .5s; }
+
+/* WEAKNESS LIST */
+.weakness-item { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.weakness-item:last-child { border-bottom:none; }
+.weakness-num { width:28px; height:28px; background:var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+.weakness-detail { flex:1; }
+.weakness-detail strong { display:block; margin-bottom:4px; }
+.weakness-detail p { font-size:13px; color:var(--text-dim); line-height:1.5; }
+
+/* QUIZ */
+.quiz-setup { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.quiz-cat-btn { padding:10px 18px; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; cursor:pointer; font-size:14px; transition:all .2s; }
+.quiz-cat-btn:hover { border-color:var(--accent); }
+.quiz-cat-btn.selected { background:var(--accent); color:#fff; border-color:var(--accent); }
+.quiz-area { display:none; }
+.quiz-area.active { display:block; }
+.quiz-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.quiz-progress { font-size:13px; color:var(--text-dim); }
+.quiz-situation { background:var(--bg); border-radius:8px; padding:16px; margin-bottom:16px; line-height:1.8; font-size:14px; white-space:pre-line; }
+.quiz-choices { display:flex; flex-direction:column; gap:8px; }
+.quiz-choice { padding:14px 18px; border:2px solid var(--border); border-radius:8px; background:transparent; color:var(--text); cursor:pointer; font-size:15px; text-align:left; transition:all .2s; }
+.quiz-choice:hover:not(:disabled) { border-color:var(--accent); background:#58a6ff11; }
+.quiz-choice.correct { border-color:var(--green); background:#3fb95018; }
+.quiz-choice.wrong { border-color:var(--red); background:#f8514918; }
+.quiz-choice.acceptable { border-color:var(--orange); background:#d2992218; }
+.quiz-explanation { margin-top:16px; padding:16px; background:var(--bg); border-radius:8px; border-left:3px solid var(--accent); display:none; font-size:14px; line-height:1.6; }
+.quiz-explanation.show { display:block; }
+.quiz-next-btn { margin-top:16px; padding:12px 32px; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:600; display:none; }
+.quiz-next-btn.show { display:inline-block; }
+
+/* RESULT */
+.result-area { display:none; }
+.result-area.active { display:block; }
+.result-score { text-align:center; margin:20px 0; }
+.result-score .score-big { font-size:64px; font-weight:700; }
+.result-cat-table { width:100%; border-collapse:collapse; margin:16px 0; }
+.result-cat-table th, .result-cat-table td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:14px; }
+.result-cat-table th { color:var(--text-dim); font-weight:500; }
+.result-wrong-list { margin-top:12px; }
+.result-wrong-item { padding:12px; background:var(--bg); border-radius:8px; margin-bottom:8px; font-size:13px; line-height:1.6; }
+.result-wrong-item strong { color:var(--red); }
+
+/* RULES */
+.rules-search { width:100%; padding:12px 16px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:15px; margin-bottom:16px; }
+.rules-section { margin-bottom:16px; }
+.rules-section-title { padding:12px 16px; background:var(--card); border:1px solid var(--border); border-radius:8px 8px 0 0; cursor:pointer; font-weight:600; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+.rules-section-title:hover { background:#1c2129; }
+.rules-content { background:var(--bg); border:1px solid var(--border); border-top:none; border-radius:0 0 8px 8px; padding:16px; display:none; font-size:13px; line-height:1.8; white-space:pre-line; }
+.rules-content.open { display:block; }
+.rules-highlight { background:#58a6ff22; padding:0 4px; border-radius:3px; }
+
+/* HISTORY */
+.history-table { width:100%; border-collapse:collapse; }
+.history-table th, .history-table td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; }
+.history-table th { color:var(--text-dim); font-weight:500; position:sticky; top:0; background:var(--card); }
+.history-empty { text-align:center; padding:40px; color:var(--text-dim); }
+
+/* SIZING TRAINER */
+.sizing-scenario { background:var(--bg); border-radius:8px; padding:20px; margin-bottom:16px; }
+.sizing-options { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.sizing-btn { padding:12px 24px; border:2px solid var(--border); border-radius:8px; background:transparent; color:var(--text); cursor:pointer; font-size:16px; font-weight:600; transition:all .2s; }
+.sizing-btn:hover:not(:disabled) { border-color:var(--accent); }
+.sizing-btn.correct { border-color:var(--green); background:#3fb95018; }
+.sizing-btn.wrong { border-color:var(--red); background:#f8514918; }
+.sizing-feedback { margin-top:16px; padding:16px; border-radius:8px; display:none; font-size:14px; line-height:1.6; }
+.sizing-feedback.show { display:block; }
+
+/* RANGE CHART */
+.range-controls { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.range-tab { padding:8px 16px; border:1px solid var(--border); background:transparent; color:var(--text-dim); border-radius:6px; cursor:pointer; font-size:13px; transition:all .2s; }
+.range-tab:hover { border-color:var(--accent); }
+.range-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.range-scenario-tabs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.range-scenario-tab { padding:6px 12px; border:1px solid var(--border); background:transparent; color:var(--text-dim); border-radius:6px; cursor:pointer; font-size:12px; transition:all .2s; }
+.range-scenario-tab:hover { border-color:var(--purple); }
+.range-scenario-tab.active { background:var(--purple); color:#fff; border-color:var(--purple); }
+.range-grid-wrap { overflow-x:auto; margin-bottom:16px; }
+.range-grid { display:grid; grid-template-columns:repeat(14,1fr); gap:2px; min-width:560px; }
+.range-cell { aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; border-radius:3px; cursor:default; position:relative; transition:all .15s; }
+.range-cell:hover { transform:scale(1.15); z-index:2; box-shadow:0 0 8px rgba(0,0,0,.5); }
+.range-cell.header { background:transparent; color:var(--text-dim); font-size:12px; font-weight:700; cursor:default; }
+.range-cell.header:hover { transform:none; box-shadow:none; }
+.range-cell.raise { background:#3fb950; color:#000; }
+.range-cell.call { background:#58a6ff; color:#000; }
+.range-cell.threeBet { background:#f85149; color:#fff; }
+.range-cell.bluff3bet { background:#d29922; color:#000; }
+.range-cell.fold { background:#21262d; color:#484f58; }
+.range-cell.mixed { background:linear-gradient(135deg,#3fb950 50%,#21262d 50%); color:#000; }
+.range-cell.mixed-call-3bet { background:linear-gradient(135deg,#58a6ff 50%,#f85149 50%); color:#000; }
+.range-cell.suited-label { font-size:9px; }
+.range-legend { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0; font-size:12px; }
+.range-legend-item { display:flex; align-items:center; gap:4px; }
+.range-legend-swatch { width:16px; height:16px; border-radius:3px; }
+.range-info { font-size:13px; line-height:1.7; color:var(--text-dim); margin-top:12px; padding:12px; background:var(--bg); border-radius:8px; }
+.range-info strong { color:var(--text); }
+.range-pct { font-size:18px; font-weight:700; color:var(--accent); margin-bottom:8px; }
+
+/* RESPONSIVE */
+@media (max-width:600px) {
+  .stat-grid { grid-template-columns:1fr 1fr; }
+  .stat-val { font-size:24px; }
+  .nav { padding:10px 12px; }
+  .nav-btn { padding:6px 12px; font-size:12px; }
+  .page { padding:12px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand"><span>♠</span> Poker Coach</div>
+  <button class="nav-btn active" onclick="showPage('dashboard')">ダッシュボード</button>
+  <button class="nav-btn" onclick="showPage('quiz')">ドリル</button>
+  <button class="nav-btn" onclick="showPage('sizing')">サイジング特訓</button>
+  <button class="nav-btn" onclick="showPage('rules')">マイルール</button>
+  <button class="nav-btn" onclick="showPage('ranges')">レンジ表</button>
+  <button class="nav-btn" onclick="showPage('history')">学習履歴</button>
+</nav>
+
+<!-- ========== DASHBOARD ========== -->
+<div id="page-dashboard" class="page active">
+  <h2>ダッシュボード</h2>
+
+  <div class="card">
+    <div class="card-title">現在の実力</div>
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-val" style="color:var(--orange)">65%</div>
+        <div class="stat-label">診断テスト #1 (13/20)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="drill-total-score" style="color:var(--accent)">-</div>
+        <div class="stat-label">ドリル通算正答率</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="drill-count" style="color:var(--purple)">0</div>
+        <div class="stat-label">解いた問題数</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="streak-count" style="color:var(--green)">0</div>
+        <div class="stat-label">連続正解</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">カテゴリ別スキル</div>
+    <div id="category-skills"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--red)">克服すべき弱点 TOP4</div>
+    <div class="weakness-item">
+      <div class="weakness-num">1</div>
+      <div class="weakness-detail">
+        <strong>ベットサイジングが大きすぎる</strong>
+        <p>ドライボード=1/3、標準=1/2 を徹底。全体的にサイズが1段階大きい傾向。</p>
+      </div>
+    </div>
+    <div class="weakness-item">
+      <div class="weakness-num">2</div>
+      <div class="weakness-detail">
+        <strong>トーナメント戦略（0%）</strong>
+        <p>35BBでATをフォールドした。30BBで攻撃スイッチONのルールが実行できていない。</p>
+      </div>
+    </div>
+    <div class="weakness-item">
+      <div class="weakness-num">3</div>
+      <div class="weakness-detail">
+        <strong>バリューの取り逃し</strong>
+        <p>ストレート完成でチェック。ナッツ級はベットしてバリューを取る。トラップ=損。</p>
+      </div>
+    </div>
+    <div class="weakness-item">
+      <div class="weakness-num">4</div>
+      <div class="weakness-detail">
+        <strong>「知ってる」と「できる」のギャップ</strong>
+        <p>テストではレンジ読み100%だが、実戦では自分のハンド中心の思考に偏る。3秒ルールの定着が鍵。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">今日のアドバイス</div>
+    <div id="daily-tip" style="font-size:15px; line-height:1.7; padding:8px 0;"></div>
+  </div>
+</div>
+
+<!-- ========== QUIZ ========== -->
+<div id="page-quiz" class="page">
+  <h2>ドリル</h2>
+
+  <div id="quiz-setup-area">
+    <p style="margin-bottom:12px; color:var(--text-dim);">カテゴリを選んでドリル開始（複数選択可）</p>
+    <div class="quiz-setup">
+      <button class="quiz-cat-btn selected" data-cat="all">全カテゴリ</button>
+      <button class="quiz-cat-btn" data-cat="preflop">プリフロップ</button>
+      <button class="quiz-cat-btn" data-cat="flop">フロップ</button>
+      <button class="quiz-cat-btn" data-cat="turn_river">ターン/リバー</button>
+      <button class="quiz-cat-btn" data-cat="range">レンジ読み</button>
+      <button class="quiz-cat-btn" data-cat="bluff_value">ブラフ/バリュー</button>
+      <button class="quiz-cat-btn" data-cat="tournament">トーナメント</button>
+      <button class="quiz-cat-btn" data-cat="weak">弱点集中</button>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+      <label style="color:var(--text-dim); font-size:13px;">出題数:</label>
+      <select id="quiz-num" style="background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 12px;">
+        <option value="5">5問</option>
+        <option value="10" selected>10問</option>
+        <option value="20">20問</option>
+        <option value="0">全問</option>
+      </select>
+    </div>
+    <button class="nav-btn" style="background:var(--green); color:#fff; border-color:var(--green); font-size:16px; padding:12px 40px;" onclick="startQuiz()">スタート</button>
+  </div>
+
+  <div id="quiz-active-area" class="quiz-area">
+    <div class="card">
+      <div class="quiz-header">
+        <span id="quiz-cat-label" class="badge badge-purple"></span>
+        <span class="quiz-progress"><span id="quiz-current">1</span> / <span id="quiz-total">10</span></span>
+      </div>
+      <div id="quiz-situation" class="quiz-situation"></div>
+      <div id="quiz-choices" class="quiz-choices"></div>
+      <div id="quiz-explanation" class="quiz-explanation"></div>
+      <button id="quiz-next" class="quiz-next-btn" onclick="nextQuestion()">次の問題</button>
+    </div>
+  </div>
+
+  <div id="quiz-result-area" class="result-area">
+    <div class="card">
+      <div class="result-score">
+        <div style="color:var(--text-dim); font-size:14px;">スコア</div>
+        <div class="score-big" id="result-score-big">80%</div>
+        <div id="result-score-detail" style="color:var(--text-dim); margin-top:4px;"></div>
+      </div>
+      <table class="result-cat-table" id="result-cat-table">
+        <tr><th>カテゴリ</th><th>正答率</th><th>評価</th></tr>
+      </table>
+      <div id="result-wrong-list" class="result-wrong-list"></div>
+      <div style="text-align:center; margin-top:20px;">
+        <button class="nav-btn" style="background:var(--accent); color:#fff; border-color:var(--accent); padding:12px 40px; font-size:15px;" onclick="resetQuiz()">もう一度</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SIZING TRAINER ========== -->
+<div id="page-sizing" class="page">
+  <h2>サイジング特訓</h2>
+  <p style="color:var(--text-dim); margin-bottom:16px;">最大の弱点「ベットサイジング」を集中トレーニング</p>
+
+  <div class="card">
+    <div class="quiz-header">
+      <span class="badge badge-red">サイジング特訓</span>
+      <span class="quiz-progress"><span id="sizing-current">1</span> / <span id="sizing-total">10</span></span>
+    </div>
+    <div id="sizing-scenario" class="sizing-scenario"></div>
+    <div id="sizing-options" class="sizing-options"></div>
+    <div id="sizing-feedback" class="sizing-feedback"></div>
+    <button id="sizing-next" class="quiz-next-btn" onclick="nextSizing()">次の問題</button>
+  </div>
+
+  <div id="sizing-result" class="result-area">
+    <div class="card">
+      <div class="result-score">
+        <div style="color:var(--text-dim); font-size:14px;">サイジング正答率</div>
+        <div class="score-big" id="sizing-score-big">-</div>
+      </div>
+      <div id="sizing-wrong-list" class="result-wrong-list"></div>
+      <div style="text-align:center; margin-top:20px;">
+        <button class="nav-btn" style="background:var(--accent); color:#fff; border-color:var(--accent); padding:12px 40px; font-size:15px;" onclick="startSizing()">もう一度</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== RULES ========== -->
+<div id="page-rules" class="page">
+  <h2>マイルール</h2>
+  <input type="text" class="rules-search" placeholder="ルールを検索..." oninput="searchRules(this.value)">
+  <div id="rules-container"></div>
+</div>
+
+<!-- ========== RANGES ========== -->
+<div id="page-ranges" class="page">
+  <h2>GTO レンジ表</h2>
+  <p style="color:var(--text-dim); margin-bottom:16px;">6max 100BB NLH ソルバーベースのレンジ（GTO Wizard / PioSolver参考）</p>
+
+  <div class="card">
+    <div class="card-title">シナリオ選択</div>
+    <div class="range-controls" id="range-position-tabs"></div>
+    <div class="range-scenario-tabs" id="range-scenario-tabs"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div class="card-title" id="range-title">UTG オープンレンジ</div>
+      <div class="range-pct" id="range-pct">17.6%</div>
+    </div>
+    <div class="range-legend" id="range-legend"></div>
+    <div class="range-grid-wrap">
+      <div class="range-grid" id="range-grid"></div>
+    </div>
+    <div class="range-info" id="range-info"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">サイジング早見表</div>
+    <table class="result-cat-table">
+      <tr><th>アクション</th><th>サイズ</th></tr>
+      <tr><td>オープンレイズ（全ポジション）</td><td>2.5BB</td></tr>
+      <tr><td>SBオープン</td><td>3BB</td></tr>
+      <tr><td>リンパーあり</td><td>3BB + 1BB/リンパー</td></tr>
+      <tr><td>3bet（ポジションあり）</td><td>3x（オープンの3倍）≈ 7.5BB</td></tr>
+      <tr><td>3bet（ポジションなし）</td><td>3.5-4x ≈ 9-10BB</td></tr>
+      <tr><td>4bet（ポジションあり）</td><td>2.5x（3betの2.5倍）</td></tr>
+      <tr><td>4bet（ポジションなし）</td><td>2.75-3x（3betの）</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ========== HISTORY ========== -->
+<div id="page-history" class="page">
+  <h2>学習履歴</h2>
+  <div class="card">
+    <div class="card-title">ドリル履歴</div>
+    <div id="history-content"></div>
+  </div>
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">カテゴリ別推移</div>
+    <div id="category-trend"></div>
+  </div>
+  <div style="margin-top:16px; text-align:center;">
+    <button class="nav-btn" style="border-color:var(--red); color:var(--red);" onclick="if(confirm('学習履歴を全てリセットしますか？')){localStorage.clear();location.reload();}">履歴をリセット</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// QUESTION BANK
+// ============================================================
+const QUESTIONS = [
+  // PREFLOP (P1-P20)
+  {id:"P1",cat:"preflop",situation:"6max、100BB効果的\nあなた: UTG、AJo",choices:["フォールド","2.5BBオープン","3BBオープン"],answer:[1],explanation:"AJoはUTGからオープンできるレンジ上限。2.5BBが標準サイズ。",weak:true},
+  {id:"P2",cat:"preflop",situation:"6max、100BB効果的\nあなた: MP、55\nUTG: フォールド",choices:["フォールド","2.5BBオープン","リンプ"],answer:[1],explanation:"55はMPからオープン可能。セットマイニング狙いでも、リンプは禁止。"},
+  {id:"P3",cat:"preflop",situation:"6max、100BB効果的\nあなた: BTN、K9s\n全員フォールド",choices:["フォールド","2.5BBオープン","3BBオープン"],answer:[1],explanation:"BTNから全員フォールドならK9sは余裕でスチール。"},
+  {id:"P4",cat:"preflop",situation:"6max、100BB効果的\nあなた: SB、Q7o\n全員フォールド",choices:["フォールド","3BBレイズ","リンプ"],answer:[0],explanation:"Q7oはSBからのオープンレンジ外。フォールドが正解。"},
+  {id:"P5",cat:"preflop",situation:"6max、100BB効果的\nあなた: CO、ATs\nUTG: 2.5BBオープン\nMP: フォールド",choices:["フォールド","コール","3bet（8BB）"],answer:[1,2],explanation:"UTGオープンは強いレンジ。ATsはコールかブラフ3betどちらも可。"},
+  {id:"P6",cat:"preflop",situation:"6max、100BB効果的\nあなた: BTN、A4s\nCO: 2.5BBオープン",choices:["フォールド","コール","3bet（7BB）"],answer:[2],explanation:"A4sはブラフ3betに最適。Aブロッカー+スーテッド+ホイール可能性。"},
+  {id:"P7",cat:"preflop",situation:"6max、100BB効果的\nあなた: BB、JTo\nBTN: 2.5BBオープン\nSB: フォールド",choices:["フォールド","コール","3bet"],answer:[1],explanation:"JToはBTNスチールに対してBBからディフェンス可能。オッズも良い。"},
+  {id:"P8",cat:"preflop",situation:"6max、100BB効果的\nあなた: CO、KK\nUTG: 3BBオープン",choices:["コール","3bet（9BB）","3bet（12BB）"],answer:[1,2],explanation:"KKはバリュー3bet。サイズは相手次第だが、しっかりレイズ。"},
+  {id:"P9",cat:"preflop",situation:"6max、100BB効果的\nあなた: BTN、QQ\nCO: 2.5BBオープン\nあなた: 7BB 3bet\nCO: 22BB 4bet",choices:["フォールド","コール","オールイン"],answer:[1,2],explanation:"QQは4betに対して状況次第。100BBならコール寄り。"},
+  {id:"P10",cat:"preflop",situation:"6max、50BB効果的\nあなた: MP、22\nUTG: 4BBオープン（リンパー1人）",choices:["フォールド","コール","3bet"],answer:[0],explanation:"50BBでは15倍ルールを満たさない。セットマイニング不可。"},
+  {id:"P11",cat:"preflop",situation:"6max、100BB効果的\nあなた: BTN、87s\n全員フォールド",choices:["フォールド","2.5BBオープン","3BBオープン"],answer:[1],explanation:"87sはBTNからのスチールレンジに入る。コネクター+スーテッド。"},
+  {id:"P12",cat:"preflop",situation:"6max、100BB効果的\nあなた: UTG、TT\n全員フォールド",choices:["フォールド","2.5BBオープン","3BBオープン"],answer:[1],explanation:"TTはUTGから余裕でオープン。"},
+  {id:"P13",cat:"preflop",situation:"6max、100BB効果的\nあなた: BB、A2o\nBTN: 2.5BBオープン\nSB: フォールド",choices:["フォールド","コール","3bet"],answer:[0,1],explanation:"A2oは微妙。オフスーツのためフォールド寄りだが、オッズ良いのでコールも許容。"},
+  {id:"P14",cat:"preflop",situation:"6max、100BB効果的\nあなた: CO、AKs\nUTG: 3BBオープン",choices:["コール","3bet（9BB）","3bet（12BB）"],answer:[1,2],explanation:"AKsはUTGに対しても3betでバリュー。強くプレイ。"},
+  {id:"P15",cat:"preflop",situation:"6max、100BB効果的、アンティあり\nあなた: BTN、J8s\n全員フォールド",choices:["フォールド","2.5BBオープン","3BBオープン"],answer:[1,2],explanation:"アンティありならスチール価値が上がる。J8sでオープン。"},
+  {id:"P16",cat:"preflop",situation:"6max、100BB効果的\nあなた: SB、AQo\n全員フォールド",choices:["フォールド","3BBレイズ","リンプ"],answer:[1],explanation:"AQoはSBから当然オープン。サイズは3BB。"},
+  {id:"P17",cat:"preflop",situation:"6max、100BB効果的\nあなた: MP、K5s",choices:["フォールド","2.5BBオープン","リンプ"],answer:[0],explanation:"K5sはMPからはレンジ外。フォールド。"},
+  {id:"P18",cat:"preflop",situation:"6max、100BB効果的\nあなた: BTN、44\nCO: 2.5BBオープン",choices:["フォールド","コール","3bet"],answer:[1],explanation:"44はセットマイニングでコール。100BBあるので15倍ルールOK。"},
+  {id:"P19",cat:"preflop",situation:"6max、100BB効果的\nあなた: BB、T9s\nSB: 3BBレイズ",choices:["フォールド","コール","3bet"],answer:[1],explanation:"T9sはSBのスチールに対してコールでディフェンス。"},
+  {id:"P20",cat:"preflop",situation:"6max、100BB効果的\nあなた: UTG、J9s",choices:["フォールド","2.5BBオープン","リンプ"],answer:[0],explanation:"J9sはUTGからはレンジ外。"},
+
+  // FLOP (F1-F20)
+  {id:"F1",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、AKo（PFR）\n相手: BB\nポット: 6BB\nボード: K♠ 7♦ 2♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1],explanation:"ドライボードでトップペアトップキッカー。小さく打って広くバリュー。",weak:true},
+  {id:"F2",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、QJo（PFR）\n相手: BB\nポット: 6BB\nボード: A♠ K♦ T♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1,2],explanation:"ナッツストレート完成。バリューベット。"},
+  {id:"F3",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、A5s（PFR）\n相手: BB\nポット: 6BB\nボード: K♠ Q♦ J♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[0],explanation:"ウェットボードで何もヒットなし。チェックしてポットコントロール。"},
+  {id:"F4",cat:"flop",situation:"100BB、マルチウェイ（3人）\nあなた: BTN、AQo（PFR）\n相手: BB、MP\nポット: 9BB\nボード: Q♠ 9♦ 7♣",choices:["チェック","1/3ポットCbet","1/2ポットCbet"],answer:[2],explanation:"マルチウェイでトップペア。強いハンドなのでベット。サイズは大きめ。"},
+  {id:"F5",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、77（PFR）\n相手: BB\nポット: 6BB\nボード: A♠ K♦ Q♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[0],explanation:"AKQボードで77はほぼ負けてる。チェックしてポットコントロール。"},
+  {id:"F6",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、9♠8♠\n相手: BB\nポット: 6BB\nボード: T♠ 6♠ 2♦",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1,2],explanation:"フラッシュドロー+ガットショット。セミブラフCbet。"},
+  {id:"F7",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BB、K♠Q♠\n相手: BTN（PFR）\nポット: 6BB\nボード: K♦ 7♠ 4♠\n相手: チェック",choices:["チェック","1/3ポットベット","2/3ポットベット"],answer:[1,2],explanation:"トップペア+フラッシュドロー。相手がチェックしたのでバリューベット。"},
+  {id:"F8",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、AA\n相手: BB\nポット: 6BB\nボード: T♠ T♦ 4♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1],explanation:"ペアボードでオーバーペア。バリューCbetだがサイズは小さく。",weak:true},
+  {id:"F9",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、J♠T♠\n相手: BB\nポット: 6BB\nボード: 9♠ 8♦ 2♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1,2],explanation:"OESD。セミブラフCbet。"},
+  {id:"F10",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、AKo\n相手: BB\nポット: 6BB\nボード: Q♠ J♦ T♣\n相手: チェック→あなた1/3Cbet→相手チェックレイズ（3倍）",choices:["フォールド","コール","リレイズ"],answer:[1,2],explanation:"ナッツストレート完成。チェックレイズに対してコールかリレイズ。"},
+  {id:"F11",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、KK\n相手: BB\nポット: 6BB\nボード: A♠ 8♦ 4♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[0,1],explanation:"Aハイボードでセカンドペア。チェックかスモールCbetでポットコントロール。"},
+  {id:"F12",cat:"flop",situation:"100BB、マルチウェイ（3人）\nあなた: BTN、A♠K♠\n相手: BB、MP\nポット: 9BB\nボード: J♠ 8♠ 3♦",choices:["チェック","1/3ポットCbet","1/2ポットCbet"],answer:[0,2],explanation:"マルチウェイでナッツフラッシュドロー。チェックでフリーカードか、セミブラフ。"},
+  {id:"F13",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BB、8♦7♦\n相手: BTN（レイザー）\nポット: 6BB\nボード: 8♠ 4♦ 2♦\n相手: 1/3ポットCbet",choices:["フォールド","コール","チェックレイズ"],answer:[1,2],explanation:"トップペア+フラッシュドロー。コールかセミブラフチェックレイズ。"},
+  {id:"F14",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、QQ\n相手: BB\nポット: 6BB\nボード: J♠ 7♦ 3♣",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1,2],explanation:"ドライボードでオーバーペア。バリューCbet。"},
+  {id:"F15",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、A♠2♠\n相手: BB\nポット: 6BB\nボード: K♠ 9♠ 5♦",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1,2],explanation:"ナッツフラッシュドロー。セミブラフCbet。"},
+  {id:"F16",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、TT\n相手: BB\nポット: 6BB\nボード: T♠ 6♠ 6♦",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1],explanation:"フルハウス完成。バリューCbet。ペアボードなので小さく。",weak:true},
+  {id:"F17",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、K♠J♠\n相手: BB\nポット: 6BB\nボード: Q♠ T♠ 4♦",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[2],explanation:"ロイヤルフラッシュドロー+OESD。超強いドロー。大きめにセミブラフ。"},
+  {id:"F18",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、A♦K♦\n相手: BB\nポット: 6BB\nボード: 9♠ 8♠ 7♠",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[0],explanation:"モノトーンボードでスペードなし。チェックして諦め。"},
+  {id:"F19",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: BTN、5♠5♦\n相手: BB\nポット: 6BB\nボード: A♠ 5♣ 2♦",choices:["チェック","1/3ポットCbet","2/3ポットCbet"],answer:[1,2],explanation:"セット完成。バリューCbet。"},
+  {id:"F20",cat:"flop",situation:"100BB、ヘッズアップ\nあなた: CO、J♠J♦\n相手: BB\nポット: 6BB\nボード: K♠ K♦ 3♣\n相手チェック→あなた1/3Cbet→相手オールイン",choices:["フォールド","コール"],answer:[0],explanation:"ペアボードでオールイン返し。相手はKかフルハウス。JJでは負けてる。"},
+
+  // TURN/RIVER (T1-T20)
+  {id:"T1",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、A♠K♠\nポット: 12BB\nボード: K♦ 7♠ 3♠ | Q♥\nフロップCbet→相手コール→ターンQ落ち",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[1,2],explanation:"トップペアトップキッカー+バックドアフラッシュドロー。続けてバリュー。"},
+  {id:"T2",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、9♠8♠\nポット: 12BB\nボード: T♠ 6♠ 2♦ | 4♥\nフロップCbet→相手コール→ターン4♥（ブランク）",choices:["チェック","1/2ポットベット","ポットベット"],answer:[0,1],explanation:"フラッシュドロー継続。ブランクなのでチェックかスモールベット。"},
+  {id:"T3",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、Q♠Q♦\nポット: 12BB\nボード: J♠ 7♦ 3♣ | A♥\nフロップCbet→相手コール→ターンA落ち",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[0],explanation:"Aが落ちてQQは危険に。チェックしてポットコントロール。"},
+  {id:"T4",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、A♠K♠\nポット: 12BB\nボード: K♦ 8♠ 4♠ | 2♠\nフロップCbet→相手コール→ターンでフラッシュ完成",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[2],explanation:"ナッツフラッシュ完成。しっかりバリュー。",weak:true},
+  {id:"T5",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、J♠T♠\nポット: 12BB\nボード: 9♠ 8♦ 2♣ | K♥\nフロップCbet→相手コール→ターンK（スケアカード）\n相手: チェック",choices:["チェック","1/2ポットベット","ポットベット"],answer:[1,2],explanation:"OESDでKが落ちた。ダブルバレルのチャンス。"},
+  {id:"T6",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BB、K♠Q♠\nポット: 12BB\nボード: K♦ 7♠ 4♠ | 7♦\nフロップ相手Cbet→コール→ターン7でボードペア\n相手: 2/3ポットベット",choices:["フォールド","コール","レイズ"],answer:[1],explanation:"トップペアだがボードペア。コールしてリバーを見る。"},
+  {id:"T7",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、A♦A♣\nポット: 20BB\nボード: J♠ 7♦ 3♣ | 9♥\nフロップCbet→相手コール→ターン2/3ベット→相手レイズ（2.5倍）",choices:["フォールド","コール","リレイズ"],answer:[1],explanation:"AAだが相手がレイズ。セットか2ペアの可能性。コールして判断。"},
+  {id:"T8",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、T♠9♠\nポット: 12BB\nボード: 8♠ 7♦ 2♣ | 6♥\nフロップCbet→相手コール→ターンでストレート完成",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[2],explanation:"ナッツストレート完成。しっかりバリュー。",weak:true},
+  {id:"T9",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、8♠8♦\nポット: 12BB\nボード: Q♠ J♦ 4♣ | K♥\n相手チェック→あなたチェック→相手2/3ポットベット",choices:["フォールド","コール","レイズ"],answer:[0],explanation:"ボードが強くなって88は弱い。フォールド。"},
+  {id:"T10",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、K♠K♦\nポット: 30BB\nボード: J♠ 7♦ 3♣ | 9♥ | 2♦（リバー）\n相手: リバーでポットベット",choices:["フォールド","コール","レイズ"],answer:[1],explanation:"オーバーペア。リバーのポットベットは強いが、KKでブラフキャッチ。"},
+  {id:"T11",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、A♠Q♠\nポット: 30BB\nボード: A♦ 8♠ 4♣ | 2♥ | K♠（リバー）\nリバーでスペード3枚目\n相手: チェック",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[1,2],explanation:"トップペア強キッカー。リバーでバリューベット。",weak:true},
+  {id:"T12",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、Q♠T♠\nポット: 30BB\nボード: A♠ 9♠ 5♦ | 3♠ | 7♥（リバー）\nターンでフラッシュ完成→あなたベット→相手レイズ（2.5倍）",choices:["フォールド","コール","リレイズ"],answer:[0,1],explanation:"Qハイフラッシュでレイズされた。相手はAハイかKハイの可能性。"},
+  {id:"T13",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、7♠7♦\nポット: 30BB\nボード: 7♣ 5♦ 2♣ | 8♣ | J♣（リバー）\nセット持ちだがリバーで4枚フラッシュ完成\n相手: チェック",choices:["チェック","1/3ポットベット","2/3ポットベット"],answer:[0,1],explanation:"セットだが4枚フラッシュボード。小さくバリューか、チェックで安全に。"},
+  {id:"T14",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、A♠K♦\nポット: 30BB\nボード: K♠ 8♦ 4♣ | 3♥ | 8♠（リバー）\nリバーで8が落ちてボードペア\n相手: ポットベット",choices:["フォールド","コール","レイズ"],answer:[1],explanation:"トップペアトップキッカー。相手のポットベットは強いがブラフの可能性も。コール。"},
+  {id:"T15",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、J♠T♠\nポット: 30BB\nボード: 9♠ 8♦ 2♣ | 4♥ | 3♦（リバー）\nOESDが外れた\n相手: チェック",choices:["チェック","1/2ポットブラフ","ポットブラフ"],answer:[0],explanation:"ドロー外れ。マイルールより: 外れたら諦める（チェック）。"},
+  {id:"T16",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、Q♠Q♦\nポット: 30BB\nボード: T♠ 8♦ 4♣ | 2♥ | 6♦（リバー）\n全ストリートベット→リバー2/3ベット→相手オールイン（残り40BB）",choices:["フォールド","コール"],answer:[1],explanation:"QQでオーバーペア。オールインは強いがブラフもある。コール。"},
+  {id:"T17",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、A♠A♦\nポット: 50BB\nボード: J♠ T♦ 9♣ | 8♥ | Q♦（リバー）\nリバーで4枚ストレートボード完成\n相手: チェック",choices:["チェック","1/3ポットベット","1/2ポットベット"],answer:[0],explanation:"ストレートボードでAAは弱い。チェックでショーダウン。"},
+  {id:"T18",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、6♠6♦\nポット: 30BB\nボード: 6♣ 5♦ 2♣ | K♣ | A♣（リバー）\nセット持ちだがリバーで4枚フラッシュ完成\n相手: ポットベット",choices:["フォールド","コール","レイズ"],answer:[0,1],explanation:"セットだがフラッシュ可能性。相手のポットベットはフラッシュ示唆。フォールド寄り。"},
+  {id:"T19",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: CO、K♠K♦\nポット: 50BB\nボード: J♠ 7♦ 3♣ | 4♥ | A♠（リバー）\nリバーでA落ち\n相手: 2/3ポットベット",choices:["フォールド","コール","レイズ"],answer:[1],explanation:"Aが落ちて危険だが、KKでブラフキャッチ。相手がAを持っているとは限らない。"},
+  {id:"T20",cat:"turn_river",situation:"100BB、ヘッズアップ\nあなた: BTN、5♠5♦\nポット: 50BB\nボード: Q♠ J♦ 8♣ | T♥ | 9♠（リバー）\nリバーで4枚ストレートボード完成\n相手: チェック",choices:["チェック","1/2ポットブラフ","ポットブラフ"],answer:[0],explanation:"55では勝ってない。ストレートボードでブラフは通りにくい。チェック。"},
+
+  // RANGE READING (R1-R15)
+  {id:"R1",cat:"range",situation:"100BB効果的\n相手: UTGから2.5BBオープン\nボード: A♠ K♦ Q♣\n\n相手がUTGからオープンしてこのボードにヒットしている確率は？",choices:["低い（30%以下）","中程度（30-50%）","高い（50%以上）"],answer:[2],explanation:"UTGのタイトなレンジ（AA, KK, QQ, AK, AQ等）はこのボードにヒットしやすい。"},
+  {id:"R2",cat:"range",situation:"100BB効果的\n相手: BTNから2.5BBオープン\nボード: 7♠ 4♦ 2♣\n\n相手がBTNからオープンしてこのボードにヒットしている確率は？",choices:["低い（30%以下）","中程度（30-50%）","高い（50%以上）"],answer:[0],explanation:"BTNの広いレンジはローボードにヒットしにくい。Aハイ、Kハイが多い。"},
+  {id:"R3",cat:"range",situation:"100BB効果的\nあなた: BTN\n相手: BB（コールドコーラー）\nボード: K♠ 9♦ 4♣\nフロップ: あなたCbet、相手コール\n\n相手のレンジは？",choices:["主にドロー","主にペア（K9, 44, 99等）","広いレンジ（様々）"],answer:[1],explanation:"ドライボードでコール=何かヒット。Kx、99、44、9xあたり。"},
+  {id:"R4",cat:"range",situation:"100BB効果的\n相手: CO\nボード: T♠ 8♠ 6♦\nフロップ: 相手Cbet\nターン: 2♥（ブランク）\n相手: ポットベット\n\n相手のレンジは？",choices:["強い（オーバーペア、セット）","中程度（トップペア、ドロー）","ブラフが多い"],answer:[0,1],explanation:"ターンでポットベットは強さを示す。オーバーペア、セット、2ペア、強いドロー。"},
+  {id:"R5",cat:"range",situation:"100BB効果的\n相手: BTN\nボード: A♠ A♦ 5♣\nフロップ: あなたチェック、相手チェック\nターン: 8♥\nあなた: チェック\n相手: 2/3ポットベット\n\n相手のレンジは？",choices:["Aを持っている","中程度のペア（55, 88等）","ブラフ（エアー）"],answer:[1,2],explanation:"フロップでチェックバック=Aなさそう。ターンのベットはブラフか弱いバリュー。"},
+  {id:"R6",cat:"range",situation:"100BB効果的\n相手: MP（タイトプレイヤー）\nボード: 9♠ 7♦ 3♣\nフロップ: 相手Cbet\nターン: 2♥ → 相手ベット\nリバー: K♠ → 相手ベット\n\n相手のレンジは？",choices:["オーバーペア（TT+）","セット","ブラフ"],answer:[0],explanation:"タイトプレイヤーが3ストリートベット=強い。オーバーペアが最も多い。"},
+  {id:"R7",cat:"range",situation:"100BB効果的\n相手: BB\nボード: K♠ Q♦ J♣\nあなた: BTN、Cbet\n相手: チェックレイズ\n\n相手のレンジは？",choices:["ストレート完成（AT）","強いペア+ドロー","ブラフ（降ろしたい）"],answer:[0,1],explanation:"ストレート可能ボードでチェックレイズ=ストレートか2ペア+ドロー。"},
+  {id:"R8",cat:"range",situation:"100BB効果的\n相手: SB\nボード: 6♠ 5♠ 4♦\nあなた: BB、チェック → 相手チェック\nターン: A♠\n相手: ポットベット\n\n相手のレンジは？",choices:["フラッシュ完成","ストレート（78, 23）","ブラフ（Aヒットに見せたい）"],answer:[0,2],explanation:"フロップでチェックバック→ターンでポットベット。フラッシュかブラフ。"},
+  {id:"R9",cat:"range",situation:"100BB効果的\n相手: UTG\nフロップ: Q♠ T♦ 8♣ → 相手Cbet\nターン: 7♥ → 相手Cbet\nリバー: 6♠ → 相手ベット\n\n相手のレンジは？",choices:["オーバーペア（AA, KK）","ストレート（J9, 95）","QT, QQ, TT等の強いハンド"],answer:[0,2],explanation:"UTGが3ストリートベット=非常に強い。オーバーペアかセット、2ペア。"},
+  {id:"R10",cat:"range",situation:"100BB効果的\n相手: BTN（ルースアグレッシブ）\nボード: K♠ 8♦ 3♣\nあなた: BB\n相手: Cbet→あなたコール\nターン: 2♥→相手ベット→あなたコール\nリバー: 9♦→相手オールイン\n\n相手のレンジは？",choices:["主にバリュー（Kx+）","主にブラフ","極端（ナッツかブラフ）"],answer:[2],explanation:"オールインは極端なアクション。ナッツ級かブラフ。LAGなのでブラフも多い。"},
+  {id:"R11",cat:"range",situation:"100BB効果的\n相手: MP\nボード: 9♠ 9♦ 4♣（ペアボード）\nあなた: BTN、Cbet→相手コール\nターン: K♥\nあなた: チェック → 相手ベット\n\n相手のレンジは？",choices:["9を持っている","KK, 44","ブラフ（フロートからのベット）"],answer:[0,1],explanation:"ペアボードでコール→ターンでベット=9かフルハウス。ブラフは少ない。"},
+  {id:"R12",cat:"range",situation:"100BB効果的\n相手: CO\nボード: A♠ K♦ 5♣\nあなた: BB→チェックレイズ→相手コール\nターン: 3♥→あなたベット→相手コール\nリバー: 2♦→あなたベット→相手レイズ\n\n相手のレンジは？",choices:["AA, KK, AK","ナッツストレート（43）","セット（55, 33, 22）"],answer:[0,1],explanation:"リバーでレイズ=超強い。2ペア以上、ストレート、セット。"},
+  {id:"R13",cat:"range",situation:"100BB効果的\n相手: BB（パッシブプレイヤー）\nボード: T♠ 7♦ 4♣\nあなた: CO、Cbet→相手コール\nターン: J♥→あなたベット→相手レイズ\n\n相手のレンジは？",choices:["強いハンド（セット、2ペア、ストレート）","ドロー（強いドロー）","ブラフ"],answer:[0],explanation:"パッシブプレイヤーがレイズ=超強い。ブラフはほぼない。"},
+  {id:"R14",cat:"range",situation:"100BB効果的\n相手: BTN\nボード: Q♠ J♠ T♦\nあなた: BB→相手Cbet→あなたコール\nターン: 2♠（スペード3枚目）→相手チェック\nリバー: 8♥→相手ベット\n\n相手のレンジは？",choices:["ストレート（AK, K9）","ブラフ（ミスドロー）","弱いバリュー（Qx）"],answer:[1,2],explanation:"ターンでチェックバック=フラッシュ持ってない。リバーベットはブラフか弱いバリュー。"},
+  {id:"R15",cat:"range",situation:"100BB効果的\n相手: UTG（タイトプレイヤー）\nあなたが3bet、相手が4bet\n\n相手の4betレンジは？",choices:["AA, KK, AK のみ","QQ+, AK","JJ+, AK, AQs"],answer:[0,1],explanation:"UTGからの4bet=非常に強い。AA, KK, AKがメイン。"},
+
+  // BLUFF/VALUE (B1-B15)
+  {id:"B1",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、A♠K♠\nポット: 20BB\nボード: K♦ 7♠ 3♣ | 2♥ | 8♦\n相手: BBのコーリングステーション\nリバー: 相手チェック",choices:["チェック","1/3ポットベット","2/3ポットベット"],answer:[2],explanation:"トップペアトップキッカー。コーリングステーションには大きくバリュー。",weak:true},
+  {id:"B2",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: CO、J♠T♠\nポット: 30BB\nボード: 9♠ 8♦ 2♣ | 4♥ | 3♦\nOESD外れ\n相手: BBのコーリングステーション\nリバー: 相手チェック",choices:["チェック","1/2ポットブラフ","ポットブラフ"],answer:[0],explanation:"コーリングステーションにブラフしない。チェックして諦め。"},
+  {id:"B3",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、6♠6♦\nポット: 30BB\nボード: 6♣ 5♦ 2♣ | 8♣ | A♣（リバー）\nセット持ちだがリバーで4枚フラッシュ完成\n相手: タイトプレイヤー、チェック",choices:["チェック","1/3ポットベット","2/3ポットベット"],answer:[0,1],explanation:"4枚フラッシュボードでセット。チェックか小さくバリュー。大きく打つと損。"},
+  {id:"B4",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: CO、A♠Q♠\nポット: 30BB\nボード: Q♦ 8♠ 4♣ | 2♥ | 9♦\n相手: フィットorフォールドタイプ\nリバー: 相手チェック",choices:["チェック","1/3ポットベット","2/3ポットベット"],answer:[1,2],explanation:"トップペア強キッカー。バリューベット。"},
+  {id:"B5",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、A♠5♠\nポット: 40BB\nボード: K♠ 9♠ 4♦ | 3♥ | 2♣\nフラッシュドロー外れ\n相手: タイトプレイヤー、チェック",choices:["チェック","1/2ポットブラフ","ポットブラフ"],answer:[0,1],explanation:"タイト相手ならブラフが通る可能性あり。ただし基本はチェック。"},
+  {id:"B6",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: CO、K♠K♦\nポット: 50BB\nボード: J♠ 7♦ 3♣ | 4♥ | 2♦\n相手: BB\nリバー: 相手チェック",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[1,2],explanation:"オーバーペア。リバーでしっかりバリュー。",weak:true},
+  {id:"B7",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、T♠9♠\nポット: 50BB\nボード: 8♠ 7♦ 2♣ | 6♥ | A♠\nストレート完成\n相手: BB、チェック",choices:["1/3ポットベット","2/3ポットベット","ポットベット"],answer:[1,2],explanation:"ナッツストレート。大きくバリュー。",weak:true},
+  {id:"B8",cat:"bluff_value",situation:"トーナメント、バブル、30BB効果的\nあなた: BTN、7♠6♠\nポット: 10BB\nボード: J♠ J♦ 4♣ | 9♥ | 2♦\n相手: BB（ミドルスタック）\nリバー: 相手チェック",choices:["チェック","1/2ポットブラフ","オールインブラフ"],answer:[0],explanation:"バブルでブラフオールイン禁止。ペアボードでブラフ通りにくい。チェック。",weak:true},
+  {id:"B9",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: CO、5♠5♦\nポット: 30BB\nボード: 5♣ 8♦ 2♣ | K♣ | 7♣（リバー）\nセット持ちだがリバーで4枚フラッシュ完成\n相手: チェック",choices:["チェック","1/4ポットベット","1/2ポットベット"],answer:[0,1],explanation:"4枚フラッシュボード。セットでもチェックか小さくバリュー。"},
+  {id:"B10",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、A♠A♦\nポット: 50BB\nボード: T♠ 8♦ 6♣ | 2♥ | 4♦\n相手: BB、チェック",choices:["1/3ポットベット","1/2ポットベット","2/3ポットベット"],answer:[1,2],explanation:"AAでオーバーペア。バリューベット。"},
+  {id:"B11",cat:"bluff_value",situation:"100BB、マルチウェイ（3人）\nあなた: BTN、K♠Q♠\nポット: 15BB\nボード: K♦ 9♠ 4♣\n相手: BB、MP",choices:["チェック","1/3ポットベット","1/2ポットベット"],answer:[2],explanation:"マルチウェイでトップペア。強いハンドなのでベット。サイズは大きめ。"},
+  {id:"B12",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: CO、A♠K♦\nポット: 30BB\nボード: Q♠ J♦ T♣ | 2♥ | 8♦\nナッツストレート\n相手: BB、チェック",choices:["1/3ポットベット","2/3ポットベット","ポットベット"],answer:[2],explanation:"ナッツストレート。最大バリューでポットベット。",weak:true},
+  {id:"B13",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、Q♠J♠\nポット: 30BB\nボード: T♠ 8♠ 4♦ | 2♥ | 3♣\nフラッシュドロー+ガット外れ\n相手: タイトプレイヤー、チェック",choices:["チェック","1/2ポットブラフ","ポットブラフ"],answer:[0,1],explanation:"タイトならブラフ検討。でも基本は「外れたら諦める」。チェック推奨。"},
+  {id:"B14",cat:"bluff_value",situation:"アミューズメント、100BB効果的\nあなた: CO、K♠K♦\nポット: 20BB\nボード: Q♠ 8♦ 4♣ | 2♥ | 9♦\n相手: BBのコーリングステーション",choices:["1/3ポットベット","2/3ポットベット","ポットベット"],answer:[1,2],explanation:"アミューズメントでコーリングステーション相手。大きくバリュー。",weak:true},
+  {id:"B15",cat:"bluff_value",situation:"100BB、ヘッズアップ\nあなた: BTN、8♠8♦\nポット: 30BB\nボード: 8♣ 5♦ 2♣ | K♥ | A♠\nセット持ち\n相手: BB、チェック",choices:["チェック","1/2ポットベット","2/3ポットベット"],answer:[1,2],explanation:"セット。AKが落ちたが、相手がAx持ってればバリュー取れる。ベット。"},
+
+  // TOURNAMENT (TN1-TN15)
+  {id:"TN1",cat:"tournament",situation:"トーナメント、35BB効果的\nあなた: CO、A♠T♦\n全員フォールド",choices:["フォールド","2.5BBオープン","オールイン"],answer:[1],explanation:"35BBでAToは余裕でオープン。オールインはまだ早い。",weak:true},
+  {id:"TN2",cat:"tournament",situation:"トーナメント、18BB効果的\nあなた: BTN、K♠J♦\n全員フォールド",choices:["フォールド","2.5BBオープン","オールイン"],answer:[2],explanation:"18BBでKJoはプッシュレンジ。BTNからオールイン。"},
+  {id:"TN3",cat:"tournament",situation:"トーナメント、12BB効果的\nあなた: SB、A♠5♦\n全員フォールド",choices:["フォールド","3BBレイズ","オールイン"],answer:[2],explanation:"12BBでA5oはSBからプッシュレンジ。オールイン。"},
+  {id:"TN4",cat:"tournament",situation:"トーナメント、8BB効果的\nあなた: UTG、9♠8♠\n全員フォールド",choices:["フォールド","オールイン"],answer:[1],explanation:"8BBでは広くプッシュ。98sでオールイン。"},
+  {id:"TN5",cat:"tournament",situation:"トーナメント、バブル、45BB効果的（チップリーダー）\nあなた: BTN、Q♠9♦\n全員フォールド",choices:["フォールド","2.5BBオープン","オールイン"],answer:[1],explanation:"バブルでビッグスタック。暴れる義務。Q9oでスチール。",weak:true},
+  {id:"TN6",cat:"tournament",situation:"トーナメント、バブル、15BB効果的（ショートスタック）\nあなた: CO、A♠J♦\n全員フォールド",choices:["フォールド","2.5BBオープン","オールイン"],answer:[2],explanation:"バブルでショート。AJoは良いハンド。オールイン。"},
+  {id:"TN7",cat:"tournament",situation:"トーナメント、バブル、25BB効果的（ミドルスタック）\nあなた: BTN、7♠6♠\nCO（ビッグスタック）: 3BBオープン",choices:["フォールド","コール","3bet"],answer:[0],explanation:"バブルでミドルスタック。ビッグスタックとは戦わない。76sでフォールド。"},
+  {id:"TN8",cat:"tournament",situation:"トーナメント、20BB効果的\nあなた: BB、K♠Q♦\nBTN（15BB）: オールイン\nSB: フォールド",choices:["フォールド","コール"],answer:[1],explanation:"KQoはBTNの15BBプッシュに対してコール。"},
+  {id:"TN9",cat:"tournament",situation:"トーナメント、25BB効果的\nあなた: SB、A♠8♠\nBTN: 2.5BBスチール",choices:["フォールド","コール","3betオールイン"],answer:[2],explanation:"25BBでA8sはリスチールレンジ。3betオールイン。"},
+  {id:"TN10",cat:"tournament",situation:"トーナメント、ファイナルテーブル、40BB効果的（2位）\nあなた: CO、A♠K♦\nUTG（1位、60BB）: 3BBオープン",choices:["フォールド","コール","3bet"],answer:[1,2],explanation:"AKはプレイ。1位とは慎重にだが、フォールドは弱すぎる。"},
+  {id:"TN11",cat:"tournament",situation:"トーナメント、30BB効果的\nあなた: MP、22\nUTG: 3BBオープン",choices:["フォールド","コール","3bet"],answer:[0],explanation:"30BBでは15倍ルールを満たさない。セットマイニング不可。"},
+  {id:"TN12",cat:"tournament",situation:"トーナメント、50BB効果的\nあなた: BTN、A♠Q♦\nCO: 2.5BBオープン\nあなた: 7BB 3bet\nCO: 20BB 4bet",choices:["フォールド","コール","オールイン"],answer:[0,1],explanation:"AQで4betされた。フォールド寄りだが、相手次第でコールも。"},
+  {id:"TN13",cat:"tournament",situation:"トーナメント、アンティあり、30BB効果的\nあなた: CO、J♠9♠\n全員フォールド",choices:["フォールド","2.5BBオープン","3BBオープン"],answer:[1,2],explanation:"アンティありでスチール価値高い。J9sでオープン。"},
+  {id:"TN14",cat:"tournament",situation:"トーナメント、22BB効果的\nあなた: BB、T♠T♦\nSB（30BB）: オールイン",choices:["フォールド","コール"],answer:[1],explanation:"TTはSBのプッシュに対してコール。"},
+  {id:"TN15",cat:"tournament",situation:"トーナメント、バブル、18BB効果的\nあなた: BTN、5♠6♠\nボード: 7♠ J♦ J♣ | 7♥ | A♠\nポット: 15BB\nリバー: 相手チェック",choices:["チェック","1/2ポットブラフ","オールインブラフ"],answer:[0],explanation:"バブルでブラフオールイン禁止。ペアボードでブラフ通りにくい。チェック。\nマイルールの「失敗からの教訓」参照。",weak:true},
+];
+
+// ============================================================
+// SIZING SCENARIOS
+// ============================================================
+const SIZING_PROBLEMS = [
+  {situation:"あなた: UTG、AJo\n6max、100BB効果的\n全員フォールド\n\nオープンサイズは？",choices:["2BB","2.5BB","3BB","4BB"],answer:1,explanation:"UTGからのオープンは2.5BBが標準。3BBは大きすぎ。"},
+  {situation:"あなた: SB、AQo\n6max、100BB効果的\n全員フォールド\n\nオープンサイズは？",choices:["2BB","2.5BB","3BB","4BB"],answer:2,explanation:"SBからBBへは3BBが標準。BBだけなのでやや大きく。"},
+  {situation:"あなた: BTN、AKo（PFR）\nポット: 6BB\nボード: K♠ 7♦ 2♣（ドライ）\nヘッズアップ vs BB\n\nCbetサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:1,explanation:"ドライボードでは1/3ポットCbet。小さく打って広くバリュー。"},
+  {situation:"あなた: CO、QQ（PFR）\nポット: 6BB\nボード: J♠ 7♦ 3♣（ドライ）\nヘッズアップ vs BB\n\nCbetサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:1,explanation:"ドライボードでオーバーペア。1/3ポットでバリューCbet。"},
+  {situation:"あなた: CO、AA（PFR）\nポット: 6BB\nボード: T♠ T♦ 4♣（ペアボード）\nヘッズアップ vs BB\n\nCbetサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:1,explanation:"ペアボードでは小さく。1/3ポットCbet。"},
+  {situation:"あなた: BTN、K♠J♠（PFR）\nポット: 6BB\nボード: Q♠ T♠ 4♦（ウェット+強ドロー）\nヘッズアップ vs BB\n\nCbetサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:3,explanation:"超強いドロー（ロイヤルフラッシュドロー+OESD）。大きめにセミブラフ。"},
+  {situation:"マルチウェイ（3人）\nあなた: BTN、AQo（PFR）\nポット: 9BB\nボード: Q♠ 9♦ 7♣\n\nCbetサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:2,explanation:"マルチウェイでは1/2ポット。トップペアなのでベット。サイズは大きめ。"},
+  {situation:"あなた: BTN、A♠K♠\nポット: 30BB\nボード: K♦ 7♠ 3♣ | 2♥ | 8♦（リバー）\n相手: BBのコーリングステーション\nリバー: 相手チェック\n\nバリューベットサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:3,explanation:"コーリングステーションには大きくバリュー。2/3ポット以上。"},
+  {situation:"あなた: CO、A♠K♠\nポット: 12BB\nボード: K♦ 8♠ 4♠ | 2♠（ターン）\nナッツフラッシュ完成\n\nターンベットサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:3,explanation:"ナッツフラッシュ完成。しっかり2/3ポットでバリュー。"},
+  {situation:"あなた: CO、K♠K♦\nポット: 50BB\nボード: J♠ 7♦ 3♣ | 4♥ | 2♦（リバー）\n相手: BB、チェック\nオーバーペア\n\nリバーベットサイズは？",choices:["チェック","1/3ポット","1/2ポット","2/3ポット"],answer:2,explanation:"オーバーペアでバリュー。リバーは1/2〜2/3ポット。"},
+  {situation:"リンパー2人いる状況\nあなた: BTN、ATs\n\nアイソレートレイズのサイズは？",choices:["3BB","4BB","5BB","6BB"],answer:3,explanation:"アイソレートレイズ: 4BB + 1BB/リンパー = 6BB"},
+  {situation:"あなた: BTN、T♠9♠\nポット: 50BB\nボード: 8♠ 7♦ 2♣ | 6♥ | A♠（リバー）\nナッツストレート完成\n相手チェック\n\nバリューベットサイズは？",choices:["1/3ポット","1/2ポット","2/3ポット","ポット"],answer:2,explanation:"ナッツストレート。大きくバリュー。2/3ポット〜ポット。"},
+];
+
+// ============================================================
+// MY RULES DATA
+// ============================================================
+const RULES_DATA = [
+  {title:"最重要ルール", content:"コールされたら3秒止まる\n\n「相手は何持ってる？」\n「それ、降りる？」\n\n→ 常に相手のレンジを考える"},
+  {title:"オープンレンジ（6max）", content:"UTG（10%）: 77+, ATs+, AJo+, KQs\nMP（15%）: 66+, A9s+, ATo+, KJs+, KQo, QJs\nCO（22%）: 55+, A4s+, A9o+, K9s+, KTo+, QTs+, JTs, T9s\nBTN（35%）: 22+, A2s+, A7o+, K5s+, K9o+, Q8s+, QTo+, J8s+, JTo, T8s+, 98s, 87s\nSB（40%）: 22+, A2s+, A5o+, K4s+, K8o+, Q6s+, Q9o+, J7s+, JTo, T7s+, 97s+, 87s\n\nオープンサイズ:\n・通常: 2.5BB\n・SBからBB: 3BB\n・リンパーいる: 3BB + 1BB/リンパー\n・アンティあり: やや大きく（3BB）"},
+  {title:"プリフロップ基本", content:"1. オープンリンプ禁止（レイズかフォールド）\n2. BTN/COから広くスチール\n3. 3betレンジを持つ\n   バリュー: AA, KK, QQ, JJ, AK, AQs\n   ブラフ: A5s, A4s, A3s\n4. ポジションないハンドは参加しない\n5. リンパーにはアイソレートレイズ（4BB + 1BB/リンパー）"},
+  {title:"3bet/4bet対応", content:"3betを受けた時:\n・コール: TT-QQ, AQs, AK（ポジションあり）\n・4bet: AA, KK, QQ（時々）, AK（時々）\n・フォールド: それ以外\n\n4betを受けた時:\n・コール/オールイン: AA, KK\n・状況次第: QQ, AK\n・それ以外はフォールド"},
+  {title:"Cbet戦略", content:"Cbetは「打つ理由」がある時だけ:\n□ バリュー（トップペア以上）\n□ プロテクション（ドローを降ろす）\n□ エクイティがある（ドロー）\n□ 相手がフォールドしそう（ドライボード）\n□ レンジアドバンテージがある\n→ 1つもチェックがないならチェック\n\nサイズ:\n・ドライボード: 1/3ポット\n・標準: 1/2ポット\n・ウェット/強いハンド: 2/3ポット\n・ナッツ級: ポット"},
+  {title:"ターン/リバー", content:"・トップペアは基本コール（降りすぎない）\n・相手のレンジを考えて判断\n・ドローはオッズが合えばコール\n・大きいベットにはより強いハンドで対抗\n\nリバーバリューベットサイズ:\n弱いハンドでコールしそう → 1/3〜1/2\nそこそこのハンド → 1/2〜2/3\n強いハンド → 2/3〜ポット"},
+  {title:"ブラフのルール", content:"ブラフはドローがある時だけ（セミブラフ）\nコーリングステーションにはブラフしない\nブラフ前に「降りるハンド」を数える\n降りるハンドが少なければブラフしない\n\nセミブラフ:\n・ヒットした → バリューベット\n・外れた → 諦める（チェック）\n・「外れたからもっと打つ」は禁止"},
+  {title:"ダブルバレル戦略", content:"基本ライン:\nフロップ: 1/3ポットCbet（安く打つ）\nターン: 2/3〜ポットベット（プレッシャー）\n\n条件:\n・ヘッズアップ\n・自分がPFR（主導権）\n・ターンでスケアカード落ちた\n・相手がフィットorフォールド傾向\n\nやらない時:\n・コーリングステーション\n・マルチウェイ\n・ブランク（変化なし）\n・相手がフロップでレイズしてきた"},
+  {title:"ペアボード/フラッシュボード", content:"ペアボード:\n・ブラフが通りにくい\n・バリューで打つボード\n・オールイン返し → トリップス以上なければフォールド\n\nフラッシュボード:\n・4枚フラッシュでレイズされたら\n→「自分のフラッシュは何番目？」\n→ Tハイ以下ならフォールド検討\n・ナッツ（Aハイ）じゃなければ慎重に"},
+  {title:"相手タイプ別対応", content:"タイト: 広くスチール、3betにリスペクト、ブラフ通りやすい\nルース: バリュー厚く、ブラフ減、降ろそうとしない\nアグレッシブ: トラップ増、コールダウン増、勝手に自滅させる\nパッシブ: Cbet高頻度、ベットされたら警戒、レイズ=超強い"},
+  {title:"トーナメント：スタック別", content:"100BB+: タイト、ミス避ける\n50-100BB: 標準、スチール開始\n30-50BB: 攻撃スイッチON（超重要！）\n20-30BB: プッシュ/フォールド移行\n15-20BB: 完全プッシュ/フォールド\n10BB以下: 何でもオールイン\n\n30BB攻撃チェックリスト:\n□ スチールを何回した？\n□ 3betを打てる場面を逃してないか？\n□ タイトすぎないか？\n□ ブラインドだけで死んでないか？"},
+  {title:"トーナメント：バブル", content:"ブラフオールインは禁止\nセミブラフも控えめに\n小さいポットにトーナメントライフ賭けない\n\nビッグスタック（40BB+）: 暴れる！スチール50%以上\nミドルスタック（20-40BB）: ショートを狙う、ビッグとは戦わない\nショートスタック（20BB以下）: 良いハンドでオールイン"},
+  {title:"トーナメント：プッシュレンジ（15-20BB）", content:"UTG: 77+, ATs+, AJo+\nMP: 66+, A9s+, ATo+, KQs\nCO: 55+, A7s+, ATo+, KQs, KJs\nBTN: 22+, A2s+, A8o+, K9s+, KTo+, QTs+\nSB: 22+, A2+, K5s+, K9o+, Q8s+, J9s+"},
+  {title:"思考フロー（3秒ルール）", content:"1秒目: 相手のレンジは？\n2秒目: 自分は勝ってる？\n3秒目: このアクションの目的は？\n\n→ 答えられたらアクション\n→ 答えられないならフォールド\n\nベットする前に答える3つの質問:\n1. 目的は？（バリュー/ブラフ/プロテクト）\n2. 誰がコールする？\n3. レイズされたらどうする？"},
+  {title:"アミューズメント専用", content:"バリューモンスター戦略:\n・ブラフ頻度を大幅に下げる\n・バリューベットを厚くする\n・相手が降りない前提で打つ\n・強いハンドはしっかり取る\n\nやらないこと: ブラフ、複雑なプレイ、降ろそうとするプレイ\n\nサイジング: バリューは大きめ（2/3〜ポット）"},
+  {title:"失敗からの教訓", content:"バブルでの56sオールイン:\n状況: バブル、56sでボード7JJ7A、リバーオールイン\n結果: 88にコールされて敗退\n教訓: 相手のレンジを考えてなかった、バブルでブラフオールイン禁止\n\nQToでTハイフラッシュ:\n状況: 4枚フラッシュボード、Tハイフラッシュでベット→レイズされてコール\n結果: Aハイフラッシュに負け\n教訓: フラッシュボードでのレイズ=より強いフラッシュ、Tハイ以下は降りる"},
+  {title:"必須暗記：オッズ", content:"ベットサイズ別必要勝率:\n1/3ポット → 20%\n1/2ポット → 25%\n2/3ポット → 29%\nポット → 33%\n2xポット → 40%\n\nアウツと勝率:\n4アウツ(ガット) → ターン8%/リバーまで16%\n8アウツ(OESD) → 16%/32%\n9アウツ(フラドロ) → 18%/36%\n12アウツ → 24%/45%\n15アウツ → 30%/54%\n\nルール・オブ・4と2:\nフロップ時: アウツ × 4\nターン時: アウツ × 2"},
+];
+
+// ============================================================
+// DAILY TIPS
+// ============================================================
+const TIPS = [
+  "ドライボードのCbetは1/3ポット。大きく打つとブラフが高くつき、バリューターゲットが降りる。",
+  "ナッツ級のハンドを持ったらトラップせずベット。チェックは相手のチェックバックで損する。",
+  "30BBになったら攻撃スイッチON。待っているだけではブラインドで削られて死ぬ。",
+  "コーリングステーションにブラフは禁止。バリューベットを大きく打つだけで勝てる。",
+  "アクションの前に3秒止まれ。1秒目:相手のレンジは？ 2秒目:勝ってる？ 3秒目:目的は？",
+  "「外れたからもっと打つ」は最悪のプレイ。ドロー外れたらチェックして諦める。",
+  "バブルでビッグスタックなら暴れる義務がある。みんな入賞したいから降りてくれる。",
+  "ペアボードでオールイン返しされたら、トリップス以上なければフォールド。",
+  "リバーのバリューベット: 相手が弱ければ1/3〜1/2、そこそこなら1/2〜2/3。",
+  "パッシブプレイヤーのレイズは超強い。ブラフはほぼない。素直に降りること。",
+  "50BBでは15倍ルールを満たさない。セットマイニングNG。スタック意識を忘れずに。",
+  "SBからのオープンは3BB。2.5BBだとBBに有利なオッズを与えてしまう。",
+  "マルチウェイではCbet頻度を大幅に下げる。トップペア+でだけベット。",
+  "4枚フラッシュボードでレイズされたら「自分のフラッシュは何番目？」Tハイ以下は降りる。",
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentQuiz = [];
+let quizIndex = 0;
+let quizCorrect = 0;
+let quizResults = [];
+let currentSizing = [];
+let sizingIndex = 0;
+let sizingCorrect = 0;
+let sizingResults = [];
+
+// ============================================================
+// STORAGE
+// ============================================================
+function getHistory() {
+  return JSON.parse(localStorage.getItem('poker_history') || '[]');
+}
+function saveHistory(entry) {
+  const h = getHistory();
+  h.push(entry);
+  localStorage.setItem('poker_history', JSON.stringify(h));
+}
+function getCategoryStats() {
+  return JSON.parse(localStorage.getItem('poker_cat_stats') || '{}');
+}
+function updateCategoryStats(cat, correct, total) {
+  const s = getCategoryStats();
+  if (!s[cat]) s[cat] = {correct:0,total:0};
+  s[cat].correct += correct;
+  s[cat].total += total;
+  localStorage.setItem('poker_cat_stats', JSON.stringify(s));
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'dashboard') updateDashboard();
+  if (id === 'history') renderHistory();
+  if (id === 'sizing') startSizing();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function updateDashboard() {
+  const h = getHistory();
+  const totalQ = h.reduce((a,e) => a + e.total, 0);
+  const totalC = h.reduce((a,e) => a + e.correct, 0);
+  document.getElementById('drill-count').textContent = totalQ;
+  document.getElementById('drill-total-score').textContent = totalQ > 0 ? Math.round(totalC/totalQ*100)+'%' : '-';
+
+  // streak
+  let streak = 0;
+  for (let i = h.length-1; i >= 0; i--) {
+    if (h[i].correct === h[i].total) streak += h[i].total;
+    else { /* count last session's correct streak */
+      if (h[i].details) {
+        for (let j = h[i].details.length-1; j >= 0; j--) {
+          if (h[i].details[j].correct) streak++;
+          else break;
+        }
+      }
+      break;
+    }
+  }
+  document.getElementById('streak-count').textContent = streak;
+
+  // Category skills
+  const cats = getCategoryStats();
+  const catNames = {preflop:'プリフロップ',flop:'フロップ',turn_river:'ターン/リバー',range:'レンジ読み',bluff_value:'ブラフ/バリュー',tournament:'トーナメント'};
+  const catColors = {preflop:'var(--accent)',flop:'var(--green)',turn_river:'var(--purple)',range:'var(--green)',bluff_value:'var(--orange)',tournament:'var(--red)'};
+  const baseline = {preflop:50,flop:75,turn_river:75,range:100,bluff_value:67,tournament:0};
+  let html = '';
+  for (const [key,name] of Object.entries(catNames)) {
+    const stat = cats[key];
+    let pct;
+    if (stat && stat.total > 0) {
+      pct = Math.round(stat.correct/stat.total*100);
+    } else {
+      pct = baseline[key];
+    }
+    const color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--orange)' : 'var(--red)';
+    html += `<div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+        <span>${name}</span>
+        <span style="color:${color};font-weight:600;">${pct}%${stat?` (${stat.correct}/${stat.total})`:(` (診断テスト)`)}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color};"></div></div>
+    </div>`;
+  }
+  document.getElementById('category-skills').innerHTML = html;
+
+  // Daily tip
+  const tipIdx = Math.floor(Date.now() / 86400000) % TIPS.length;
+  document.getElementById('daily-tip').textContent = TIPS[tipIdx];
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function setupCatButtons() {
+  document.querySelectorAll('.quiz-cat-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const cat = this.dataset.cat;
+      if (cat === 'all' || cat === 'weak') {
+        document.querySelectorAll('.quiz-cat-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+      } else {
+        document.querySelector('.quiz-cat-btn[data-cat="all"]').classList.remove('selected');
+        document.querySelector('.quiz-cat-btn[data-cat="weak"]').classList.remove('selected');
+        this.classList.toggle('selected');
+        if (!document.querySelector('.quiz-cat-btn.selected')) {
+          document.querySelector('.quiz-cat-btn[data-cat="all"]').classList.add('selected');
+        }
+      }
+    });
+  });
+}
+setupCatButtons();
+
+function startQuiz() {
+  const selected = [...document.querySelectorAll('.quiz-cat-btn.selected')].map(b => b.dataset.cat);
+  let pool;
+  if (selected.includes('all')) {
+    pool = [...QUESTIONS];
+  } else if (selected.includes('weak')) {
+    pool = QUESTIONS.filter(q => q.weak);
+  } else {
+    pool = QUESTIONS.filter(q => selected.includes(q.cat));
+  }
+  // shuffle
+  pool.sort(() => Math.random() - 0.5);
+  const num = parseInt(document.getElementById('quiz-num').value);
+  currentQuiz = num > 0 ? pool.slice(0, num) : pool;
+  quizIndex = 0;
+  quizCorrect = 0;
+  quizResults = [];
+  document.getElementById('quiz-setup-area').style.display = 'none';
+  document.getElementById('quiz-active-area').classList.add('active');
+  document.getElementById('quiz-result-area').classList.remove('active');
+  document.getElementById('quiz-total').textContent = currentQuiz.length;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = currentQuiz[quizIndex];
+  const catNames = {preflop:'プリフロップ',flop:'フロップ',turn_river:'ターン/リバー',range:'レンジ読み',bluff_value:'ブラフ/バリュー',tournament:'トーナメント'};
+  document.getElementById('quiz-cat-label').textContent = catNames[q.cat] || q.cat;
+  document.getElementById('quiz-current').textContent = quizIndex + 1;
+  document.getElementById('quiz-situation').textContent = q.situation;
+  document.getElementById('quiz-explanation').classList.remove('show');
+  document.getElementById('quiz-next').classList.remove('show');
+
+  const choicesDiv = document.getElementById('quiz-choices');
+  choicesDiv.innerHTML = '';
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-choice';
+    btn.textContent = String.fromCharCode(65+i) + ') ' + c;
+    btn.onclick = () => answerQuestion(i);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function answerQuestion(idx) {
+  const q = currentQuiz[quizIndex];
+  const btns = document.querySelectorAll('.quiz-choice');
+  btns.forEach(b => b.disabled = true);
+
+  const isCorrect = q.answer.includes(idx);
+  btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+  q.answer.forEach(a => {
+    if (a !== idx) btns[a].classList.add('acceptable');
+  });
+
+  if (isCorrect) quizCorrect++;
+  quizResults.push({id:q.id, cat:q.cat, correct:isCorrect, yourAnswer:idx, correctAnswer:q.answer, explanation:q.explanation, choices:q.choices});
+
+  const expDiv = document.getElementById('quiz-explanation');
+  expDiv.innerHTML = `<strong>${isCorrect ? '正解！' : '不正解'}</strong><br>${q.explanation}`;
+  expDiv.style.borderLeftColor = isCorrect ? 'var(--green)' : 'var(--red)';
+  expDiv.classList.add('show');
+  document.getElementById('quiz-next').classList.add('show');
+  document.getElementById('quiz-next').textContent = quizIndex < currentQuiz.length - 1 ? '次の問題' : '結果を見る';
+}
+
+function nextQuestion() {
+  quizIndex++;
+  if (quizIndex >= currentQuiz.length) {
+    showQuizResult();
+    return;
+  }
+  renderQuestion();
+}
+
+function showQuizResult() {
+  document.getElementById('quiz-active-area').classList.remove('active');
+  const resultArea = document.getElementById('quiz-result-area');
+  resultArea.classList.add('active');
+
+  const pct = Math.round(quizCorrect / currentQuiz.length * 100);
+  const scoreBig = document.getElementById('result-score-big');
+  scoreBig.textContent = pct + '%';
+  scoreBig.style.color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--orange)' : 'var(--red)';
+  document.getElementById('result-score-detail').textContent = `${quizCorrect} / ${currentQuiz.length} 正解`;
+
+  // category breakdown
+  const catMap = {};
+  quizResults.forEach(r => {
+    if (!catMap[r.cat]) catMap[r.cat] = {c:0,t:0};
+    catMap[r.cat].t++;
+    if (r.correct) catMap[r.cat].c++;
+  });
+  const catNames = {preflop:'プリフロップ',flop:'フロップ',turn_river:'ターン/リバー',range:'レンジ読み',bluff_value:'ブラフ/バリュー',tournament:'トーナメント'};
+  const table = document.getElementById('result-cat-table');
+  table.innerHTML = '<tr><th>カテゴリ</th><th>正答率</th><th>評価</th></tr>';
+  for (const [cat,data] of Object.entries(catMap)) {
+    const p = Math.round(data.c/data.t*100);
+    const eval_ = p >= 80 ? '<span class="badge badge-green">強み</span>' : p >= 60 ? '<span class="badge badge-orange">まあまあ</span>' : '<span class="badge badge-red">要改善</span>';
+    table.innerHTML += `<tr><td>${catNames[cat]||cat}</td><td>${data.c}/${data.t} (${p}%)</td><td>${eval_}</td></tr>`;
+    updateCategoryStats(cat, data.c, data.t);
+  }
+
+  // wrong answers
+  const wrongList = document.getElementById('result-wrong-list');
+  const wrongs = quizResults.filter(r => !r.correct);
+  if (wrongs.length > 0) {
+    wrongList.innerHTML = '<h3 style="color:var(--red);">間違えた問題</h3>';
+    wrongs.forEach(r => {
+      wrongList.innerHTML += `<div class="result-wrong-item">
+        <strong>${r.id}</strong> あなた: ${r.choices[r.yourAnswer]} → 正解: ${r.correctAnswer.map(a=>r.choices[a]).join(' or ')}<br>
+        ${r.explanation}
+      </div>`;
+    });
+  } else {
+    wrongList.innerHTML = '<p style="text-align:center;color:var(--green);padding:20px;">全問正解！素晴らしい！</p>';
+  }
+
+  // save history
+  saveHistory({
+    date: new Date().toISOString(),
+    correct: quizCorrect,
+    total: currentQuiz.length,
+    pct: pct,
+    type: 'quiz',
+    details: quizResults.map(r => ({id:r.id,cat:r.cat,correct:r.correct}))
+  });
+}
+
+function resetQuiz() {
+  document.getElementById('quiz-setup-area').style.display = 'block';
+  document.getElementById('quiz-active-area').classList.remove('active');
+  document.getElementById('quiz-result-area').classList.remove('active');
+}
+
+// ============================================================
+// SIZING TRAINER
+// ============================================================
+function startSizing() {
+  currentSizing = [...SIZING_PROBLEMS].sort(() => Math.random() - 0.5);
+  sizingIndex = 0;
+  sizingCorrect = 0;
+  sizingResults = [];
+  document.getElementById('sizing-result').classList.remove('active');
+  document.getElementById('sizing-total').textContent = currentSizing.length;
+  renderSizing();
+}
+
+function renderSizing() {
+  if (sizingIndex >= currentSizing.length) {
+    showSizingResult();
+    return;
+  }
+  const s = currentSizing[sizingIndex];
+  document.getElementById('sizing-current').textContent = sizingIndex + 1;
+  document.getElementById('sizing-scenario').textContent = s.situation;
+  document.getElementById('sizing-feedback').classList.remove('show');
+  document.getElementById('sizing-next').classList.remove('show');
+
+  const optDiv = document.getElementById('sizing-options');
+  optDiv.innerHTML = '';
+  s.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sizing-btn';
+    btn.textContent = c;
+    btn.onclick = () => answerSizing(i);
+    optDiv.appendChild(btn);
+  });
+}
+
+function answerSizing(idx) {
+  const s = currentSizing[sizingIndex];
+  const btns = document.querySelectorAll('.sizing-btn');
+  btns.forEach(b => b.disabled = true);
+  const isCorrect = idx === s.answer;
+  btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+  btns[s.answer].classList.add('correct');
+  if (isCorrect) sizingCorrect++;
+  sizingResults.push({correct:isCorrect, situation:s.situation, explanation:s.explanation});
+
+  const fb = document.getElementById('sizing-feedback');
+  fb.innerHTML = `<strong style="color:${isCorrect?'var(--green)':'var(--red)'}">${isCorrect?'正解！':'不正解'}</strong><br>${s.explanation}`;
+  fb.style.background = isCorrect ? '#3fb95011' : '#f8514911';
+  fb.classList.add('show');
+  document.getElementById('sizing-next').classList.add('show');
+  document.getElementById('sizing-next').textContent = sizingIndex < currentSizing.length - 1 ? '次の問題' : '結果を見る';
+}
+
+function nextSizing() {
+  sizingIndex++;
+  renderSizing();
+}
+
+function showSizingResult() {
+  document.getElementById('sizing-result').classList.add('active');
+  const pct = Math.round(sizingCorrect / currentSizing.length * 100);
+  const scoreBig = document.getElementById('sizing-score-big');
+  scoreBig.textContent = pct + '%';
+  scoreBig.style.color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--orange)' : 'var(--red)';
+
+  const wrongList = document.getElementById('sizing-wrong-list');
+  const wrongs = sizingResults.filter(r => !r.correct);
+  if (wrongs.length > 0) {
+    wrongList.innerHTML = '<h3 style="color:var(--red);">間違えた問題</h3>';
+    wrongs.forEach(r => {
+      wrongList.innerHTML += `<div class="result-wrong-item">${r.explanation}</div>`;
+    });
+  } else {
+    wrongList.innerHTML = '<p style="text-align:center;color:var(--green);padding:20px;">全問正解！サイジングが身についてきた！</p>';
+  }
+
+  saveHistory({
+    date: new Date().toISOString(),
+    correct: sizingCorrect,
+    total: currentSizing.length,
+    pct: pct,
+    type: 'sizing',
+    details: []
+  });
+}
+
+// ============================================================
+// RULES
+// ============================================================
+function renderRules(filter='') {
+  const container = document.getElementById('rules-container');
+  container.innerHTML = '';
+  const lf = filter.toLowerCase();
+  RULES_DATA.forEach((r, i) => {
+    if (lf && !r.title.toLowerCase().includes(lf) && !r.content.toLowerCase().includes(lf)) return;
+    const sec = document.createElement('div');
+    sec.className = 'rules-section';
+    let content = r.content;
+    if (lf) {
+      const re = new RegExp(`(${lf.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+      content = content.replace(re, '<span class="rules-highlight">$1</span>');
+    }
+    sec.innerHTML = `
+      <div class="rules-section-title" onclick="this.nextElementSibling.classList.toggle('open')">
+        ${r.title}
+        <span style="color:var(--text-dim)">▼</span>
+      </div>
+      <div class="rules-content${filter?'':''}">${content}</div>`;
+    container.appendChild(sec);
+  });
+  if (filter) {
+    document.querySelectorAll('.rules-content').forEach(c => c.classList.add('open'));
+  }
+}
+function searchRules(val) { renderRules(val); }
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistory() {
+  const h = getHistory();
+  const container = document.getElementById('history-content');
+  if (h.length === 0) {
+    container.innerHTML = '<div class="history-empty">まだ学習履歴がありません。ドリルを始めましょう！</div>';
+    document.getElementById('category-trend').innerHTML = '';
+    return;
+  }
+  let html = '<table class="history-table"><tr><th>日時</th><th>タイプ</th><th>スコア</th><th>正答率</th></tr>';
+  [...h].reverse().forEach(e => {
+    const d = new Date(e.date);
+    const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const type = e.type === 'sizing' ? 'サイジング' : 'ドリル';
+    const color = e.pct >= 80 ? 'var(--green)' : e.pct >= 60 ? 'var(--orange)' : 'var(--red)';
+    html += `<tr><td>${dateStr}</td><td>${type}</td><td>${e.correct}/${e.total}</td><td style="color:${color};font-weight:600;">${e.pct}%</td></tr>`;
+  });
+  html += '</table>';
+  container.innerHTML = html;
+
+  // category trend
+  const cats = getCategoryStats();
+  const catNames = {preflop:'プリフロップ',flop:'フロップ',turn_river:'ターン/リバー',range:'レンジ読み',bluff_value:'ブラフ/バリュー',tournament:'トーナメント'};
+  let trendHtml = '';
+  for (const [key,name] of Object.entries(catNames)) {
+    const stat = cats[key];
+    if (!stat || stat.total === 0) continue;
+    const pct = Math.round(stat.correct/stat.total*100);
+    const color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--orange)' : 'var(--red)';
+    trendHtml += `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;">
+      <span>${name}</span>
+      <span><span style="color:${color};font-weight:600;">${pct}%</span> <span style="color:var(--text-dim);font-size:12px;">(${stat.correct}/${stat.total})</span></span>
+    </div>`;
+  }
+  document.getElementById('category-trend').innerHTML = trendHtml || '<div class="history-empty">カテゴリ別データはまだありません</div>';
+}
+
+// ============================================================
+// RANGE CHARTS
+// ============================================================
+const RANKS = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+
+function handLabel(r, c) {
+  if (r === c) return RANKS[r]+RANKS[c];
+  if (r < c) return RANKS[r]+RANKS[c]+'s';
+  return RANKS[c]+RANKS[r]+'o';
+}
+
+// Range definitions: each hand can be 'raise','call','3bet','bluff3bet','fold','mixed','mixed-call-3bet'
+const RANGE_DATA = {
+  // ===== OPEN (RFI) =====
+  'utg-open': {
+    title:'UTG オープンレンジ', pct:'17.6%',
+    info:'<strong>オープンサイズ: 2.5BB</strong><br>最もタイトなポジション。プレミアムハンドと強いスーテッドハンドのみ。<br>55はミックス（約50%オープン）。A2sもソルバーによっては含む。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス（約50%）'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,KQo,KJo,QJo',
+      mixed:'55,A2s',
+    })
+  },
+  'hj-open': {
+    title:'HJ オープンレンジ', pct:'21.4%',
+    info:'<strong>オープンサイズ: 2.5BB</strong><br>UTGより広く。小ポケットペア、スーテッドコネクターが追加。<br>44はミックス。K5sも低頻度で含む場合あり。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AKo,AQo,AJo,ATo,KQo,KJo,KTo,QJo,QTo',
+      mixed:'44,K5s,T8s',
+    })
+  },
+  'co-open': {
+    title:'CO オープンレンジ', pct:'27.8%',
+    info:'<strong>オープンサイズ: 2.5BB</strong><br>スチールポジションの入口。かなり広くオープン可能。<br>22はミックス（約50%）。A7o, A6oもミックス。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,JTs,J9s,J8s,T9s,T8s,T7s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
+      mixed:'22,A7o,A6o,K2s',
+    })
+  },
+  'btn-open': {
+    title:'BTN オープンレンジ', pct:'43.5%',
+    info:'<strong>オープンサイズ: 2.5BB</strong><br>最も広いオープン。ほぼ半分のハンドでレイズ。<br>22, A2o-A3oはミックス。K7o, K6oも部分的に含む。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,JTs,J9s,J8s,J7s,J6s,J5s,J4s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,85s,76s,75s,65s,64s,54s,53s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
+      mixed:'22,A3o,A2o,K7o,K6o,Q8o,J8o,43s',
+    })
+  },
+  'sb-open': {
+    title:'SB オープンレンジ', pct:'44-50%',
+    info:'<strong>オープンサイズ: 3BB（大きめ）</strong><br>SBはレイズかフォールド。リンプは禁止（GTO）。<br>BBにポジションがないため大きめサイズ。ソルバーは最大62%まで開くが、実戦的には44-50%推奨。',
+    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,T9s,T8s,T7s,T6s,T5s,T4s,T3s,98s,97s,96s,95s,94s,87s,86s,85s,84s,76s,75s,74s,65s,64s,63s,54s,53s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,QJo,QTo,Q9o,Q8o,Q7o,Q6o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,96o,87o,86o,76o',
+      mixed:'K3o,Q4o,J6o,T6o,95o,85o,75o,64o',
+    })
+  },
+
+  // ===== 3BET RANGES =====
+  'btn-vs-utg': {
+    title:'BTN 3bet vs UTGオープン', pct:'7-8%',
+    info:'<strong>3betサイズ: 7.5BB（IPなので3x）</strong><br>UTGはタイトなので、バリュー3betは狭く。<br>ブラフ3betにスーテッドAとコネクターを使う。JJ, AQsはミックス。',
+    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,AKs,AKo',
+      bluff3bet:'A5s,A4s,A3s,A2s,98s,87s,76s,65s,54s',
+      'mixed-call-3bet':'JJ,AQs,AQo',
+    })
+  },
+  'btn-vs-hj': {
+    title:'BTN 3bet vs HJオープン', pct:'9-11%',
+    info:'<strong>3betサイズ: 7.5BB</strong><br>HJは少し広いので3betレンジも広がる。<br>TT, AQo, KQsはミックス。',
+    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
+      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s',
+      'mixed-call-3bet':'TT,AQo,KQs,AJs',
+    })
+  },
+  'btn-vs-co': {
+    title:'BTN 3bet vs COオープン', pct:'11-14%',
+    info:'<strong>3betサイズ: 7.5BB</strong><br>COは広めなので3betも広い。TT+をバリュー3bet。<br>99, AQo, AJo, KJs, QJsはミックス。',
+    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AJs,KQs',
+      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s,Q9s,K9s',
+      'mixed-call-3bet':'99,AQo,AJo,KJs,QJs',
+    })
+  },
+  'sb-vs-btn': {
+    title:'SB 3bet vs BTNオープン', pct:'10-14%',
+    info:'<strong>3betサイズ: 9-10BB（OOPなので大きめ）</strong><br>BTNは広くオープンするので、SBも広く3bet。<br>SBはコールせず3betかフォールド（GTO）。',
+    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,KQs',
+      bluff3bet:'A5s,A4s,A3s,A2s,K9s,K5s,K4s,K3s,Q9s,J9s,T9s,98s,87s,76s,65s,54s',
+      'mixed-call-3bet':'99,AJs,KJs',
+    })
+  },
+
+  // ===== BB DEFENSE =====
+  'bb-vs-utg': {
+    title:'BB ディフェンス vs UTGオープン', pct:'22-27%',
+    info:'<strong>UTGはタイトなので、BBは絞って守る。</strong><br>3bet: QQ+, AKs, AKo（バリュー）+ A5s, A4s, K5s（ブラフ）<br>コール: JJ-22, AQs-A2s, KQs-K9s, QJs-Q9s, JTs-J9s, T9s, 98s, 87s, 76s, AQo-ATo, KQo-KJo, QJo<br>JJ, AQsは3betとコールのミックス。',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,AKs,AKo',
+      bluff3bet:'A5s,A4s,K5s,Q5s',
+      call:'TT,99,88,77,66,55,44,33,22,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,KQo,KJo,QJo',
+      'mixed-call-3bet':'JJ,AQo',
+    })
+  },
+  'bb-vs-co': {
+    title:'BB ディフェンス vs COオープン', pct:'35-43%',
+    info:'<strong>COは広めなので、BBも広くディフェンス。</strong><br>3bet: JJ+, AKs, AKo, AQs（バリュー）+ A5s-A2s, K5s-K3s, スーコネ（ブラフ）<br>コール: TT-22, 広いスーテッド、AQo-A8o, KJo-KTo, QJo-QTo, JTo<br>TT, AJsは3betとコールのミックス。',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
+      bluff3bet:'A5s,A4s,A3s,A2s,K5s,K4s,K3s,Q5s,J8s,T8s,65s,54s',
+      call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,T9s,98s,97s,87s,86s,76s,75s,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
+      'mixed-call-3bet':'TT,AJs,AQo',
+    })
+  },
+  'bb-vs-btn': {
+    title:'BB ディフェンス vs BTNオープン', pct:'42-56%',
+    info:'<strong>BTNは最も広いので、BBも非常に広くディフェンス。</strong><br>3bet: TT+, AQs+, AKo, KQs（バリュー）+ 広いブラフ3bet<br>コール: 99-22, 非常に広いスーテッド・オフスーテッド<br>99, AJsは3betとコールのミックス。多くのボーダーハンドはミックス戦略。',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,KQs',
+      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K9s,K5s,K4s,K3s,Q9s,Q8s,Q7s,Q6s,Q5s,J8s,J7s,J6s,J5s,T7s,97s,87s,76s,65s,54s',
+      call:'88,77,66,55,44,33,22,AJs,ATs,A9s,KJs,KTs,K8s,K7s,K6s,K2s,QJs,QTs,Q4s,Q3s,Q2s,JTs,J9s,J4s,J3s,J2s,T9s,T8s,T6s,T5s,T4s,T3s,98s,96s,95s,86s,85s,75s,74s,64s,53s,43s,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
+      'mixed-call-3bet':'99,AJs,AQo',
+    })
+  },
+  'bb-vs-sb': {
+    title:'BB ディフェンス vs SBオープン', pct:'55-65%',
+    info:'<strong>BBはSBに対してポジションがある＝非常に広くディフェンス。</strong><br>3bet: 99+, AQs+, AKo, KQs, AJs（バリュー）+ 非常に広いブラフ3bet<br>コール: 超広い。ほぼすべてのスーテッド、広いオフスーテッド。<br>BBはSBに対して最も広くプレイする。',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,KQs',
+      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,J7s,J6s,J5s,J4s,J3s,T6s,T5s,T4s,96s,95s,85s,84s,75s,74s,64s,53s',
+      call:'88,77,66,55,44,33,22,ATs,A9s,KJs,KTs,QJs,QTs,Q9s,JTs,J9s,J8s,J2s,T9s,T8s,T7s,T3s,98s,97s,87s,86s,76s,65s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,QJo,QTo,Q9o,Q8o,Q7o,Q6o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,96o,87o,86o,76o',
+    })
+  },
+
+  // ===== 4BET =====
+  '4bet': {
+    title:'4bet レンジ（3betに対して）', pct:'3-4%',
+    info:'<strong>4betサイズ: IP 2.5x / OOP 2.75-3x（3betの倍率）</strong><br>バリュー: AA, KK, QQ（ほぼ常に4bet）<br>ミックス: AKs（ほぼ4bet）, AKo（多くは4bet、IPではコールも）, JJ（ポジション次第）<br>ブラフ: A5s, A4s, A3s（ブロッカー+エクイティ）<br>5bet対応: AA=ほぼ常にオールイン, KK=ほぼオールイン, AKs=ミックス',
+    legend:[{c:'threeBet',l:'バリュー4bet'},{c:'bluff3bet',l:'ブラフ4bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ',
+      bluff3bet:'A5s,A4s,A3s',
+      'mixed-call-3bet':'JJ,AKs,AKo,AQs,AQo',
+    })
+  },
+};
+
+function makeGrid(spec) {
+  const grid = {};
+  for (let r = 0; r < 13; r++) {
+    for (let c = 0; c < 13; c++) {
+      grid[r+','+c] = 'fold';
+    }
+  }
+  for (const [action, hands] of Object.entries(spec)) {
+    hands.split(',').forEach(h => {
+      h = h.trim();
+      if (!h) return;
+      const coords = handToCoord(h);
+      if (coords !== null) grid[coords[0]+','+coords[1]] = action;
+    });
+  }
+  return grid;
+}
+
+function handToCoord(hand) {
+  if (hand.length < 2) return null;
+  const r1 = RANKS.indexOf(hand[0]);
+  const r2 = RANKS.indexOf(hand[1]);
+  if (r1 < 0 || r2 < 0) return null;
+  if (hand.length === 2) return [r1, r2]; // pair
+  if (hand[2] === 's') return [Math.min(r1,r2), Math.max(r1,r2)]; // suited = upper right
+  return [Math.max(r1,r2), Math.min(r1,r2)]; // offsuit = lower left
+}
+
+const RANGE_SCENARIOS = {
+  'オープンレンジ (RFI)': ['utg-open','hj-open','co-open','btn-open','sb-open'],
+  '3bet レンジ': ['btn-vs-utg','btn-vs-hj','btn-vs-co','sb-vs-btn'],
+  'BB ディフェンス': ['bb-vs-utg','bb-vs-co','bb-vs-btn','bb-vs-sb'],
+  '4bet レンジ': ['4bet'],
+};
+
+const RANGE_LABELS = {
+  'utg-open':'UTG','hj-open':'HJ','co-open':'CO','btn-open':'BTN','sb-open':'SB',
+  'btn-vs-utg':'BTN vs UTG','btn-vs-hj':'BTN vs HJ','btn-vs-co':'BTN vs CO','sb-vs-btn':'SB vs BTN',
+  'bb-vs-utg':'vs UTG','bb-vs-co':'vs CO','bb-vs-btn':'vs BTN','bb-vs-sb':'vs SB',
+  '4bet':'共通',
+};
+
+let currentRangeScenario = 'オープンレンジ (RFI)';
+let currentRangeKey = 'utg-open';
+
+function initRangeTabs() {
+  const posTabs = document.getElementById('range-position-tabs');
+  posTabs.innerHTML = '';
+  Object.keys(RANGE_SCENARIOS).forEach(scenario => {
+    const btn = document.createElement('button');
+    btn.className = 'range-tab' + (scenario === currentRangeScenario ? ' active' : '');
+    btn.textContent = scenario;
+    btn.onclick = () => {
+      currentRangeScenario = scenario;
+      currentRangeKey = RANGE_SCENARIOS[scenario][0];
+      initRangeTabs();
+      renderRange();
+    };
+    posTabs.appendChild(btn);
+  });
+
+  const scenTabs = document.getElementById('range-scenario-tabs');
+  scenTabs.innerHTML = '';
+  RANGE_SCENARIOS[currentRangeScenario].forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'range-scenario-tab' + (key === currentRangeKey ? ' active' : '');
+    btn.textContent = RANGE_LABELS[key];
+    btn.onclick = () => {
+      currentRangeKey = key;
+      document.querySelectorAll('.range-scenario-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderRange();
+    };
+    scenTabs.appendChild(btn);
+  });
+}
+
+function renderRange() {
+  const data = RANGE_DATA[currentRangeKey];
+  if (!data) return;
+
+  document.getElementById('range-title').textContent = data.title;
+  document.getElementById('range-pct').textContent = data.pct;
+  document.getElementById('range-info').innerHTML = data.info;
+
+  // Legend
+  const legendDiv = document.getElementById('range-legend');
+  legendDiv.innerHTML = '';
+  data.legend.forEach(l => {
+    const item = document.createElement('span');
+    item.className = 'range-legend-item';
+    let swatchStyle = '';
+    if (l.c === 'mixed') swatchStyle = 'background:linear-gradient(135deg,#3fb950 50%,#21262d 50%)';
+    else if (l.c === 'mixed-call-3bet') swatchStyle = 'background:linear-gradient(135deg,#58a6ff 50%,#f85149 50%)';
+    else if (l.c === 'raise') swatchStyle = 'background:#3fb950';
+    else if (l.c === 'call') swatchStyle = 'background:#58a6ff';
+    else if (l.c === 'threeBet') swatchStyle = 'background:#f85149';
+    else if (l.c === 'bluff3bet') swatchStyle = 'background:#d29922';
+    else swatchStyle = 'background:#21262d';
+    item.innerHTML = `<span class="range-legend-swatch" style="${swatchStyle}"></span>${l.l}`;
+    legendDiv.appendChild(item);
+  });
+
+  // Grid
+  const gridDiv = document.getElementById('range-grid');
+  gridDiv.innerHTML = '';
+
+  // top-left corner
+  const corner = document.createElement('div');
+  corner.className = 'range-cell header';
+  gridDiv.appendChild(corner);
+  // column headers
+  RANKS.forEach(r => {
+    const h = document.createElement('div');
+    h.className = 'range-cell header';
+    h.textContent = r;
+    gridDiv.appendChild(h);
+  });
+
+  for (let row = 0; row < 13; row++) {
+    // row header
+    const rh = document.createElement('div');
+    rh.className = 'range-cell header';
+    rh.textContent = RANKS[row];
+    gridDiv.appendChild(rh);
+
+    for (let col = 0; col < 13; col++) {
+      const cell = document.createElement('div');
+      const action = data.grid[row+','+col] || 'fold';
+      cell.className = 'range-cell ' + action;
+      const label = handLabel(row, col);
+      cell.textContent = label;
+      cell.title = label + ' → ' + actionLabel(action);
+      gridDiv.appendChild(cell);
+    }
+  }
+}
+
+function actionLabel(a) {
+  const m = {raise:'レイズ',call:'コール',threeBet:'バリュー3bet',bluff3bet:'ブラフ3bet',fold:'フォールド',mixed:'ミックス','mixed-call-3bet':'ミックス(コール/3bet)'};
+  return m[a] || a;
+}
+
+initRangeTabs();
+renderRange();
+
+// ============================================================
+// INIT
+// ============================================================
+renderRules();
+updateDashboard();
+startSizing();
+</script>
+</body>
+</html>
