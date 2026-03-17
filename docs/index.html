@@ -1589,6 +1589,91 @@ const RANGE_DATA = {
       call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,J8s,T9s,T8s,98s,96s,86s,75s,64s,53s,43s,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
     })
   },
+
+  // ===== BB DEFENSE vs OPEN (40BB+) =====
+  'bbdef-vs-utg': {
+    title:'BB ディフェンス vs UTG（40BB+）', pct:'~22%',
+    info:'<strong>UTGはタイトなのでBBは絞って守る。</strong><br>広く守りすぎるとOOPで不利なポストフロップに突入する。<br>コール: ペア、スーテッド系のIP値が高いハンド<br>3bet: QQ+, AKのバリュー + A5s,A4sのブラフ<br><span style="color:var(--red)">⚠️ ここを広く守りすぎて敗退しがち！</span>',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,AKs,AKo',
+      bluff3bet:'A5s,A4s',
+      call:'JJ,TT,99,88,77,66,55,44,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,KQo,KJo,QJo',
+      'mixed-call-3bet':'33,22',
+    })
+  },
+  'bbdef-vs-hj': {
+    title:'BB ディフェンス vs HJ（40BB+）', pct:'~27%',
+    info:'<strong>HJはUTGより少し広い。BBも少し広く守れる。</strong><br>コール: ペア全部、広めのスーテッド<br>3bet: JJ+, AK, AQsのバリュー + A5s-A3s, スーコネのブラフ',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
+      bluff3bet:'A5s,A4s,A3s,76s,65s,54s',
+      call:'TT,99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,AQo,AJo,ATo,KQo,KJo,KTo,QJo',
+      'mixed-call-3bet':'T8s',
+    })
+  },
+  'bbdef-vs-co': {
+    title:'BB ディフェンス vs CO（40BB+）', pct:'~35%',
+    info:'<strong>COは広めにオープンするので、BBも広くディフェンス。</strong><br>3bet: JJ+, AK, AQs（バリュー）+ A5s-A2s, K5s等（ブラフ）<br>コール: TT以下のペア全部、広いスーテッド、AQo-A8o, KJo+等<br><span style="color:var(--orange)">ここからBBディフェンスが広くなる。ポストフロップの準備を。</span>',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
+      bluff3bet:'A5s,A4s,A3s,A2s,K5s,K4s,87s,76s,65s,54s',
+      call:'TT,99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,86s,75s,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
+      'mixed-call-3bet':'TT,T7s',
+    })
+  },
+  'bbdef-vs-sb': {
+    title:'BB ディフェンス vs SB（40BB+）', pct:'~55%',
+    info:'<strong>BBはSBに対してポジションがある＝最も広く守れる。</strong><br>SBのオープンレンジは広いので、BBは非常に広くディフェンス。<br>3bet: TT+, AQs+, AKo（バリュー）+ 広いブラフ3bet<br>コール: ほぼ全てのスーテッド、広いオフスーテッド<br><span style="color:var(--green)">SB vs BBはBBが有利。広く守ってOK。</span>',
+    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,AJs,KQs',
+      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K8s,K7s,K6s,K5s,K4s,K3s,Q7s,Q6s,Q5s,J6s,J5s,T6s,T5s,96s,95s,85s,75s,64s,53s',
+      call:'99,88,77,66,55,44,33,22,ATs,A9s,KJs,KTs,K9s,K2s,QJs,QTs,Q9s,Q8s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J7s,J4s,J3s,J2s,T9s,T8s,T7s,T4s,T3s,98s,97s,87s,86s,76s,65s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,97o,87o,76o',
+    })
+  },
+
+  // ===== BB DEFENSE vs OPEN (25BB) =====
+  'bbdef25-vs-utg': {
+    title:'BB ディフェンス vs UTG（25BB）', pct:'~18%',
+    info:'<strong>25BBではフラットコールのリスクが上がる。</strong><br>コールよりも3bet(オールイン)かフォールドの判断が増える。<br>UTGのオープンは強いので狭く守る。<br><span style="color:var(--red)">⚠️ 25BBでUTGにワイドコールは危険！</span>',
+    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo',
+      call:'99,88,77,66,AJs,ATs,A9s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,98s,AJo,ATo,KQo,KJo',
+    })
+  },
+  'bbdef25-vs-co': {
+    title:'BB ディフェンス vs CO（25BB）', pct:'~28%',
+    info:'<strong>COは広めにオープン。3betオールインかコール。</strong><br>3betオールイン: TT+, AK, AQs<br>コール: ペア、スーテッド系<br>25BBではポストフロップが短いので、強いハンドは3bet(オールイン)寄り。',
+    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs',
+      call:'99,88,77,66,55,44,AJs,ATs,A9s,A8s,A7s,A5s,A4s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo',
+      'mixed-call-3bet':'33,A6s',
+    })
+  },
+  'bbdef25-vs-btn': {
+    title:'BB ディフェンス vs BTN（25BB）', pct:'~35%',
+    info:'<strong>BTNの広いスチールに対して広めにディフェンス。</strong><br>3betオールイン: 99+, AK, AQ, AJs<br>コール: 広いスーテッド、中ペア<br>25BBでの3betはほぼオールインと同義。覚悟を持って。',
+    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs',
+      call:'88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,86s,76s,65s,54s,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
+      'mixed-call-3bet':'K6s',
+    })
+  },
+  'bbdef25-vs-sb': {
+    title:'BB ディフェンス vs SB（25BB）', pct:'~48%',
+    info:'<strong>BBはSBに対してポジションあり。広く守れる。</strong><br>3betオールイン: 88+, AK, AQ, AJs, KQs<br>コール: 非常に広い。SBのレンジは広いのでディフェンス広く。<br>25BBでのSB vs BBはBB有利。',
+    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,99,88,AKs,AKo,AQs,AQo,AJs,KQs',
+      call:'77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,J6s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,76s,75s,65s,64s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,87o,76o',
+    })
+  },
 };
 
 function makeGrid(spec) {
@@ -1622,11 +1707,13 @@ function handToCoord(hand) {
 const RANGE_SCENARIOS = {
   'オープン (40BB+)': ['open40-utg','open40-hj','open40-co','open40-btn','open40-sb'],
   'オープン (25BB)': ['open25-utg','open25-hj','open25-co','open25-btn','open25-sb'],
+  'BBディフェンス (40BB+)': ['bbdef-vs-utg','bbdef-vs-hj','bbdef-vs-co','threeBet-bb-vs-btn','bbdef-vs-sb'],
+  'BBディフェンス (25BB)': ['bbdef25-vs-utg','bbdef25-vs-co','bbdef25-vs-btn','bbdef25-vs-sb'],
   'プッシュ (20BB)': ['push20-utg','push20-hj','push20-co','push20-btn','push20-sb'],
   'プッシュ (15BB)': ['push15-utg','push15-hj','push15-co','push15-btn','push15-sb'],
   'プッシュ (10BB)': ['push10-utg','push10-hj','push10-co','push10-btn','push10-sb'],
   'BBコール vs プッシュ': ['bbcall-vs-btn20','bbcall-vs-btn15','bbcall-vs-btn10','bbcall-vs-sb20','bbcall-vs-sb15','bbcall-vs-sb10'],
-  '3bet (40BB+)': ['threeBet-btn-vs-co','threeBet-sb-vs-btn','threeBet-bb-vs-btn'],
+  '3bet (40BB+)': ['threeBet-btn-vs-co','threeBet-sb-vs-btn'],
 };
 
 const RANGE_LABELS = {
@@ -1635,9 +1722,11 @@ const RANGE_LABELS = {
   'push20-utg':'UTG','push20-hj':'HJ','push20-co':'CO','push20-btn':'BTN','push20-sb':'SB',
   'push15-utg':'UTG','push15-hj':'HJ','push15-co':'CO','push15-btn':'BTN','push15-sb':'SB',
   'push10-utg':'UTG','push10-hj':'HJ','push10-co':'CO','push10-btn':'BTN','push10-sb':'SB',
+  'bbdef-vs-utg':'vs UTG','bbdef-vs-hj':'vs HJ','bbdef-vs-co':'vs CO','bbdef-vs-sb':'vs SB',
+  'bbdef25-vs-utg':'vs UTG','bbdef25-vs-co':'vs CO','bbdef25-vs-btn':'vs BTN','bbdef25-vs-sb':'vs SB',
   'bbcall-vs-btn20':'vs BTN 20BB','bbcall-vs-btn15':'vs BTN 15BB','bbcall-vs-btn10':'vs BTN 10BB',
   'bbcall-vs-sb20':'vs SB 20BB','bbcall-vs-sb15':'vs SB 15BB','bbcall-vs-sb10':'vs SB 10BB',
-  'threeBet-btn-vs-co':'BTN vs CO','threeBet-sb-vs-btn':'SB vs BTN','threeBet-bb-vs-btn':'BB vs BTN',
+  'threeBet-btn-vs-co':'BTN vs CO','threeBet-sb-vs-btn':'SB vs BTN','threeBet-bb-vs-btn':'vs BTN',
 };
 
 let currentRangeScenario = 'オープン (40BB+)';
