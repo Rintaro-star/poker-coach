@@ -394,14 +394,14 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 <div id="page-ranges" class="page">
   <div class="range-hero" style="margin-bottom:16px;">
     <div class="range-hero-main">
-      <h2>GTO レンジ再学習</h2>
-      <p>まずは6max 100BBキャッシュのRFIを基礎レンジとして固定します。迷った時は「早いポジションは狭く、BTN/SBは広く、BBは相手位置で守り幅を変える」を優先してください。</p>
-      <div class="range-source-note">基礎RFIは <a href="https://pokercoaching.com/preflop-charts" target="_blank" rel="noopener">PokerCoaching の 6-Max 100BB implementable GTO cash charts</a> を元に更新。実戦では卓のタイト/ルース、レーキ、アンティ、スタックで調整します。</div>
+      <h2>トーナメント最優先レンジ</h2>
+      <p>まずはMTTのRFIを基礎レンジとして固定します。迷った時は「今何BBか」「ポジションはどこか」「後ろに誰が残っているか」を先に見てください。</p>
+      <div class="range-source-note">基礎RFIは <a href="https://pokercoaching.com/preflop-charts" target="_blank" rel="noopener">PokerCoaching の Tournament GTO charts</a> と <a href="https://pokercoaching.com/cheatsheets" target="_blank" rel="noopener">stack-depth cheat sheet</a> を元に更新。バブル、ICM、卓のタイトさで調整します。</div>
     </div>
     <div class="range-focus-list">
-      <div class="range-focus-item"><strong>1. RFIを暗記</strong>UTG/HJ/CO/BTN/SBの順に広がる構造を覚える。</div>
-      <div class="range-focus-item"><strong>2. 境界ハンドを確認</strong>K8s, Q9s, ATo, KJoなど迷いやすい境目を重点確認。</div>
-      <div class="range-focus-item"><strong>3. BBで守りすぎない</strong>vs UTG/HJは絞る。vs BTN/SBだけ広く守る。</div>
+      <div class="range-focus-item"><strong>1. 75BB RFIを軸にする</strong>深い時の基礎レンジ。まずここを暗記。</div>
+      <div class="range-focus-item"><strong>2. 40BB/25BBで調整</strong>スタックが減るほど、参加後のSPRと3bet耐性を意識。</div>
+      <div class="range-focus-item"><strong>3. 15BB以下は別ゲーム</strong>RFIよりプッシュ/フォールドとコールレンジを優先。</div>
     </div>
   </div>
 
@@ -427,7 +427,8 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
     <div class="card-title">サイジング早見表</div>
     <table class="result-cat-table">
       <tr><th>アクション</th><th>サイズ</th></tr>
-      <tr><td>オープンレイズ（6max 100BB）</td><td>2.5BB</td></tr>
+      <tr><td>トナメRFI（深いスタック）</td><td>2.0-2.5BB</td></tr>
+      <tr><td>トナメRFI（25BB前後）</td><td>2.0-2.2BB</td></tr>
       <tr><td>SBオープン</td><td>3BB</td></tr>
       <tr><td>リンパーあり</td><td>3BB + 1BB/リンパー</td></tr>
       <tr><td>3bet（ポジションあり）</td><td>3.5x（オープンの3.5倍）</td></tr>
@@ -1310,6 +1311,48 @@ function handLabel(r, c) {
 
 // Range definitions: each hand can be 'raise','call','3bet','bluff3bet','fold','mixed','mixed-call-3bet'
 const RANGE_DATA = {
+  // ===== TOURNAMENT GTO RFI BASE (75BB, MTT) =====
+  'mtt75-lj': {
+    title:'LJ RFI（MTT 75BB）', pct:'23.5%',
+    info:'<strong>基礎レンジ: 33+, A2s+, K6s+, Q9s+, J8s+, T8s+, 98s, 87s, 76s, A9o+, KTo+, QTo+</strong><br>6max表記のUTGに近い基準ポジション。深いMTTではスーテッド系と小ペアの価値が高い。<br><span style="color:var(--accent)">最初はここを「トナメ深い時の基準レンジ」として暗記。</span>',
+    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'33+,A2s+,K6s+,Q9s+,J8s+,T8s+,98s,87s,76s,A9o+,KTo+,QTo+',
+    })
+  },
+  'mtt75-hj': {
+    title:'HJ RFI（MTT 75BB）', pct:'27.9%',
+    info:'<strong>基礎レンジ: 22+, A2s+, K4s+, Q8s+, J8s+, T7s+, 97s+, 87s, 76s, 65s, 54s, A8o+, KTo+, QTo+, JTo</strong><br>LJからさらに広げる。小ペア全部、K4s+、JToが入る。<br>後ろにCO/BTNが残るので、オフスートの下側を広げすぎない。',
+    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'22+,A2s+,K4s+,Q8s+,J8s+,T7s+,97s+,87s,76s,65s,54s,A8o+,KTo+,QTo+,JTo',
+    })
+  },
+  'mtt75-co': {
+    title:'CO RFI（MTT 75BB）', pct:'37.3%',
+    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q5s+, J7s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A5o+, K9o+, Q9o+, J9o+, T9o</strong><br>ここから明確なスチールポジション。堅実くんはCOで開き忘れやすい。<br><span style="color:var(--green)">全員フォールドなら攻撃する。</span>',
+    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'22+,A2s+,K2s+,Q5s+,J7s+,T6s+,96s+,86s+,75s+,65s,54s,A5o+,K9o+,Q9o+,J9o+,T9o',
+    })
+  },
+  'mtt75-btn': {
+    title:'BTN RFI（MTT 75BB）', pct:'54.8%',
+    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q2s+, J3s+, T3s+, 95s+, 85s+, 74s+, 64s+, 53s+, 43s, A2o+, K5o+, Q8o+, J8o+, T7o+, 97o+, 87o</strong><br>トーナメントでチップを増やす主戦場。BTNで開けないとブラインドに削られる。<br>ただしBBがコールしすぎる相手なら、弱いオフスート下限は少し削る。',
+    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'22+,A2s+,K2s+,Q2s+,J3s+,T3s+,95s+,85s+,74s+,64s+,53s+,43s,A2o+,K5o+,Q8o+,J8o+,T7o+,97o+,87o',
+    })
+  },
+  'mtt75-sb': {
+    title:'SB 参加レンジ（MTT 75BB）', pct:'81.6%',
+    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+, 62s+, 52s+, 42s+, 32s, A2o+, K2o+, Q2o+, J2o+, T3o+, 95o+, 85o+, 75o+, 64o+, 54o</strong><br>公開表はraise or limpの総参加レンジ。SBは広いがOOPなので、強い側をレイズ、弱い側は相手次第。<br><span style="color:var(--orange)">最初は全部覚えようとせず、広い参加レンジだと理解する。</span>',
+    legend:[{c:'raise',l:'参加'},{c:'fold',l:'フォールド'}],
+    grid: makeGrid({
+      raise:'22+,A2s+,K2s+,Q2s+,J2s+,T2s+,92s+,82s+,72s+,62s+,52s+,42s+,32s,A2o+,K2o+,Q2o+,J2o+,T3o+,95o+,85o+,75o+,64o+,54o',
+    })
+  },
+
   // ===== OPEN 40BB+ (with antes) =====
   'open40-utg': {
     title:'UTG オープン（40BB+）', pct:'~17%',
@@ -1878,8 +1921,8 @@ function handToCoord(hand) {
 }
 
 const RANGE_SCENARIOS = {
-  '── 基礎再学習 ──': [],
-  'GTO RFI基礎 (100BB)': ['cash-utg','cash-hj','cash-co','cash-btn','cash-sb'],
+  '── トナメ最優先 ──': [],
+  'トナメRFI基礎 (75BB)': ['mtt75-lj','mtt75-hj','mtt75-co','mtt75-btn','mtt75-sb'],
   '── トーナメント ──': [],
   'オープン (40BB+)': ['open40-utg','open40-hj','open40-co','open40-btn','open40-sb'],
   'オープン (25BB)': ['open25-utg','open25-hj','open25-co','open25-btn','open25-sb'],
@@ -1891,12 +1934,14 @@ const RANGE_SCENARIOS = {
   'BBコール vs プッシュ': ['bbcall-vs-btn20','bbcall-vs-btn15','bbcall-vs-btn10','bbcall-vs-sb20','bbcall-vs-sb15','bbcall-vs-sb10'],
   '3bet (40BB+)': ['threeBet-btn-vs-co','threeBet-sb-vs-btn'],
   '── キャッシュ ──': [],
+  'キャッシュRFI基礎 (100BB)': ['cash-utg','cash-hj','cash-co','cash-btn','cash-sb'],
   '3bet (100BB)': ['cash3b-btn-vs-co','cash3b-sb-vs-btn'],
   'BBディフェンス (100BB)': ['cashbb-vs-utg','cashbb-vs-co','cashbb-vs-btn','cashbb-vs-sb'],
   '4bet (100BB)': ['cash-4bet'],
 };
 
 const RANGE_LABELS = {
+  'mtt75-lj':'LJ','mtt75-hj':'HJ','mtt75-co':'CO','mtt75-btn':'BTN','mtt75-sb':'SB',
   'open40-utg':'UTG','open40-hj':'HJ','open40-co':'CO','open40-btn':'BTN','open40-sb':'SB',
   'open25-utg':'UTG','open25-hj':'HJ','open25-co':'CO','open25-btn':'BTN','open25-sb':'SB',
   'push20-utg':'UTG','push20-hj':'HJ','push20-co':'CO','push20-btn':'BTN','push20-sb':'SB',
@@ -1913,8 +1958,8 @@ const RANGE_LABELS = {
   'cash-4bet':'共通',
 };
 
-let currentRangeScenario = 'GTO RFI基礎 (100BB)';
-let currentRangeKey = 'cash-utg';
+let currentRangeScenario = 'トナメRFI基礎 (75BB)';
+let currentRangeKey = 'mtt75-lj';
 
 function initRangeTabs() {
   const posTabs = document.getElementById('range-position-tabs');
