@@ -1313,8 +1313,8 @@ function handLabel(r, c) {
 const RANGE_DATA = {
   // ===== TOURNAMENT GTO RFI BASE (75BB, MTT) =====
   'mtt75-lj': {
-    title:'LJ RFI（MTT 75BB）', pct:'23.5%',
-    info:'<strong>基礎レンジ: 33+, A2s+, K6s+, Q9s+, J8s+, T8s+, 98s, 87s, 76s, A9o+, KTo+, QTo+</strong><br>6max表記のUTGに近い基準ポジション。深いMTTではスーテッド系と小ペアの価値が高い。<br><span style="color:var(--accent)">最初はここを「トナメ深い時の基準レンジ」として暗記。</span>',
+    title:'UTG/LJ RFI（MTT 75BB）', pct:'23.5%',
+    info:'<strong>基礎レンジ: 33+, A2s+, K6s+, Q9s+, J8s+, T8s+, 98s, 87s, 76s, A9o+, KTo+, QTo+</strong><br>6maxでは最初にアクションするポジションをUTGとして扱う。公開チャート上のLJ相当レンジを、アプリではUTG/LJとして表示。深いMTTではスーテッド系と小ペアの価値が高い。<br><span style="color:var(--accent)">最初はここを「トナメ深い時のUTG基準レンジ」として暗記。</span>',
     legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
     grid: makeGrid({
       raise:'33+,A2s+,K6s+,Q9s+,J8s+,T8s+,98s,87s,76s,A9o+,KTo+,QTo+',
@@ -1941,7 +1941,7 @@ const RANGE_SCENARIOS = {
 };
 
 const RANGE_LABELS = {
-  'mtt75-lj':'LJ','mtt75-hj':'HJ','mtt75-co':'CO','mtt75-btn':'BTN','mtt75-sb':'SB',
+  'mtt75-lj':'UTG','mtt75-hj':'HJ','mtt75-co':'CO','mtt75-btn':'BTN','mtt75-sb':'SB',
   'open40-utg':'UTG','open40-hj':'HJ','open40-co':'CO','open40-btn':'BTN','open40-sb':'SB',
   'open25-utg':'UTG','open25-hj':'HJ','open25-co':'CO','open25-btn':'BTN','open25-sb':'SB',
   'push20-utg':'UTG','push20-hj':'HJ','push20-co':'CO','push20-btn':'BTN','push20-sb':'SB',
