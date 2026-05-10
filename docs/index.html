@@ -159,6 +159,9 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 .range-focus-item { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:13px; line-height:1.5; }
 .range-focus-item strong { color:var(--accent); display:block; margin-bottom:3px; }
 .range-source-note { color:var(--text-dim); font-size:12px; line-height:1.6; margin-top:10px; }
+.range-priority-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; }
+.range-priority-list div { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; color:var(--text-dim); font-size:13px; line-height:1.5; }
+.range-priority-list strong { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-right:6px; border-radius:50%; background:var(--accent); color:#06231f; font-size:12px; }
 
 /* LOGIN OVERLAY */
 .login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:999; display:flex; align-items:center; justify-content:center; }
@@ -399,14 +402,27 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
       <div class="range-source-note">基礎RFIは <a href="https://pokercoaching.com/preflop-charts" target="_blank" rel="noopener">PokerCoaching の Tournament GTO charts</a> と <a href="https://pokercoaching.com/cheatsheets" target="_blank" rel="noopener">stack-depth cheat sheet</a> を元に更新。バブル、ICM、卓のタイトさで調整します。</div>
     </div>
     <div class="range-focus-list">
-      <div class="range-focus-item"><strong>1. 75BB RFIを軸にする</strong>深い時の基礎レンジ。まずここを暗記。</div>
-      <div class="range-focus-item"><strong>2. 40BB/25BBで調整</strong>スタックが減るほど、参加後のSPRと3bet耐性を意識。</div>
-      <div class="range-focus-item"><strong>3. 15BB以下は別ゲーム</strong>RFIよりプッシュ/フォールドとコールレンジを優先。</div>
+      <div class="range-focus-item"><strong>1. RFIを固める</strong>75BB → 40BB → 25BBの順に、まずファーストインを暗記。</div>
+      <div class="range-focus-item"><strong>2. ショートを固める</strong>15BB/10BBのプッシュと、BBのコールレンジを最優先で反復。</div>
+      <div class="range-focus-item"><strong>3. 防御と3betへ進む</strong>BBディフェンスと3betは、RFI/Pushが入ってから。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">シナリオ選択</div>
+    <div class="card-title">暗記優先順位</div>
+    <div class="range-priority-list">
+      <div><strong>1</strong> RFI基礎 75BB: 深い時の標準</div>
+      <div><strong>2</strong> RFI 40BB+: トナメで最も使う標準帯</div>
+      <div><strong>3</strong> RFI 25BB: 攻撃スイッチ帯</div>
+      <div><strong>4</strong> Push 15BB: 完全プッシュ/フォールド入口</div>
+      <div><strong>5</strong> Push 10BB: 生存ライン</div>
+      <div><strong>6</strong> BB Call vs Push: コールミス防止</div>
+      <div><strong>7</strong> BB Defense / 3bet: 攻撃と防御の精度上げ</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">レンジ表</div>
     <div class="range-controls" id="range-position-tabs"></div>
     <div class="range-scenario-tabs" id="range-scenario-tabs"></div>
   </div>
@@ -1921,18 +1937,18 @@ function handToCoord(hand) {
 }
 
 const RANGE_SCENARIOS = {
-  '── トナメ最優先 ──': [],
-  'トナメRFI基礎 (75BB)': ['mtt75-lj','mtt75-hj','mtt75-co','mtt75-btn','mtt75-sb'],
-  '── トーナメント ──': [],
-  'オープン (40BB+)': ['open40-utg','open40-hj','open40-co','open40-btn','open40-sb'],
-  'オープン (25BB)': ['open25-utg','open25-hj','open25-co','open25-btn','open25-sb'],
-  'BBディフェンス (40BB+)': ['bbdef-vs-utg','bbdef-vs-hj','bbdef-vs-co','threeBet-bb-vs-btn','bbdef-vs-sb'],
-  'BBディフェンス (25BB)': ['bbdef25-vs-utg','bbdef25-vs-co','bbdef25-vs-btn','bbdef25-vs-sb'],
-  'プッシュ (20BB)': ['push20-utg','push20-hj','push20-co','push20-btn','push20-sb'],
-  'プッシュ (15BB)': ['push15-utg','push15-hj','push15-co','push15-btn','push15-sb'],
-  'プッシュ (10BB)': ['push10-utg','push10-hj','push10-co','push10-btn','push10-sb'],
-  'BBコール vs プッシュ': ['bbcall-vs-btn20','bbcall-vs-btn15','bbcall-vs-btn10','bbcall-vs-sb20','bbcall-vs-sb15','bbcall-vs-sb10'],
-  '3bet (40BB+)': ['threeBet-btn-vs-co','threeBet-sb-vs-btn'],
+  '── 絶対暗記 ──': [],
+  '1. RFI基礎 75BB': ['mtt75-lj','mtt75-hj','mtt75-co','mtt75-btn','mtt75-sb'],
+  '2. RFI 40BB+': ['open40-utg','open40-hj','open40-co','open40-btn','open40-sb'],
+  '3. RFI 25BB': ['open25-utg','open25-hj','open25-co','open25-btn','open25-sb'],
+  '4. Push 15BB': ['push15-utg','push15-hj','push15-co','push15-btn','push15-sb'],
+  '5. Push 10BB': ['push10-utg','push10-hj','push10-co','push10-btn','push10-sb'],
+  '6. BB Call vs Push': ['bbcall-vs-btn20','bbcall-vs-btn15','bbcall-vs-btn10','bbcall-vs-sb20','bbcall-vs-sb15','bbcall-vs-sb10'],
+  '── 次に覚える ──': [],
+  '7. BB Defense 40BB+': ['bbdef-vs-utg','bbdef-vs-hj','bbdef-vs-co','threeBet-bb-vs-btn','bbdef-vs-sb'],
+  '8. BB Defense 25BB': ['bbdef25-vs-utg','bbdef25-vs-co','bbdef25-vs-btn','bbdef25-vs-sb'],
+  '9. Push 20BB': ['push20-utg','push20-hj','push20-co','push20-btn','push20-sb'],
+  '10. 3bet 40BB+': ['threeBet-btn-vs-co','threeBet-sb-vs-btn'],
   '── キャッシュ ──': [],
   'キャッシュRFI基礎 (100BB)': ['cash-utg','cash-hj','cash-co','cash-btn','cash-sb'],
   '3bet (100BB)': ['cash3b-btn-vs-co','cash3b-sb-vs-btn'],
@@ -1958,7 +1974,7 @@ const RANGE_LABELS = {
   'cash-4bet':'共通',
 };
 
-let currentRangeScenario = 'トナメRFI基礎 (75BB)';
+let currentRangeScenario = '1. RFI基礎 75BB';
 let currentRangeKey = 'mtt75-lj';
 
 function initRangeTabs() {
