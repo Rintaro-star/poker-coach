@@ -163,6 +163,28 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 .range-priority-list div { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; color:var(--text-dim); font-size:13px; line-height:1.5; }
 .range-priority-list strong { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-right:6px; border-radius:50%; background:var(--accent); color:#06231f; font-size:12px; }
 
+/* MATCH PLAN */
+.match-hero { background:linear-gradient(135deg,var(--felt),#10222a); border:1px solid #245c50; border-radius:8px; padding:20px; margin-bottom:16px; }
+.match-hero h2 { margin-bottom:8px; }
+.match-hero p { color:#c8d8d3; line-height:1.7; font-size:14px; }
+.match-pill-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.match-pill { padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); color:#dff7f1; font-size:12px; }
+.match-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.match-note { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.match-note strong { display:block; margin-bottom:6px; color:var(--accent); font-size:13px; }
+.match-note p, .match-note li { color:var(--text-dim); font-size:13px; line-height:1.6; }
+.match-note ul { padding-left:18px; }
+.opponent-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.opponent-tab { padding:9px 14px; border:1px solid var(--border); background:var(--card-2); color:var(--text-dim); border-radius:6px; cursor:pointer; font-size:13px; transition:all .2s; }
+.opponent-tab:hover { border-color:var(--accent); }
+.opponent-tab.active { background:var(--accent); color:#06231f; border-color:var(--accent); }
+.opponent-summary { color:var(--text-dim); font-size:14px; line-height:1.7; margin-bottom:16px; }
+.opponent-meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:16px; }
+.opponent-meta .match-note { min-height:100%; }
+.strategy-table { width:100%; border-collapse:collapse; }
+.strategy-table th, .strategy-table td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; vertical-align:top; line-height:1.6; }
+.strategy-table th { width:180px; color:var(--text-dim); font-weight:500; }
+
 /* LOGIN OVERLAY */
 .login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:999; display:flex; align-items:center; justify-content:center; }
 .login-overlay.hidden { display:none; }
@@ -214,6 +236,7 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
   <button class="nav-btn" onclick="showPage('quiz')">ドリル</button>
   <button class="nav-btn" onclick="showPage('sizing')">サイジング特訓</button>
   <button class="nav-btn" onclick="showPage('rules')">マイルール</button>
+  <button class="nav-btn" onclick="showPage('matchplan')">対戦メモ</button>
   <button class="nav-btn" onclick="showPage('ranges')">レンジ表</button>
   <button class="nav-btn" onclick="showPage('history')">学習履歴</button>
 </nav>
@@ -391,6 +414,116 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
   <h2>マイルール</h2>
   <input type="text" class="rules-search" placeholder="ルールを検索..." oninput="searchRules(this.value)">
   <div id="rules-container"></div>
+</div>
+
+<!-- ========== MATCH PLAN ========== -->
+<div id="page-matchplan" class="page">
+  <div class="match-hero">
+    <h2>今回の対戦プラン</h2>
+    <p>目標は3位以内。序盤は縮こまりすぎず、終盤はミドルスタックで無理に死なない。今夜は相手から「押せば降りる」と見られている前提で、弱い参加を減らし、入った後は簡単に降りない。リバーオールインはかなり信用されている前提で使う。</p>
+    <div class="match-pill-row">
+      <span class="match-pill">弱く入らない</span>
+      <span class="match-pill">入ったら簡単に降りない</span>
+      <span class="match-pill">終盤はミドルで無理に死なない</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">全体の動き</div>
+    <div class="match-grid">
+      <div class="match-note">
+        <strong>20:00-22:00</strong>
+        <p>1000BBディープ、リエントリーあり。飛ぶことを怖がりすぎず、観察しながら強い手で大きく取る。</p>
+      </div>
+      <div class="match-note">
+        <strong>22:00以降</strong>
+        <p>3位以内を優先。ミドルでは薄い大勝負を減らし、ショートがいる時は先に飛ばない。</p>
+      </div>
+      <div class="match-note">
+        <strong>アグレ勢</strong>
+        <p>砥綿さん、ごん、ずみさん、龍馬さん。レイズされたら困るだけのCbetを減らし、チェック頻度を上げる。</p>
+      </div>
+      <div class="match-note">
+        <strong>パッシブ勢</strong>
+        <p>はまち、とーいさん。取れる小さいポットは取り、相手ごとにCbetと2発目の設計を変える。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">共通ルール</div>
+    <div class="match-grid">
+      <div class="match-note">
+        <strong>プリフロップ</strong>
+        <ul>
+          <li>OOPでは弱い参加を減らす</li>
+          <li>BBディフェンスは戦える手だけ残す</li>
+          <li>弱くコールして難しいポットを作らない</li>
+        </ul>
+      </div>
+      <div class="match-note">
+        <strong>Cbet</strong>
+        <ul>
+          <li>アグレ勢には完全エアーCbetを減らす</li>
+          <li>打つならレイズ後のプランまで持つ</li>
+          <li>強い手、中くらいの手の一部はチェックへ</li>
+        </ul>
+      </div>
+      <div class="match-note">
+        <strong>終盤</strong>
+        <ul>
+          <li>ミドルは薄いブラフキャッチを少し減らす</li>
+          <li>15BB以下で待ちすぎない</li>
+          <li>バブルでブラフオールインしない</li>
+        </ul>
+      </div>
+      <div class="match-note">
+        <strong>自分の見られ方</strong>
+        <ul>
+          <li>押せば降りると思われている</li>
+          <li>チェックは弱いと思われやすい</li>
+          <li>リバーオールインはブラフが少ないと思われている</li>
+        </ul>
+      </div>
+      <div class="match-note">
+        <strong>サイズ</strong>
+        <ul>
+          <li>強い手は小さく取りすぎない</li>
+          <li>ブラフは通る相手に小さく</li>
+          <li>返してくる相手には、サイズより頻度を下げる</li>
+          <li>リバーオールインは信用されやすいので、使う場面を選ぶ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">プッシュ方針</div>
+    <div class="match-grid">
+      <div class="match-note">
+        <strong>20BB以上</strong>
+        <p>通常プレイ中心。相手次第でリスチールオールイン。</p>
+      </div>
+      <div class="match-note">
+        <strong>15-20BB</strong>
+        <p>プッシュを意識し始める。CO / BTN / SBは特に先に動く。</p>
+      </div>
+      <div class="match-note">
+        <strong>10-15BB</strong>
+        <p>かなり明確にプッシュ/フォールド。</p>
+      </div>
+      <div class="match-note">
+        <strong>10BB未満</strong>
+        <p>完全プッシュ/フォールド。3位以内狙いでも待ちすぎない。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">相手別戦略</div>
+    <div id="opponent-tabs" class="opponent-tabs"></div>
+    <div id="opponent-content"></div>
+  </div>
 </div>
 
 <!-- ========== RANGES ========== -->
@@ -683,6 +816,116 @@ const TIPS = [
 ];
 
 // ============================================================
+// MATCH PLAN DATA
+// ============================================================
+const OPPONENT_PLANS = {
+  towata: {
+    name: "砥綿さん",
+    summary: "レンジ主張が強く、BBのローボードでチェックレイズを多用。こちらのCbet後フォールドを狙っている可能性が高い。",
+    aim: "OOPの難所を減らし、IPで降りすぎを修正する。",
+    sizing: "バリュー: フロップ 1/3-1/2、ターン 1/2-2/3、リバー 1/2-2/3。ブラフ: フロップ 1/3中心、ターン以降はかなり選別。",
+    actions: {
+      "プリフロップ参加頻度": "OOPでは下げる。BBディフェンスも普段より少し締める。",
+      "3bet頻度": "OOPではブラフ3betを減らし、バリュー寄り。",
+      "4bet頻度": "低め、バリュー寄り。ブラフ4betはかなり減らす。",
+      "Cbet頻度": "IPローボードでは下げる。1/3でよいが、レイズされても続行できる手中心で打つ。",
+      "チェック頻度": "上げる。完全エアーや中くらいの手はチェックバックを増やす。",
+      "ブラフ頻度": "下げる。ローボードで受けられた後の無理な3バレルは減らす。",
+      "コール頻度": "IPでチェックレイズを受けた時は上げる。",
+      "フォールド頻度": "OOPプリフロップでは上げる。IPでフロップチェックレイズを受けた時は下げる。",
+      "バリューベット頻度": "強い手では上げる。"
+    }
+  },
+  gon: {
+    name: "ごん",
+    summary: "高アグレッション。3bet多く、大きいサイズを多用し、リバーまで3発打ち切る。違和感のあるCbetにはレイズも返す。",
+    aim: "弱いCbetを減らし、チェックで誘って相手の過剰アグレッションを受ける。",
+    sizing: "バリュー: フロップ 1/2、ターン 2/3、リバー 2/3-ポット。ブラフ: 少なめ、打つなら 1/3-1/2。",
+    actions: {
+      "プリフロップ参加頻度": "弱いハンドでの参加は減らす。入るならブラフキャッチしやすい手を優先。",
+      "3bet頻度": "バリュー3betを増やす。",
+      "4bet頻度": "増やす。QQ+ / AKは前向き。相手が4betに降りるならA5s系を少量追加。",
+      "Cbet頻度": "下げる。レイズされても続行しやすい手中心で打つ。",
+      "チェック頻度": "上げる。中くらいの手と強い手の一部をチェックに回す。",
+      "ブラフ頻度": "下げる。相手が自分でブラフしてくれる。",
+      "コール頻度": "明確に上げる。トップペア以上は通常よりかなり降りない。",
+      "フォールド頻度": "下げる。1発目も2発目も簡単に降りない。",
+      "バリューベット頻度": "強い手では上げる。中くらいの手はチェックコール寄り。"
+    }
+  },
+  hamachi: {
+    name: "はまち",
+    summary: "自分に近い堅実型。プリフロップは狭く、3bet少なめ。フロップはコール多め、ダブルバレル以上でフォールドが増える。",
+    aim: "未参加ポットで先に取り、相手が入った後は弱くコールせず、2発目で取り切る。",
+    sizing: "バリュー: フロップ 1/3-1/2、ターン 1/2-2/3、リバー 1/2-2/3。ブラフ: フロップ 1/3、良いターンで 1/2-2/3。",
+    actions: {
+      "プリフロップ参加頻度": "未参加ポットではスチールを増やす。相手オープン後は弱くコールせず、強めの手で参加。",
+      "3bet頻度": "相手のオープンにはコールより3bet or fold寄り。バリュー中心に、ブロッカー付きブラフ3betを少量。",
+      "4bet頻度": "低く、かなりバリュー寄り。",
+      "Cbet頻度": "標準-やや高め。1発で終わるエアーCbetは減らし、ターンでも続けやすい手中心で打つ。",
+      "チェック頻度": "中くらい。ショーダウンバリューのある手は無理に膨らませない。",
+      "ブラフ頻度": "フロップの雑なブラフは減らし、良いターンでのダブルバレルを増やす。",
+      "コール頻度": "Aハイ/Kハイの1発目には少し上げる。",
+      "フォールド頻度": "大きな抵抗には上げる。3bet、強いレイズ、大きいリバーは信用。",
+      "バリューベット頻度": "上げる。フロップではコールされやすいので、勝っている時は素直に取る。"
+    }
+  },
+  zumi: {
+    name: "ずみさん",
+    summary: "3bet、4betが多く、ポストフロップもアグレッシブ。こちらのベットにはややフォールド多め、またはレイズ。",
+    aim: "弱いCbetを減らし、強いレンジで受け止める。",
+    sizing: "バリュー: フロップ 1/2、ターン 2/3、リバー 2/3-ポット。ブラフ: フロップ 1/3中心、ターン以降はボードを選ぶ。",
+    actions: {
+      "プリフロップ参加頻度": "OOPでは下げる。弱いハンドでの参加を減らす。",
+      "3bet頻度": "バリュー3betを増やす。",
+      "4bet頻度": "バリュー4betを増やす。QQ+ / AKは前向き。",
+      "Cbet頻度": "下げる。弱い手での自動Cbetを減らす。",
+      "チェック頻度": "上げる。中くらいの手と強い手の一部をチェックに回す。",
+      "ブラフ頻度": "選んで少し使う。降りやすいボードでは小さく、返されやすい場面では減らす。",
+      "コール頻度": "上げる。戦える手で入った後は簡単に降りない。",
+      "フォールド頻度": "プリフロップの弱いハンドでは上げる。ポストフロップで戦える手を持った後は下げる。",
+      "バリューベット頻度": "上げる。強い手で大きいポットを怖がらない。"
+    }
+  },
+  toi: {
+    name: "とーいさん",
+    summary: "広く参加するが、3bet少なく、4betはかなりプレミア寄り。ポストフロップはパッシブで、こちらのベットにはコール多め。",
+    aim: "ブラフを減らし、取れるバリューを太く取る。",
+    sizing: "バリュー: フロップ 1/2-2/3、ターン 2/3、リバー 2/3-ポット。ブラフ: 少なめ、打つならフロップ 1/3-1/2まで。",
+    actions: {
+      "プリフロップ参加頻度": "無理に広げず、相手より強いレンジで参加。",
+      "3bet頻度": "バリュー3betを増やす。",
+      "4bet頻度": "かなり低く、バリューのみ。相手の4betはKK+ / AK級を強く疑う。",
+      "Cbet頻度": "高め。ドライボードでは小さく広くレンジCbet。ウェットボードではエアーを減らす。",
+      "チェック頻度": "中くらい。ショーダウンバリューのある手は無理に膨らませない。",
+      "ブラフ頻度": "下げる。",
+      "コール頻度": "ドンクや大きいベットには下げる。",
+      "フォールド頻度": "相手の強いアクションに対して上げる。",
+      "バリューベット頻度": "かなり上げる。"
+    }
+  },
+  ryoma: {
+    name: "龍馬さん",
+    summary: "全体ではタイト寄りだが、自分にはブラフ3betが多く、チェックにもよく打つ。ベットにはフォールドも多いが、レイズで圧をかけてくる。",
+    aim: "小さく取れる所は取りつつ、レイズには降りすぎず、強い手で逆用する。",
+    sizing: "バリュー: フロップ 1/3-1/2、ターン 1/2-2/3、リバー 2/3前後。ブラフ: フロップ 1/3中心、ターン以降はかなり選別。",
+    actions: {
+      "プリフロップ参加頻度": "無理に広げすぎない。ただし龍馬さんがブラインドにいる時のスチールは増やす。",
+      "3bet頻度": "バリュー3betを増やす。",
+      "4bet頻度": "バリュー4betを増やす。QQ+ / AKは前向き。3bet過多が明確ならA5s系を少量。",
+      "Cbet頻度": "やや高め。ドライボードでは小さく広く取るが、レイズされたら全部降りるエアーは打ちすぎない。",
+      "チェック頻度": "上げる。トップペア、オーバーペア、強いドロー、一部の強い完成ハンドをチェックに回す。",
+      "ブラフ頻度": "フロップの小さいブラフは残す。3バレルブラフは減らす。",
+      "コール頻度": "上げる。特にレイズに対して降りすぎない。",
+      "フォールド頻度": "プリフロップの弱い参加では上げる。ポストフロップで戦える手を持った後は下げる。",
+      "バリューベット頻度": "上げる。"
+    }
+  }
+};
+
+let currentOpponentKey = "towata";
+
+// ============================================================
 // STATE
 // ============================================================
 let currentQuiz = [];
@@ -943,6 +1186,42 @@ function showPage(id) {
   if (id === 'dashboard') updateDashboard();
   if (id === 'history') renderHistory();
   if (id === 'sizing') startSizing();
+  if (id === 'matchplan') renderOpponentPlan();
+}
+
+function renderOpponentPlan() {
+  const tabs = document.getElementById('opponent-tabs');
+  const content = document.getElementById('opponent-content');
+  if (!tabs || !content) return;
+
+  tabs.innerHTML = Object.entries(OPPONENT_PLANS).map(([key, plan]) =>
+    `<button class="opponent-tab${key === currentOpponentKey ? ' active' : ''}" onclick="selectOpponent('${key}')">${plan.name}</button>`
+  ).join('');
+
+  const plan = OPPONENT_PLANS[currentOpponentKey];
+  const rows = Object.entries(plan.actions).map(([label, value]) =>
+    `<tr><th>${label}</th><td>${value}</td></tr>`
+  ).join('');
+
+  content.innerHTML = `
+    <div class="opponent-summary">${plan.summary}</div>
+    <div class="opponent-meta">
+      <div class="match-note">
+        <strong>狙い</strong>
+        <p>${plan.aim}</p>
+      </div>
+      <div class="match-note">
+        <strong>推奨サイズ</strong>
+        <p>${plan.sizing}</p>
+      </div>
+    </div>
+    <table class="strategy-table">${rows}</table>
+  `;
+}
+
+function selectOpponent(key) {
+  currentOpponentKey = key;
+  renderOpponentPlan();
 }
 
 // ============================================================
@@ -2091,6 +2370,7 @@ renderRange();
 renderRules();
 updateDashboard();
 startSizing();
+renderOpponentPlan();
 </script>
 </body>
 </html>
