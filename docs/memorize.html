@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>トーナメント暗記ドリル</title>
+<style>
+:root {
+  --bg: #0a0d0e;
+  --panel: #121817;
+  --panel-2: #18211f;
+  --felt: #0d4f3d;
+  --felt-2: #08362f;
+  --line: #293632;
+  --text: #f3f6ef;
+  --muted: #9aa9a1;
+  --green: #48d989;
+  --teal: #42d6c4;
+  --amber: #f5bd4f;
+  --red: #f26c6c;
+  --blue: #8ab4ff;
+  --ink: #07110f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 50% -10%, rgba(72,217,137,.16), transparent 32rem),
+    linear-gradient(180deg, #0a0d0e 0%, #101514 55%, #0a0d0e 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.shell { max-width: 1180px; margin: 0 auto; padding: 18px; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: rgba(10,13,14,.92);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+  overflow-x: auto;
+}
+.brand { flex: 0 0 auto; font-weight: 800; letter-spacing: 0; }
+.brand span { color: var(--green); }
+.nav-btn {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  border-radius: 7px;
+  min-height: 36px;
+  padding: 8px 12px;
+}
+.nav-btn.active { background: var(--green); border-color: var(--green); color: var(--ink); font-weight: 700; }
+.hero {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 16px;
+  align-items: stretch;
+  margin: 18px 0;
+}
+.table-visual {
+  min-height: 310px;
+  border: 1px solid #1f765f;
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,.08), transparent 44%),
+    radial-gradient(ellipse at center, var(--felt) 0%, var(--felt-2) 68%, #061d1c 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+}
+.table-ring {
+  position: absolute;
+  inset: 24px;
+  border: 10px solid rgba(255,255,255,.08);
+  border-radius: 50%;
+}
+.hero-copy { position: relative; z-index: 2; max-width: 560px; }
+.hero-copy h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.15; letter-spacing: 0; }
+.hero-copy p { margin: 0; color: #d4e3dc; line-height: 1.65; font-size: 15px; }
+.card-fan {
+  position: absolute;
+  right: 38px;
+  bottom: 34px;
+  width: 178px;
+  height: 124px;
+}
+.poker-card {
+  position: absolute;
+  width: 78px;
+  height: 108px;
+  border-radius: 7px;
+  background: #f7f7ef;
+  color: #111;
+  border: 1px solid rgba(0,0,0,.2);
+  box-shadow: 0 16px 28px rgba(0,0,0,.28);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  font-weight: 900;
+}
+.poker-card small { font-size: 18px; }
+.poker-card.red { color: #c92f2f; }
+.poker-card.one { transform: rotate(-10deg); left: 18px; top: 8px; }
+.poker-card.two { transform: rotate(8deg); left: 82px; top: 2px; }
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.metric, .panel {
+  background: linear-gradient(180deg, var(--panel), #0f1514);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.metric { padding: 16px; min-height: 112px; }
+.metric strong { display: block; font-size: 32px; line-height: 1; }
+.metric span { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.panel { padding: 16px; margin-bottom: 16px; }
+.intro-block { margin-bottom: 16px; }
+.section { display: none; }
+.section.active { display: block; }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.section-head h2 { margin: 0; font-size: 22px; }
+.section-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.order-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.lesson-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  min-height: 150px;
+}
+.lesson-card.done { border-color: rgba(72,217,137,.65); }
+.lesson-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--ink);
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.lesson-card h3 { margin: 0 0 8px; font-size: 16px; }
+.lesson-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.control-btn, .primary-btn, .ghost-btn {
+  min-height: 38px;
+  border-radius: 7px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+}
+.control-btn.active, .primary-btn { background: var(--green); border-color: var(--green); color: var(--ink); font-weight: 800; }
+.ghost-btn { color: var(--muted); background: transparent; }
+.drill-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 14px; align-items: start; }
+.flashcard {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #17211f, #101514);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+}
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.tag { display: inline-flex; align-items: center; min-height: 24px; padding: 3px 8px; border-radius: 999px; background: rgba(255,255,255,.08); color: #d7e1dc; font-size: 12px; }
+.tag.warn { background: rgba(245,189,79,.16); color: var(--amber); }
+.tag.good { background: rgba(72,217,137,.16); color: var(--green); }
+.question { font-size: 23px; line-height: 1.38; font-weight: 800; margin: 0 0 12px; }
+.situation { color: var(--muted); line-height: 1.65; white-space: pre-line; margin: 0; }
+.answer-box {
+  display: none;
+  margin-top: 14px;
+  padding: 14px;
+  border-left: 3px solid var(--teal);
+  background: rgba(66,214,196,.08);
+  border-radius: 0 8px 8px 0;
+  line-height: 1.65;
+}
+.answer-box.show { display: block; }
+.answer-box strong { color: var(--green); }
+.choice-list { display: grid; gap: 8px; }
+.choice {
+  width: 100%;
+  text-align: left;
+  border: 2px solid var(--line);
+  background: #0f1514;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 13px 14px;
+}
+.choice:hover:not(:disabled) { border-color: var(--teal); }
+.choice.correct { border-color: var(--green); background: rgba(72,217,137,.12); }
+.choice.wrong { border-color: var(--red); background: rgba(242,108,108,.12); }
+.choice.acceptable { border-color: var(--amber); background: rgba(245,189,79,.13); }
+.feedback {
+  min-height: 92px;
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 8px;
+  background: #0f1514;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  line-height: 1.55;
+}
+.feedback strong { color: var(--text); }
+.progress-track { height: 9px; background: #0b100f; border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+.progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--teal)); transition: width .25s; }
+.range-table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 8px; }
+.range-table th, .range-table td { border-bottom: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.5; }
+.range-table th { color: var(--muted); font-weight: 600; background: #101716; }
+.range-table td:first-child { font-weight: 800; color: var(--green); width: 90px; }
+.memory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mini-note { background: #0f1514; border: 1px solid var(--line); border-radius: 8px; padding: 13px; }
+.mini-note strong { display: block; margin-bottom: 6px; color: var(--amber); }
+.mini-note p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 13px; }
+.review-list { display: grid; gap: 8px; }
+.review-item { padding: 12px; border-radius: 8px; background: #0f1514; border: 1px solid var(--line); }
+.review-item strong { display: block; margin-bottom: 5px; }
+.review-item p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.empty { color: var(--muted); text-align: center; padding: 28px; }
+@media (max-width: 820px) {
+  .hero, .drill-layout { grid-template-columns: 1fr; }
+  .order-grid, .dashboard, .memory-grid { grid-template-columns: 1fr; }
+  .hero-copy h1 { font-size: 28px; }
+  .table-visual { min-height: 280px; }
+  .card-fan { right: 22px; bottom: 24px; transform: scale(.88); transform-origin: right bottom; }
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <div class="brand">Tournament <span>Memory</span></div>
+  <button class="nav-btn active" data-section="home">ホーム</button>
+  <button class="nav-btn" data-section="order">暗記順</button>
+  <button class="nav-btn" data-section="drill">ドリル</button>
+  <button class="nav-btn" data-section="ranges">早見表</button>
+  <button class="nav-btn" data-section="review">弱点</button>
+</nav>
+
+<main class="shell">
+  <section id="home" class="section active">
+    <div class="hero">
+      <div class="table-visual">
+        <div class="table-ring"></div>
+        <div class="hero-copy">
+          <h1>トーナメントで迷わないための暗記アプリ</h1>
+          <p>プリフロップからフロップ、ICMまでを順番に反復します。目的は「考える前に基本EVの高い選択肢が出る」状態を作ることです。</p>
+        </div>
+        <div class="card-fan" aria-hidden="true">
+          <div class="poker-card red one"><small>A♥</small><small>♥</small></div>
+          <div class="poker-card two"><small>K♠</small><small>♠</small></div>
+        </div>
+      </div>
+      <div class="dashboard">
+        <div class="metric"><strong id="statAnswered">0</strong><span>解いた問題数</span></div>
+        <div class="metric"><strong id="statAccuracy">0%</strong><span>正答率</span></div>
+        <div class="metric"><strong id="statStreak">0</strong><span>連続正解</span></div>
+        <div class="metric"><strong id="statWeak">0</strong><span>弱点に残っている問題</span></div>
+      </div>
+    </div>
+    <div class="intro-block">
+      <div class="section-head">
+        <div>
+          <h2>今日の使い方</h2>
+          <p>左から順番に覚えて、最後は弱点だけを回します。1セット10問で十分です。</p>
+        </div>
+        <button class="primary-btn" data-jump="drill">ドリル開始</button>
+      </div>
+      <div class="order-grid" id="homeLessons"></div>
+    </div>
+  </section>
+
+  <section id="order" class="section">
+    <div class="section-head">
+      <div>
+        <h2>覚える順番</h2>
+        <p>トーナメント中級者までの土台。上から固めるほど、実戦中の迷いが減ります。</p>
+      </div>
+      <button class="ghost-btn" id="resetProgress">進捗リセット</button>
+    </div>
+    <div class="order-grid" id="lessonGrid"></div>
+  </section>
+
+  <section id="drill" class="section">
+    <div class="section-head">
+      <div>
+        <h2>即答ドリル</h2>
+        <p>カテゴリを選んで、答えを選択。間違えた問題は自動で弱点に入ります。</p>
+      </div>
+      <div class="progress-track" style="width:190px"><div class="progress-fill" id="sessionProgress"></div></div>
+    </div>
+    <div class="controls" id="categoryControls"></div>
+    <div class="drill-layout">
+      <div class="flashcard">
+        <div>
+          <div class="tag-row" id="cardTags"></div>
+          <p class="question" id="questionText"></p>
+          <p class="situation" id="situationText"></p>
+          <div class="answer-box" id="answerBox"></div>
+        </div>
+        <div class="controls">
+          <button class="ghost-btn" id="showAnswer">答えを見る</button>
+          <button class="primary-btn" id="nextCard">次の問題</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="choice-list" id="choiceList"></div>
+        <div class="feedback" id="feedback">選択肢を押すと判定と理由が出ます。</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ranges" class="section">
+    <div class="section-head">
+      <div>
+        <h2>暗記用 早見表</h2>
+        <p>まずはこの粒度で十分です。細かいGTO頻度より、明らかなミスを消すための表です。</p>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>1. ポジション別オープン</h3>
+      <table class="range-table">
+        <thead><tr><th>位置</th><th>目安</th><th>必須暗記</th></tr></thead>
+        <tbody>
+          <tr><td>UTG</td><td>約15%</td><td>55+、ATs+、KJs+、QJs、JTs、AKo、AQo</td></tr>
+          <tr><td>HJ</td><td>約20%</td><td>UTGにA5s-A9s一部、KTs、T9s-65sを追加</td></tr>
+          <tr><td>CO</td><td>約27%</td><td>小ペア、Kxs、オフスートブロードウェイを追加</td></tr>
+          <tr><td>BTN</td><td>約45%</td><td>ほぼ全ペア、スーテッド多数、ブロードウェイ全部</td></tr>
+          <tr><td>SB</td><td>約45%</td><td>広く開けるがOOP。弱すぎるオフスートは捨てる</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="memory-grid">
+      <div class="mini-note"><strong>2. 20BB以下</strong><p>10BB以下はプッシュ/フォールド。15-20BBはリスチールオールインが主戦場。</p></div>
+      <div class="mini-note"><strong>3. BBディフェンス</strong><p>相手が後ろのポジションほどレンジが広いので、BBも広く守る。vs BTNは約65%。</p></div>
+      <div class="mini-note"><strong>4. 3betオールイン</strong><p>A5s/A4sはブロッカーとホイールでブラフ候補。強いペアとAKはバリュー。</p></div>
+      <div class="mini-note"><strong>5. フロップ分類</strong><p>A72rやQQ5rは小さく高頻度。T97ttや987は低頻度、大きめ、チェック多め。</p></div>
+      <div class="mini-note"><strong>6. ICM</strong><p>バブルではチップEVで少し得でも、飛ぶリスクが高いコールはフォールドになりやすい。</p></div>
+      <div class="mini-note"><strong>サイズ</strong><p>通常オープン2-2.5BB。ショート時は2BB。3betはIP約3倍、OOP約4倍。</p></div>
+    </div>
+  </section>
+
+  <section id="review" class="section">
+    <div class="section-head">
+      <div>
+        <h2>弱点復習</h2>
+        <p>間違えた問題だけを表示します。正解すると弱点から外れます。</p>
+      </div>
+      <button class="primary-btn" id="reviewDrill">弱点だけ解く</button>
+    </div>
+    <div class="review-list" id="reviewList"></div>
+  </section>
+</main>
+
+<script>
+const lessons = [
+  { id: "open", title: "ポジション別オープンレンジ", text: "UTGを基準に、HJ、CO、BTN、SBへ少しずつ広げる。最初の暗記対象。" },
+  { id: "push", title: "20BB以下のプッシュ/フォールド", text: "10BB以下はほぼ表通り。15-20BBはリスチールと2BBオープンを覚える。" },
+  { id: "bb", title: "BBディフェンス", text: "ポットオッズがあるので守る。相手がBTN/SBなら広く、UTGなら狭く。" },
+  { id: "jam3", title: "3betオールインレンジ", text: "強いハンドはバリュー、A5s/A4sなどはブラフ候補。スタックで変わる。" },
+  { id: "flop", title: "フロップのボード分類", text: "レンジ有利、ナッツ有利、ドライ/ウェットでCbet方針を決める。" },
+  { id: "icm", title: "バブル・FTのICM感覚", text: "トーナメントライフの価値を考える。特にミドルスタックの無理コールを消す。" }
+];
+
+const questions = [
+  { id:"q1", cat:"open", title:"UTGの基準", tags:["プリフロップ","UTG"], q:"UTGで AJo。基本アクションは？", s:"6max、100BB効果的。全員まだアクションなし。", c:["フォールド","2.5BBオープン","リンプ"], ok:[1], a:"2.5BBオープン", e:"AJoはUTGのオープン下限付近。迷うなら開ける側で覚える。リンプはしない。" },
+  { id:"q2", cat:"open", title:"UTGで弱いKオフ", tags:["プリフロップ","UTG"], q:"UTGで KJo。オープンする？", s:"6max、100BB効果的。", c:["フォールド","2.5BBオープン","3bet待ちでリンプ"], ok:[0], a:"フォールド", e:"UTGのオフスートはAKo/AQoが中心。KJoはドミネイトされやすくEVが落ちる。" },
+  { id:"q3", cat:"open", title:"BTNスチール", tags:["プリフロップ","BTN"], q:"BTNで K9s。全員フォールド。", s:"アンティありのトーナメント中盤。", c:["フォールド","2-2.5BBオープン","オールイン"], ok:[1], a:"2-2.5BBオープン", e:"BTNは広くスチールできる。K9sは十分にオープン範囲。" },
+  { id:"q4", cat:"open", title:"COのAxs", tags:["プリフロップ","CO"], q:"COで A5s。全員フォールド。", s:"35BB持ち。後ろはBTN/SB/BB。", c:["フォールド","オープン","リンプ"], ok:[1], a:"オープン", e:"A5sはブロッカー、フラッシュ、ホイールの価値がありCOから開ける。" },
+  { id:"q5", cat:"push", title:"10BB UTG", tags:["10BB","プッシュ"], q:"10BBでUTG、AJo。どうする？", s:"アンティあり。バブルではない。", c:["フォールド","ミニレイズして降りる","オールイン"], ok:[2], a:"オールイン", e:"10BB以下はプッシュ/フォールド寄り。UTGでもAJoは十分に押せる候補。" },
+  { id:"q6", cat:"push", title:"10BB BTN", tags:["10BB","BTN"], q:"10BBでBTN、K9s。全員フォールド。", s:"SBとBBは平均スタック。", c:["フォールド","オールイン","3BBレイズ"], ok:[1], a:"オールイン", e:"BTNの10BBはかなり広くプッシュできる。K9s+は基本の押し候補。" },
+  { id:"q7", cat:"push", title:"20BBのサイズ", tags:["20BB","サイズ"], q:"20BB持ちでオープンする時の標準サイズは？", s:"トーナメント中盤、アンティあり。", c:["2BB前後","4BB","リンプ固定"], ok:[0], a:"2BB前後", e:"ショート寄りでは小さく開ける。失敗時の損失を抑えつつスチールする。" },
+  { id:"q8", cat:"bb", title:"BB vs BTN", tags:["BB","ディフェンス"], q:"BBで JTo。BTNが2.5BBオープン、SBフォールド。", s:"100BB効果的。", c:["フォールド","コール","必ず3bet"], ok:[1], a:"コール", e:"BTNレンジは広く、BBはオッズが良い。JToはディフェンス可能。" },
+  { id:"q9", cat:"bb", title:"BB頻度", tags:["BB","頻度"], q:"BBディフェンスは、どの相手に対して一番広くなる？", s:"UTG / CO / BTN / SBのオープンを比較。", c:["UTG","BTNやSB","全員同じ"], ok:[1], a:"BTNやSB", e:"後ろのポジションほどオープンレンジが広いので、BBも広く守れる。" },
+  { id:"q10", cat:"bb", title:"vs UTG", tags:["BB","UTG"], q:"BBで K8o。UTGが2.5BBオープン。", s:"100BB効果的。", c:["フォールド","コール","3bet"], ok:[0], a:"フォールド", e:"UTGレンジは強い。BBでも弱いオフスートKはドミネイトされやすい。" },
+  { id:"q11", cat:"jam3", title:"A5sブラフ3bet", tags:["3bet","A5s"], q:"BTNで A5s。COが2.5BBオープン。", s:"35BB効果的。相手はよくスチールする。", c:["フォールド","コールのみ","3betまたは3betオールイン候補"], ok:[2], a:"3betまたは3betオールイン候補", e:"Aブロッカーがあり、コールされてもエクイティが残る。スタック次第で有力なリスチール候補。" },
+  { id:"q12", cat:"jam3", title:"強いペア", tags:["3bet","バリュー"], q:"COで KK。UTGが3BBオープン。", s:"40BB効果的。", c:["コール固定","バリュー3bet","フォールド"], ok:[1], a:"バリュー3bet", e:"KKは明確なバリュー。トーナメントでも基本は強くプレイする。" },
+  { id:"q13", cat:"flop", title:"Aハイドライ", tags:["フロップ","Cbet"], q:"BTNオープン、BBコール。ボード A♠ 7♦ 2♣。方針は？", s:"あなたはプリフロップレイザー。", c:["小さく高頻度Cbet","大きく低頻度だけ","ほぼチェック"], ok:[0], a:"小さく高頻度Cbet", e:"Aハイドライはレイザー側のレンジ有利。1/3程度で広く打ちやすい。" },
+  { id:"q14", cat:"flop", title:"ウェット連結", tags:["フロップ","ウェット"], q:"BTNオープン、BBコール。ボード 9♠ 8♠ 7♦。方針は？", s:"あなたはプリフロップレイザー。", c:["何でも小さくCbet","チェック多め、大きく打つなら選別","常にオールイン"], ok:[1], a:"チェック多め、大きく打つなら選別", e:"BB側にツーペア、ストレート、ドローが多い。レンジ全体で雑に打つと危険。" },
+  { id:"q15", cat:"flop", title:"ペアボード", tags:["フロップ","ドライ"], q:"COオープン、BBコール。ボード Q♠ Q♦ 5♣。", s:"あなたはプリフロップレイザー。", c:["小さく高頻度Cbet","大きく低頻度のみ","全ハンドチェック"], ok:[0], a:"小さく高頻度Cbet", e:"ペアボードは相手が強くヒットしにくい。小さく広く打ちやすい。" },
+  { id:"q16", cat:"icm", title:"バブルのミドル", tags:["ICM","バブル"], q:"バブル付近のミドルスタック。チップEVで少し得なオールインコールを見つけた。", s:"負けると飛ぶ。後ろにショートが2人いる。", c:["コール寄りに広げる","ICMでフォールド寄りに調整","どんな状況でもチップEVだけ"], ok:[1], a:"ICMでフォールド寄りに調整", e:"飛ばない価値が上がる。ショートがいる時のミドルスタックは無理コールを避ける。" },
+  { id:"q17", cat:"icm", title:"ビッグスタック", tags:["ICM","バブル"], q:"バブル付近でビッグスタック。テーブルにミドルが多い。", s:"自分がカバーしている相手が多い。", c:["スチールを増やす","全員と大ポットを避けて寝る","BBまで全ハンドフォールド"], ok:[0], a:"スチールを増やす", e:"相手は飛びたくないので降りやすい。ビッグスタックは圧力をかけられる。" },
+  { id:"q18", cat:"icm", title:"ショートで待ちすぎ", tags:["ショート","終盤"], q:"12BBのショート。COで A8s、全員フォールド。", s:"バブルではない。", c:["フォールドしてプレミアム待ち","オールイン候補","リンプ"], ok:[1], a:"オールイン候補", e:"ショートで待ちすぎるとフォールドエクイティが消える。COのA8sは攻撃候補。" }
+];
+
+const state = JSON.parse(localStorage.getItem("pokerMemoryState") || '{"answered":0,"correct":0,"streak":0,"weak":{},"done":{}}');
+let currentCategory = "open";
+let activePool = questions.filter(q => q.cat === currentCategory);
+let current = null;
+let sessionCount = 0;
+let locked = false;
+
+function save() {
+  localStorage.setItem("pokerMemoryState", JSON.stringify(state));
+  renderStats();
+  renderLessons();
+  renderReview();
+}
+
+function renderStats() {
+  const answered = state.answered || 0;
+  const correct = state.correct || 0;
+  document.getElementById("statAnswered").textContent = answered;
+  document.getElementById("statAccuracy").textContent = answered ? Math.round(correct / answered * 100) + "%" : "0%";
+  document.getElementById("statStreak").textContent = state.streak || 0;
+  document.getElementById("statWeak").textContent = Object.keys(state.weak || {}).length;
+}
+
+function setSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.toggle("active", s.id === id));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.section === id));
+}
+
+function renderLessons() {
+  const html = lessons.map((l, i) => `
+    <div class="lesson-card ${state.done[l.id] ? "done" : ""}">
+      <span class="lesson-index">${i + 1}</span>
+      <h3>${l.title}</h3>
+      <p>${l.text}</p>
+      <div class="controls" style="margin-top:12px">
+        <button class="control-btn" data-start="${l.id}">この章を解く</button>
+        <button class="ghost-btn" data-done="${l.id}">${state.done[l.id] ? "完了済み" : "覚えた"}</button>
+      </div>
+    </div>`).join("");
+  document.getElementById("lessonGrid").innerHTML = html;
+  document.getElementById("homeLessons").innerHTML = html;
+}
+
+function renderCategories() {
+  document.getElementById("categoryControls").innerHTML = lessons.map(l =>
+    `<button class="control-btn ${l.id === currentCategory ? "active" : ""}" data-cat="${l.id}">${l.title}</button>`
+  ).join("") + `<button class="control-btn ${currentCategory === "weak" ? "active" : ""}" data-cat="weak">弱点のみ</button>`;
+}
+
+function pickQuestion() {
+  activePool = currentCategory === "weak"
+    ? questions.filter(q => state.weak[q.id])
+    : questions.filter(q => q.cat === currentCategory);
+  if (!activePool.length) {
+    current = null;
+    document.getElementById("cardTags").innerHTML = "";
+    document.getElementById("questionText").textContent = "このカテゴリの問題がありません";
+    document.getElementById("situationText").textContent = currentCategory === "weak" ? "弱点は空です。通常カテゴリで問題を解いてください。" : "";
+    document.getElementById("choiceList").innerHTML = "";
+    document.getElementById("feedback").textContent = "次に進むカテゴリを選んでください。";
+    return;
+  }
+  current = activePool[Math.floor(Math.random() * activePool.length)];
+  locked = false;
+  document.getElementById("cardTags").innerHTML = current.tags.map(t => `<span class="tag">${t}</span>`).join("") + `<span class="tag warn">${current.title}</span>`;
+  document.getElementById("questionText").textContent = current.q;
+  document.getElementById("situationText").textContent = current.s;
+  document.getElementById("answerBox").classList.remove("show");
+  document.getElementById("answerBox").innerHTML = `<strong>${current.a}</strong><br>${current.e}`;
+  document.getElementById("choiceList").innerHTML = current.c.map((choice, i) =>
+    `<button class="choice" data-choice="${i}">${choice}</button>`
+  ).join("");
+  document.getElementById("feedback").textContent = "選択肢を押すと判定と理由が出ます。";
+  document.getElementById("sessionProgress").style.width = Math.min(sessionCount, 10) * 10 + "%";
+}
+
+function answer(index) {
+  if (!current || locked) return;
+  locked = true;
+  const isCorrect = current.ok.includes(index);
+  state.answered += 1;
+  sessionCount += 1;
+  if (isCorrect) {
+    state.correct += 1;
+    state.streak += 1;
+    delete state.weak[current.id];
+  } else {
+    state.streak = 0;
+    state.weak[current.id] = true;
+  }
+  document.querySelectorAll(".choice").forEach((btn) => {
+    const i = Number(btn.dataset.choice);
+    btn.disabled = true;
+    if (current.ok.includes(i)) btn.classList.add(current.ok.length > 1 ? "acceptable" : "correct");
+    if (i === index && !isCorrect) btn.classList.add("wrong");
+  });
+  document.getElementById("feedback").innerHTML = `${isCorrect ? "<strong>正解。</strong>" : "<strong>不正解。</strong>"} ${current.e}`;
+  document.getElementById("answerBox").classList.add("show");
+  save();
+}
+
+function renderReview() {
+  const weak = questions.filter(q => state.weak[q.id]);
+  document.getElementById("reviewList").innerHTML = weak.length ? weak.map(q => `
+    <div class="review-item">
+      <strong>${q.q}</strong>
+      <p>${q.s}<br>答え: ${q.a}</p>
+    </div>`).join("") : `<div class="empty">弱点はまだありません。間違えた問題がここに残ります。</div>`;
+}
+
+document.addEventListener("click", (e) => {
+  const nav = e.target.closest("[data-section]");
+  if (nav) setSection(nav.dataset.section);
+  const jump = e.target.closest("[data-jump]");
+  if (jump) setSection(jump.dataset.jump);
+  const start = e.target.closest("[data-start]");
+  if (start) {
+    currentCategory = start.dataset.start;
+    renderCategories();
+    setSection("drill");
+    pickQuestion();
+  }
+  const done = e.target.closest("[data-done]");
+  if (done) {
+    state.done[done.dataset.done] = !state.done[done.dataset.done];
+    save();
+  }
+  const cat = e.target.closest("[data-cat]");
+  if (cat) {
+    currentCategory = cat.dataset.cat;
+    renderCategories();
+    pickQuestion();
+  }
+  const choice = e.target.closest("[data-choice]");
+  if (choice) answer(Number(choice.dataset.choice));
+});
+
+document.getElementById("showAnswer").addEventListener("click", () => {
+  if (current) document.getElementById("answerBox").classList.add("show");
+});
+document.getElementById("nextCard").addEventListener("click", pickQuestion);
+document.getElementById("reviewDrill").addEventListener("click", () => {
+  currentCategory = "weak";
+  renderCategories();
+  setSection("drill");
+  pickQuestion();
+});
+document.getElementById("resetProgress").addEventListener("click", () => {
+  if (!confirm("進捗、正答率、弱点をリセットしますか？")) return;
+  Object.assign(state, { answered: 0, correct: 0, streak: 0, weak: {}, done: {} });
+  save();
+});
+
+renderStats();
+renderLessons();
+renderCategories();
+renderReview();
+pickQuestion();
+</script>
+</body>
+</html>
