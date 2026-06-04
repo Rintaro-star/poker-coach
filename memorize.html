@@ -405,6 +405,8 @@ let activePool = questions.filter(q => q.cat === currentCategory);
 let current = null;
 let sessionCount = 0;
 let locked = false;
+let drillQueue = [];
+let queueCategory = "";
 
 function save() {
   localStorage.setItem("pokerMemoryState", JSON.stringify(state));
@@ -448,12 +450,36 @@ function renderCategories() {
   ).join("") + `<button class="control-btn ${currentCategory === "weak" ? "active" : ""}" data-cat="weak">弱点のみ</button>`;
 }
 
-function pickQuestion() {
-  activePool = currentCategory === "weak"
+function getActivePool() {
+  return currentCategory === "weak"
     ? questions.filter(q => state.weak[q.id])
     : questions.filter(q => q.cat === currentCategory);
+}
+
+function shuffle(list) {
+  const items = [...list];
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+}
+
+function rebuildQueue(pool) {
+  drillQueue = shuffle(pool.map(q => q.id));
+  if (current && drillQueue.length > 1 && drillQueue[0] === current.id) {
+    const swapIndex = drillQueue.findIndex(id => id !== current.id);
+    [drillQueue[0], drillQueue[swapIndex]] = [drillQueue[swapIndex], drillQueue[0]];
+  }
+  queueCategory = currentCategory;
+}
+
+function pickQuestion() {
+  activePool = getActivePool();
   if (!activePool.length) {
     current = null;
+    drillQueue = [];
+    queueCategory = currentCategory;
     document.getElementById("cardTags").innerHTML = "";
     document.getElementById("questionText").textContent = "このカテゴリの問題がありません";
     document.getElementById("situationText").textContent = currentCategory === "weak" ? "弱点は空です。通常カテゴリで問題を解いてください。" : "";
@@ -461,7 +487,10 @@ function pickQuestion() {
     document.getElementById("feedback").textContent = "次に進むカテゴリを選んでください。";
     return;
   }
-  current = activePool[Math.floor(Math.random() * activePool.length)];
+  const activeIds = new Set(activePool.map(q => q.id));
+  drillQueue = drillQueue.filter(id => activeIds.has(id));
+  if (queueCategory !== currentCategory || !drillQueue.length) rebuildQueue(activePool);
+  current = questions.find(q => q.id === drillQueue.shift());
   locked = false;
   document.getElementById("cardTags").innerHTML = current.tags.map(t => `<span class="tag">${t}</span>`).join("") + `<span class="tag warn">${current.title}</span>`;
   document.getElementById("questionText").textContent = current.q;
