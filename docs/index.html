@@ -32,6 +32,36 @@ a { color: var(--accent); text-decoration: none; }
 .nav-brand span { color:var(--accent); }
 .nav-btn { padding:8px 16px; border:1px solid var(--border); background:transparent; color:var(--text-dim); border-radius:6px; cursor:pointer; font-size:13px; white-space:nowrap; transition:all .2s; }
 .nav-btn:hover, .nav-btn.active { background:var(--accent); color:#06231f; border-color:var(--accent); }
+.nav-group-label { color:var(--text-dim); font-size:11px; font-weight:700; letter-spacing:1px; white-space:nowrap; padding:0 2px; align-self:center; }
+
+/* BOTTOM TAB BAR (モバイル用) */
+.bottom-nav { display:none; position:fixed; left:0; right:0; bottom:0; z-index:200; gap:2px; background:rgba(18,26,32,.97); backdrop-filter:blur(14px); border-top:1px solid var(--border); padding:4px 4px calc(4px + env(safe-area-inset-bottom)); }
+.bottom-nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:56px; background:transparent; border:none; color:var(--text-dim); font-size:11px; font-weight:600; border-radius:10px; padding:6px 2px; }
+.bottom-nav-btn .bn-icon { font-size:20px; line-height:1; }
+.bottom-nav-btn.active { color:var(--accent); background:rgba(45,212,191,.12); }
+
+/* MORE メニュー（ボトムシート） */
+.more-sheet-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:300; opacity:0; pointer-events:none; transition:opacity .2s; }
+.more-sheet-overlay.show { opacity:1; pointer-events:auto; }
+.more-sheet { position:fixed; left:0; right:0; bottom:0; z-index:301; background:var(--card); border:1px solid var(--border); border-bottom:none; border-radius:16px 16px 0 0; padding:10px 14px calc(14px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .25s ease; max-height:70vh; overflow-y:auto; }
+.more-sheet.show { transform:translateY(0); }
+.more-sheet-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:2px auto 10px; }
+.more-sheet-title { font-size:13px; color:var(--text-dim); margin-bottom:4px; font-weight:600; }
+.more-sheet-item { display:flex; align-items:center; gap:10px; width:100%; padding:14px 10px; background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--text); font-size:15px; text-align:left; cursor:pointer; min-height:48px; font-family:inherit; }
+.more-sheet-item:last-child { border-bottom:none; }
+.more-sheet-item span:first-child { font-size:18px; width:24px; text-align:center; }
+
+/* テーブルの横スクロール */
+.table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+/* 今日やることフロー */
+.today-flow { display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; }
+.today-flow-step { flex:1; min-width:150px; display:flex; flex-direction:column; gap:4px; text-align:left; background:var(--card-2); border:1px solid var(--border); color:var(--text); border-radius:10px; padding:14px; cursor:pointer; font-family:inherit; transition:all .2s; }
+.today-flow-step:hover { border-color:var(--accent); transform:translateY(-2px); }
+.today-flow-step .step-num { width:24px; height:24px; border-radius:50%; background:var(--accent); color:#06231f; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; }
+.today-flow-step strong { font-size:14px; }
+.today-flow-step span.desc { font-size:12px; color:var(--text-dim); }
+.today-flow-arrow { align-self:center; color:var(--text-dim); font-size:18px; }
 
 /* LAYOUT */
 .page { display:none; padding:20px; max-width:1060px; margin:0 auto; }
@@ -75,11 +105,14 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 .quiz-progress { font-size:13px; color:var(--text-dim); }
 .quiz-situation { background:var(--bg); border-radius:8px; padding:16px; margin-bottom:16px; line-height:1.8; font-size:14px; white-space:pre-line; }
 .quiz-choices { display:flex; flex-direction:column; gap:8px; }
-.quiz-choice { padding:14px 18px; border:2px solid var(--border); border-radius:8px; background:transparent; color:var(--text); cursor:pointer; font-size:15px; text-align:left; transition:all .2s; }
+.quiz-choice { padding:14px 18px; border:2px solid var(--border); border-radius:8px; background:transparent; color:var(--text); cursor:pointer; font-size:15px; text-align:left; transition:all .2s; min-height:48px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .quiz-choice:hover:not(:disabled) { border-color:var(--accent); background:#58a6ff11; }
 .quiz-choice.correct { border-color:var(--green); background:#3fb95018; }
 .quiz-choice.wrong { border-color:var(--red); background:#f8514918; }
 .quiz-choice.acceptable { border-color:var(--orange); background:#d2992218; }
+.quiz-choice.correct::after { content:'○'; color:var(--green); font-weight:700; font-size:18px; flex-shrink:0; }
+.quiz-choice.wrong::after { content:'×'; color:var(--red); font-weight:700; font-size:18px; flex-shrink:0; }
+.quiz-choice.acceptable::after { content:'△'; color:var(--orange); font-weight:700; font-size:18px; flex-shrink:0; }
 .quiz-explanation { margin-top:16px; padding:16px; background:var(--bg); border-radius:8px; border-left:3px solid var(--accent); display:none; font-size:14px; line-height:1.6; }
 .quiz-explanation.show { display:block; }
 .quiz-next-btn { margin-top:16px; padding:12px 32px; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:600; display:none; }
@@ -115,10 +148,12 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 /* SIZING TRAINER */
 .sizing-scenario { background:var(--bg); border-radius:8px; padding:20px; margin-bottom:16px; }
 .sizing-options { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
-.sizing-btn { padding:12px 24px; border:2px solid var(--border); border-radius:8px; background:transparent; color:var(--text); cursor:pointer; font-size:16px; font-weight:600; transition:all .2s; }
+.sizing-btn { padding:12px 24px; border:2px solid var(--border); border-radius:8px; background:transparent; color:var(--text); cursor:pointer; font-size:16px; font-weight:600; transition:all .2s; min-height:48px; }
 .sizing-btn:hover:not(:disabled) { border-color:var(--accent); }
 .sizing-btn.correct { border-color:var(--green); background:#3fb95018; }
 .sizing-btn.wrong { border-color:var(--red); background:#f8514918; }
+.sizing-btn.correct::after { content:' ○'; color:var(--green); }
+.sizing-btn.wrong::after { content:' ×'; color:var(--red); }
 .sizing-feedback { margin-top:16px; padding:16px; border-radius:8px; display:none; font-size:14px; line-height:1.6; }
 .sizing-feedback.show { display:block; }
 
@@ -162,6 +197,58 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 .range-priority-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; }
 .range-priority-list div { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; color:var(--text-dim); font-size:13px; line-height:1.5; }
 .range-priority-list strong { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-right:6px; border-radius:50%; background:var(--accent); color:#06231f; font-size:12px; }
+.range-img-gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.range-img-gallery figure { margin:0; }
+.range-img-gallery figcaption { font-size:12px; color:var(--accent); font-weight:600; margin-bottom:5px; }
+.range-img-gallery img { width:100%; border-radius:8px; border:1px solid var(--border); display:block; }
+
+/* PREFLOP RANGE DRILL */
+.rd-board { background:linear-gradient(135deg,var(--felt),#10222a); border:1px solid #245c50; border-radius:10px; padding:22px; text-align:center; margin-bottom:16px; }
+.rd-scenario { font-size:13px; color:var(--accent); font-weight:600; letter-spacing:.5px; }
+.rd-position { font-size:14px; color:var(--text-dim); margin:6px 0 14px; }
+.rd-cards { display:flex; gap:10px; justify-content:center; margin:10px 0 4px; }
+.rd-card { width:62px; height:86px; border-radius:9px; background:#fbfbf7; color:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; font-weight:800; box-shadow:0 6px 16px rgba(0,0,0,.4); }
+.rd-card .rk { font-size:30px; line-height:1; }
+.rd-card .st { font-size:24px; line-height:1; }
+.rd-card.red { color:#d22; }
+.rd-handlabel { font-size:13px; color:var(--text-dim); margin-top:6px; }
+.rd-choices { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
+.rd-choice { padding:14px 22px; border:2px solid var(--border); border-radius:9px; background:var(--card); color:var(--text); cursor:pointer; font-size:15px; font-weight:700; min-width:110px; min-height:48px; transition:all .15s; }
+.rd-choice:hover:not(:disabled) { border-color:var(--accent); }
+.rd-choice.correct { border-color:var(--green); background:#3fb95022; }
+.rd-choice.wrong { border-color:var(--red); background:#f8514922; }
+.rd-choice.correct::after { content:' ○'; color:var(--green); }
+.rd-choice.wrong::after { content:' ×'; color:var(--red); }
+.rd-feedback { margin-top:14px; padding:14px; border-radius:8px; background:var(--bg); border-left:3px solid var(--accent); font-size:14px; line-height:1.6; display:none; text-align:left; }
+.rd-feedback.show { display:block; }
+.rd-stats { display:flex; gap:16px; justify-content:center; font-size:13px; color:var(--text-dim); margin-bottom:12px; }
+.rd-stats b { color:var(--text); }
+.rd-filter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.rd-filter button { padding:7px 13px; border:1px solid var(--border); background:var(--card); color:var(--text-dim); border-radius:7px; cursor:pointer; font-size:12px; }
+.rd-filter button.on { background:var(--accent); color:#06231f; border-color:var(--accent); }
+
+/* FLOP MODULE */
+.flop-board { display:flex; gap:8px; justify-content:center; margin:12px 0; }
+.flop-card { width:50px; height:70px; border-radius:8px; background:#fbfbf7; color:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; font-weight:800; box-shadow:0 5px 12px rgba(0,0,0,.4); }
+.flop-card .rk { font-size:24px; line-height:1; }
+.flop-card .st { font-size:19px; line-height:1; }
+.flop-card.red { color:#d22; }
+.flop-tex-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:12px 0; }
+.flop-tex { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:13px; line-height:1.55; }
+.flop-tex h4 { color:var(--accent); font-size:13px; margin-bottom:6px; }
+.flop-tex .freq { font-weight:700; }
+.flop-matrix { width:100%; border-collapse:collapse; font-size:13px; margin:8px 0; }
+.flop-matrix th, .flop-matrix td { padding:9px 10px; border-bottom:1px solid var(--border); text-align:left; }
+.flop-matrix th { color:var(--text-dim); font-weight:600; }
+.flop-step { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); }
+.flop-step:last-child { border-bottom:none; }
+.flop-step .n { flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#06231f; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px; }
+.flop-step .body { flex:1; font-size:13px; line-height:1.6; }
+.flop-step .body strong { color:var(--text); }
+.pill { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:700; }
+.pill.big { background:#f8514922; color:var(--red); }
+.pill.small { background:#3fb95022; color:var(--green); }
+.pill.check { background:#d2992222; color:var(--orange); }
 
 /* MATCH PLAN */
 .match-hero { background:linear-gradient(135deg,var(--felt),#10222a); border:1px solid #245c50; border-radius:8px; padding:20px; margin-bottom:16px; }
@@ -206,14 +293,23 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 .export-textarea { width:100%; height:200px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:12px; font-family:monospace; resize:vertical; }
 
 /* RESPONSIVE */
+@media (max-width:700px) {
+  body { padding-bottom:68px; }
+  .bottom-nav { display:flex; }
+  .nav > .nav-btn, .nav > a.nav-btn, .nav > .nav-group-label { display:none; }
+  .nav { padding:10px 12px; }
+  .today-flow { flex-direction:column; }
+  .today-flow-arrow { display:none; }
+}
 @media (max-width:600px) {
   .stat-grid { grid-template-columns:1fr 1fr; }
   .stat-val { font-size:24px; }
-  .nav { padding:10px 12px; }
-  .nav-btn { padding:6px 12px; font-size:12px; }
   .page { padding:12px; }
   .range-hero { grid-template-columns:1fr; }
-  .range-grid { min-width:560px; }
+  .range-grid-wrap { overflow-x:visible; }
+  .range-grid { min-width:0; gap:2px; padding:6px; }
+  .range-cell { font-size:8px; border-radius:3px; }
+  .range-cell.suited-label { font-size:7px; }
 }
 </style>
 </head>
@@ -232,19 +328,71 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 
 <nav class="nav">
   <div class="nav-brand"><span>♠</span> Poker Coach<span id="sync-indicator" class="sync-status"></span></div>
-  <button class="nav-btn active" onclick="showPage('dashboard')">ダッシュボード</button>
-  <button class="nav-btn" onclick="showPage('quiz')">ドリル</button>
+  <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">ホーム</button>
+  <span class="nav-group-label">特訓</span>
+  <button class="nav-btn" data-page="quiz" onclick="showPage('quiz')">ドリル</button>
+  <button class="nav-btn" data-page="sizing" onclick="showPage('sizing')">サイジング特訓</button>
+  <button class="nav-btn" data-page="rangedrill" onclick="showPage('rangedrill')">レンジ特訓</button>
+  <button class="nav-btn" data-page="flop" onclick="showPage('flop')">フロップ</button>
+  <button class="nav-btn" data-page="mttdrill" onclick="showPage('mttdrill')">MTTドリル</button>
+  <span class="nav-group-label">学ぶ</span>
+  <button class="nav-btn" data-page="rules" onclick="showPage('rules')">マイルール</button>
+  <button class="nav-btn" data-page="ranges" onclick="showPage('ranges')">レンジ表</button>
+  <button class="nav-btn" data-page="matchplan" onclick="showPage('matchplan')">対戦メモ</button>
   <a class="nav-btn" href="memorize.html">暗記アプリ</a>
-  <button class="nav-btn" onclick="showPage('sizing')">サイジング特訓</button>
-  <button class="nav-btn" onclick="showPage('rules')">マイルール</button>
-  <button class="nav-btn" onclick="showPage('matchplan')">対戦メモ</button>
-  <button class="nav-btn" onclick="showPage('ranges')">レンジ表</button>
-  <button class="nav-btn" onclick="showPage('history')">学習履歴</button>
+  <span class="nav-group-label">記録</span>
+  <button class="nav-btn" data-page="history" onclick="showPage('history')">学習履歴</button>
 </nav>
+
+<!-- ボトムタブバー（スマホ用） -->
+<nav class="bottom-nav">
+  <button class="nav-btn bottom-nav-btn active" data-page="dashboard" onclick="showPage('dashboard')"><span class="bn-icon">🏠</span><span>ホーム</span></button>
+  <button class="nav-btn bottom-nav-btn" data-page="quiz" onclick="showPage('quiz')"><span class="bn-icon">🎯</span><span>ドリル</span></button>
+  <button class="nav-btn bottom-nav-btn" data-page="rangedrill" onclick="showPage('rangedrill')"><span class="bn-icon">🃏</span><span>レンジ特訓</span></button>
+  <button class="nav-btn bottom-nav-btn" data-page="history" onclick="showPage('history')"><span class="bn-icon">📊</span><span>記録</span></button>
+  <button class="nav-btn bottom-nav-btn" id="bn-more-btn" onclick="openMoreSheet()"><span class="bn-icon">☰</span><span>もっと</span></button>
+</nav>
+
+<div class="more-sheet-overlay" id="more-sheet-overlay" onclick="closeMoreSheet()"></div>
+<div class="more-sheet" id="more-sheet">
+  <div class="more-sheet-handle"></div>
+  <div class="more-sheet-title">その他のメニュー</div>
+  <button class="more-sheet-item" onclick="showPage('sizing')"><span>🎚</span>サイジング特訓</button>
+  <button class="more-sheet-item" onclick="showPage('ranges')"><span>📋</span>レンジ表</button>
+  <button class="more-sheet-item" onclick="showPage('flop')"><span>🌊</span>フロップ</button>
+  <button class="more-sheet-item" onclick="showPage('mttdrill')"><span>🏆</span>MTTドリル</button>
+  <button class="more-sheet-item" onclick="showPage('rules')"><span>📏</span>マイルール</button>
+  <button class="more-sheet-item" onclick="showPage('matchplan')"><span>📝</span>対戦メモ</button>
+  <a class="more-sheet-item" href="memorize.html"><span>🧠</span>暗記アプリ</a>
+</div>
 
 <!-- ========== DASHBOARD ========== -->
 <div id="page-dashboard" class="page active">
-  <h2>ダッシュボード</h2>
+  <h2>ホーム</h2>
+
+  <div class="card">
+    <div class="card-title">📅 今日やること</div>
+    <p style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">この順番で進めると効率よく定着します。</p>
+    <div class="today-flow">
+      <button class="today-flow-step" onclick="showPage('ranges')">
+        <span class="step-num">1</span>
+        <strong>レンジ表を見る</strong>
+        <span class="desc">今日の対象レンジを確認</span>
+      </button>
+      <span class="today-flow-arrow">→</span>
+      <button class="today-flow-step" onclick="showPage('rangedrill')">
+        <span class="step-num">2</span>
+        <strong>レンジ特訓</strong>
+        <span class="desc">クイズ形式で暗記チェック</span>
+      </button>
+      <span class="today-flow-arrow">→</span>
+      <button class="today-flow-step" onclick="showPage('flop')">
+        <span class="step-num">3</span>
+        <strong>フロップを学ぶ</strong>
+        <span class="desc">Cベット判断を練習</span>
+      </button>
+    </div>
+  </div>
 
   <div class="card">
     <div class="card-title">現在の実力</div>
@@ -375,9 +523,11 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
         <div class="score-big" id="result-score-big">80%</div>
         <div id="result-score-detail" style="color:var(--text-dim); margin-top:4px;"></div>
       </div>
-      <table class="result-cat-table" id="result-cat-table">
-        <tr><th>カテゴリ</th><th>正答率</th><th>評価</th></tr>
-      </table>
+      <div class="table-scroll">
+        <table class="result-cat-table" id="result-cat-table">
+          <tr><th>カテゴリ</th><th>正答率</th><th>評価</th></tr>
+        </table>
+      </div>
       <div id="result-wrong-list" class="result-wrong-list"></div>
       <div style="text-align:center; margin-top:20px;">
         <button class="nav-btn" style="background:var(--accent); color:#fff; border-color:var(--accent); padding:12px 40px; font-size:15px;" onclick="resetQuiz()">もう一度</button>
@@ -586,32 +736,30 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
 <div id="page-ranges" class="page">
   <div class="range-hero" style="margin-bottom:16px;">
     <div class="range-hero-main">
-      <h2>トーナメント最優先レンジ</h2>
-      <p>まずはMTTのRFIを基礎レンジとして固定します。迷った時は「今何BBか」「ポジションはどこか」「後ろに誰が残っているか」を先に見てください。</p>
-      <div class="range-source-note">基礎RFIは <a href="https://pokercoaching.com/preflop-charts" target="_blank" rel="noopener">PokerCoaching の Tournament GTO charts</a> と <a href="https://pokercoaching.com/cheatsheets" target="_blank" rel="noopener">stack-depth cheat sheet</a> を元に更新。バブル、ICM、卓のタイトさで調整します。</div>
+      <h2>6-max 100BB レンジ表</h2>
+      <p>あなたのチャート画像を元にした 6-max・100BB・キャッシュ系のプリフロップ完全体系です。「①オープン → ②BBディフェンス → ③SBの応手 → ④IPの応手」の順に覚えます。下のタブで切り替え、迷ったら元画像と見比べてください。</p>
+      <div class="range-source-note">サイズ: オープン 2.5bb（SBのみ 3.5bb）／ BB 3bet 13.5bb（約5x）／ SB 3bet 11bb（約4x）／ IP 3bet 8bb（約3x）。色: <span style="color:var(--green)">緑=コール/オープン</span>・<span style="color:var(--red)">赤=3bet</span>・グレー=フォールド。</div>
     </div>
     <div class="range-focus-list">
-      <div class="range-focus-item"><strong>1. RFIを固める</strong>75BB → 40BB → 25BBの順に、まずファーストインを暗記。</div>
-      <div class="range-focus-item"><strong>2. ショートを固める</strong>15BB/10BBのプッシュと、BBのコールレンジを最優先で反復。</div>
-      <div class="range-focus-item"><strong>3. 防御と3betへ進む</strong>BBディフェンスと3betは、RFI/Pushが入ってから。</div>
+      <div class="range-focus-item"><strong>1. オープンを固める</strong>UTG→HJ→CO→BTN→SB。各ポジションの「開ける/降りる」を即答。</div>
+      <div class="range-focus-item"><strong>2. BBディフェンス</strong>相手のオープンに対しコール/3bet/フォールド。最頻出。</div>
+      <div class="range-focus-item"><strong>3. 3betを覚える</strong>SBは3betかフォールド、IPはコールも混ぜる。最後にここ。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">暗記優先順位</div>
-    <div class="range-priority-list">
-      <div><strong>1</strong> RFI基礎 75BB: 深い時の標準</div>
-      <div><strong>2</strong> RFI 40BB+: トナメで最も使う標準帯</div>
-      <div><strong>3</strong> RFI 25BB: 攻撃スイッチ帯</div>
-      <div><strong>4</strong> Push 15BB: 完全プッシュ/フォールド入口</div>
-      <div><strong>5</strong> Push 10BB: 生存ライン</div>
-      <div><strong>6</strong> BB Call vs Push: コールミス防止</div>
-      <div><strong>7</strong> BB Defense / 3bet: 攻撃と防御の精度上げ</div>
+    <div class="card-title">📷 元のチャート画像</div>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">下のインタラクティブ表と見比べて使ってください。タップで拡大できます。</p>
+    <div class="range-img-gallery">
+      <figure><figcaption>① オープン</figcaption><a href="ranges_img/open.jpg" target="_blank" rel="noopener"><img src="ranges_img/open.jpg" alt="オープンレンジ" loading="lazy"></a></figure>
+      <figure><figcaption>② BBディフェンス</figcaption><a href="ranges_img/bb_def.jpg" target="_blank" rel="noopener"><img src="ranges_img/bb_def.jpg" alt="BBディフェンス" loading="lazy"></a></figure>
+      <figure><figcaption>③ SBの応手</figcaption><a href="ranges_img/sb_def.jpg" target="_blank" rel="noopener"><img src="ranges_img/sb_def.jpg" alt="SBの3bet" loading="lazy"></a></figure>
+      <figure><figcaption>④ IPの応手</figcaption><a href="ranges_img/ip_3bet.jpg" target="_blank" rel="noopener"><img src="ranges_img/ip_3bet.jpg" alt="IPの3bet" loading="lazy"></a></figure>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">レンジ表</div>
+    <div class="card-title">インタラクティブ・レンジ表</div>
     <div class="range-controls" id="range-position-tabs"></div>
     <div class="range-scenario-tabs" id="range-scenario-tabs"></div>
   </div>
@@ -632,16 +780,175 @@ h3 { font-size:16px; margin:16px 0 8px; color:var(--accent); }
     <div class="card-title">サイジング早見表</div>
     <table class="result-cat-table">
       <tr><th>アクション</th><th>サイズ</th></tr>
-      <tr><td>トナメRFI（深いスタック）</td><td>2.0-2.5BB</td></tr>
-      <tr><td>トナメRFI（25BB前後）</td><td>2.0-2.2BB</td></tr>
-      <tr><td>SBオープン</td><td>3BB</td></tr>
-      <tr><td>リンパーあり</td><td>3BB + 1BB/リンパー</td></tr>
-      <tr><td>3bet（ポジションあり）</td><td>3.5x（オープンの3.5倍）</td></tr>
-      <tr><td>3bet（ポジションなし）</td><td>4x（オープンの4倍）</td></tr>
-      <tr><td>BB vs SBリンプ</td><td>3.5BB</td></tr>
-      <tr><td>4bet（ポジションあり）</td><td>2.3x（3betの2.3倍）</td></tr>
-      <tr><td>4bet（ポジションなし）</td><td>2.5x（3betの2.5倍）</td></tr>
+      <tr><td>オープン（UTG/HJ/CO/BTN）</td><td>2.5BB</td></tr>
+      <tr><td>オープン（SBのみ）</td><td>3.5BB</td></tr>
+      <tr><td>BB 3bet（vsオープン / OOP）</td><td>13.5BB（約5x）</td></tr>
+      <tr><td>SB 3bet（vsオープン / OOP）</td><td>11BB（約4x）</td></tr>
+      <tr><td>IP 3bet（ポジションあり）</td><td>8BB（約3x）</td></tr>
+      <tr><td>4bet（ポジションあり）</td><td>2.2-2.5x（3betの倍率）</td></tr>
+      <tr><td>4bet（ポジションなし）</td><td>2.5-3x（3betの倍率）</td></tr>
     </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 MTT 25BBの調整原則（アンティあり）</div>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">25BBはレンジ表を独立して覚えず、上の40BBレンジを流用して以下の4原則で補正する。</p>
+    <div class="flop-step"><div class="n">1</div><div class="body">オープンは同じ2.2bb（2bbでも可）。CO/BTN/SBの<strong>下限を1〜2段絞る</strong>（例: BTNの98o・53s系はフォールドへ）。</div></div>
+    <div class="flop-step"><div class="n">2</div><div class="body"><strong>コールド4betはしない</strong>：3betされたら「オールイン or フォールド」が基本。</div></div>
+    <div class="flop-step"><div class="n">3</div><div class="body"><strong>3betオールイン（リシャブ）の目安</strong> vs BTNオープン: <strong>99+, AQs+, AQo+, A5s, A4s</strong>（約6%）。</div></div>
+    <div class="flop-step"><div class="n">4</div><div class="body">小ペア（22-55）のセット狙いコールは価値減。<strong>コールよりフォールド/シャブ寄り</strong>に。</div></div>
+  </div>
+</div>
+
+<!-- ========== PREFLOP RANGE DRILL ========== -->
+<div id="page-rangedrill" class="page">
+  <h2>レンジ特訓（プリフロップ暗記）</h2>
+  <div class="card">
+    <div class="card-title">出題範囲を選ぶ</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">レンジ表のデータから、ランダムにハンド＋状況を出題します。色のついたセルだけでなく「フォールド」も正解になります。全セルを反復して暗記しましょう。</p>
+    <div class="rd-filter" id="rd-filter"></div>
+    <div style="text-align:center;margin-top:8px;">
+      <button class="nav-btn" style="background:var(--accent);color:#06231f;border-color:var(--accent);font-size:15px;padding:11px 36px;font-weight:700;" onclick="rdStart()">スタート</button>
+    </div>
+  </div>
+
+  <div class="card" id="rd-area" style="display:none;">
+    <div class="rd-stats">
+      <span>連続正解 <b id="rd-streak">0</b></span>
+      <span>正解 <b id="rd-correct">0</b> / <b id="rd-total">0</b></span>
+      <span>正答率 <b id="rd-rate">-</b></span>
+    </div>
+    <div class="rd-board">
+      <div class="rd-scenario" id="rd-scenario">—</div>
+      <div class="rd-position" id="rd-position">—</div>
+      <div class="rd-cards" id="rd-cards"></div>
+      <div class="rd-handlabel" id="rd-handlabel"></div>
+    </div>
+    <div class="rd-choices" id="rd-choices"></div>
+    <div class="rd-feedback" id="rd-feedback"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="nav-btn" id="rd-next" style="display:none;background:var(--accent);color:#06231f;border-color:var(--accent);padding:11px 36px;font-weight:700;" onclick="rdNext()">次の問題 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FLOP ========== -->
+<div id="page-flop" class="page">
+  <div class="range-hero" style="margin-bottom:16px;">
+    <div class="range-hero-main">
+      <h2>フロップ戦略（プリフロップの続き）</h2>
+      <p>プリフロップでレイザー（アグレッサー）になった後、フロップで「打つ / 打たない / サイズ」をどう決めるか。鍵は ①誰がアグレッサーか ②ボードがどちらのレンジに有利か（レンジ有利）③ボードの濡れ具合（テクスチャー）の3つです。</p>
+      <div class="range-source-note">この体系は「シングルレイズドポット・ヘッズアップ・100BB」を前提にした標準的なGTOベースの考え方です。マルチウェイや3betポットは別途調整が必要。</div>
+    </div>
+    <div class="range-focus-list">
+      <div class="range-focus-item"><strong>STEP 1</strong>自分はアグレッサー？ IP/OOP？</div>
+      <div class="range-focus-item"><strong>STEP 2</strong>このボードは自分とBBどちらのレンジに有利？</div>
+      <div class="range-focus-item"><strong>STEP 3</strong>テクスチャー（ドライ/ウェット）でサイズと頻度を決める</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">① 大原則：Cベットの3ステップ</div>
+    <div class="flop-step"><div class="n">1</div><div class="body"><strong>レンジ有利を確認</strong> — Aや高いカードが落ちたボードは、オープンレイザー（あなた）に有利。BBはA高を3betしてレンジから抜いている&コールレンジが弱いため。逆に <strong>低・中連結ボード（中央 6〜9 中心）</strong> はBBのコールレンジにヒットしやすく不利。</div></div>
+    <div class="flop-step"><div class="n">2</div><div class="body"><strong>テクスチャーでサイズを選ぶ</strong> — <span class="pill small">乾いた(ドライ)A高など → 小さく(1/4〜1/3)を高頻度</span> <span class="pill big">湿った(ウェット)強いボード → 大きく(2/3〜ポット)を絞って</span> <span class="pill check">不利なボード → チェック多め</span></div></div>
+    <div class="flop-step"><div class="n">3</div><div class="body"><strong>後のストリートを考える</strong> — IP（BTN/CO）はチェックが返ってきても後で取り返せるので幅広くCベット。OOP（SB/UTG-HJ vs BB）はチェックレンジを厚めに持ち、打つときは強めに。</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">② アグレッサー別のCベット指針（vs BB シングルレイズドポット）</div>
+    <div class="table-scroll">
+      <table class="flop-matrix">
+        <tr><th>あなた</th><th>位置</th><th>基本方針</th><th>標準サイズ</th></tr>
+        <tr><td>BTN / CO</td><td>IP</td><td>高頻度でCベット（60〜90%）。小サイズで広く圧をかけ、チェックは罠と弱いハンドのみ。</td><td>1/3 中心</td></tr>
+        <tr><td>UTG / HJ</td><td>OOP</td><td>レンジは強いがOOP。Aや K 高ボードは打ち、中低ボードはチェック多め。打つなら中〜大。</td><td>1/3〜2/3 使い分け</td></tr>
+        <tr><td>SB（vs BB）</td><td>OOP</td><td>レンジ広い&OOP。チェックレンジを厚く。強いボード＆強い手で大きく。</td><td>2/3 中心 + チェック</td></tr>
+        <tr><td>BB（コールした側）</td><td>—</td><td>基本はチェックして受ける（ドンクしない）。チェックレイズで強い手とドローを組む。</td><td>chk / chk-raise</td></tr>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">※ 頻度はGTOの目安。相手が降りやすい/コールしすぎなら、それぞれブラフ多め/バリュー多めにエクスプロイト。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">③ ボードテクスチャー早見</div>
+    <div class="flop-tex-grid">
+      <div class="flop-tex"><h4>ドライ A高（例 A72r）</h4>レンジ有利が大きい。<span class="freq">小サイズ(1/3)を超高頻度</span>。ほぼ全レンジで打てる。</div>
+      <div class="flop-tex"><h4>ドライ K/Q高（例 K83r）</h4>同様にレイザー有利。小〜中サイズ高頻度。</div>
+      <div class="flop-tex"><h4>ウェット高（例 KQ9ss・JT9）</h4>強い手・強いドローで<span class="freq">大サイズ</span>を絞って。エクイティが動くのでチェックも混ぜる。</div>
+      <div class="flop-tex"><h4>中・低連結（例 765・984）</h4>BB有利になりがち。<span class="freq">チェック多め</span>。打つならオーバーペア/強ドローで。</div>
+      <div class="flop-tex"><h4>ペアボード（例 K72・882）</h4>レンジ有利側が小サイズ高頻度。トリップス/オーバーペアは薄く長く。</div>
+      <div class="flop-tex"><h4>モノトーン（例 ♠♠♠）</h4>サイズ小さめ&頻度落とす。フラッシュ完成/A♠ブロッカーを意識。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">④ ベットサイズの意味</div>
+    <div class="table-scroll">
+      <table class="flop-matrix">
+        <tr><th>サイズ</th><th>使う場面</th><th>狙い</th></tr>
+        <tr><td>1/4〜1/3</td><td>レンジ有利なドライボードでレンジ全体を打つ</td><td>安く広く。降ろす＋薄いバリュー</td></tr>
+        <tr><td>1/2</td><td>標準。やや濡れたボードのバランス</td><td>バリューとプロテクトの両立</td></tr>
+        <tr><td>2/3〜3/4</td><td>濡れたボードで強い手/強ドロー</td><td>プロテクト＋大きなバリュー＋ブラフ圧</td></tr>
+        <tr><td>ポット〜オーバー</td><td>ナッツ寄り＆ドローを全力で否定</td><td>最大バリュー。3バレル設計の入口</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⑤ チェックする理由（迷ったら）</div>
+    <div class="flop-tex-grid">
+      <div class="flop-tex"><h4>不利なボード</h4>相手のレンジにヒットしている時は無理に打たない。</div>
+      <div class="flop-tex"><h4>ポットコントロール</h4>中途半端な強さ（セカンドペア等）は安く見たい。</div>
+      <div class="flop-tex"><h4>トラップ</h4>超強い手でアクションを誘う（ただしIPで相手がアグレッシブな時）。</div>
+      <div class="flop-tex"><h4>レンジを守る</h4>チェックレンジが弱いと相手に殴られる。強い手も一部チェックに残す。</div>
+    </div>
+    <p style="font-size:13px;color:var(--accent);margin-top:10px;">📌 あなたのマイルール「迷ったらチェック」はOOPで特に有効。ただしIP・レンジ有利ボードでは「迷ったら小さくCベット」が基本。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⑥ フロップ判断ドリル</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">状況とボードを見て、最適なアクションを選びます。</p>
+    <div id="flopdrill-setup" style="text-align:center;">
+      <button class="nav-btn" style="background:var(--accent);color:#06231f;border-color:var(--accent);font-size:15px;padding:11px 36px;font-weight:700;" onclick="flopStart()">ドリル開始</button>
+    </div>
+    <div id="flopdrill-area" style="display:none;">
+      <div class="rd-stats"><span>正解 <b id="fd-correct">0</b> / <b id="fd-total">0</b></span><span id="fd-progress"></span></div>
+      <div class="quiz-situation" id="fd-situation"></div>
+      <div class="flop-board" id="fd-board"></div>
+      <div class="quiz-choices" id="fd-choices"></div>
+      <div class="quiz-explanation" id="fd-explanation"></div>
+      <div style="text-align:center;"><button class="nav-btn" id="fd-next" style="display:none;margin-top:14px;background:var(--accent);color:#06231f;border-color:var(--accent);padding:11px 36px;font-weight:700;" onclick="flopNext()">次へ →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MTT判断ドリル ========== -->
+<div id="page-mttdrill" class="page">
+  <div class="range-hero" style="margin-bottom:16px;">
+    <div class="range-hero-main">
+      <h2>MTTドリル（アンティあり・弱点矯正）</h2>
+      <p>MTT特有の判断を12問で反復します。①サイジング矯正 ②攻撃スイッチ ③プッシュ/フォールド ④ICM/バブル、の4テーマ。実力分析で見つかった弱点に対応しています。</p>
+      <div class="range-source-note">レンジそのものは「レンジ表」「レンジ特訓」で暗記し、ここでは「実戦でその知識をどう使うか」の判断を鍛えます。</div>
+    </div>
+    <div class="range-focus-list">
+      <div class="range-focus-item"><strong>① サイジング矯正</strong>MTTオープンは2.2bb／ドライボードCbetは小さく／バリューは太く。</div>
+      <div class="range-focus-item"><strong>② 攻撃スイッチ</strong>スタックが減るほどオープン・スチールは積極的に。</div>
+      <div class="range-focus-item"><strong>③④ プッシュ/フォールド・ICM</strong>浅いスタックの二択判断とバブル特有の力加減。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">MTT判断ドリル（12問）</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">状況を読んで、最適なアクションを選びます。</p>
+    <div id="mttdrill-setup" style="text-align:center;">
+      <button class="nav-btn" style="background:var(--accent);color:#06231f;border-color:var(--accent);font-size:15px;padding:11px 36px;font-weight:700;" onclick="mttStart()">ドリル開始</button>
+    </div>
+    <div id="mttdrill-area" style="display:none;">
+      <div class="rd-stats"><span>正解 <b id="md-correct">0</b> / <b id="md-total">0</b></span><span id="md-progress"></span></div>
+      <div class="quiz-situation" id="md-situation"></div>
+      <div class="quiz-choices" id="md-choices"></div>
+      <div class="quiz-explanation" id="md-explanation"></div>
+      <div style="text-align:center;"><button class="nav-btn" id="md-next" style="display:none;margin-top:14px;background:var(--accent);color:#06231f;border-color:var(--accent);padding:11px 36px;font-weight:700;" onclick="mttNext()">次へ →</button></div>
+    </div>
   </div>
 </div>
 
@@ -1238,11 +1545,26 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  event.target.classList.add('active');
+  document.querySelectorAll('.nav-btn[data-page="'+id+'"]').forEach(b => b.classList.add('active'));
+  if (!document.querySelector('.bottom-nav-btn.active')) {
+    const moreBtn = document.getElementById('bn-more-btn');
+    if (moreBtn) moreBtn.classList.add('active');
+  }
+  closeMoreSheet();
+  window.scrollTo(0, 0);
   if (id === 'dashboard') updateDashboard();
   if (id === 'history') renderHistory();
   if (id === 'sizing') startSizing();
   if (id === 'matchplan') renderOpponentPlan();
+}
+
+function openMoreSheet() {
+  document.getElementById('more-sheet-overlay').classList.add('show');
+  document.getElementById('more-sheet').classList.add('show');
+}
+function closeMoreSheet() {
+  document.getElementById('more-sheet-overlay').classList.remove('show');
+  document.getElementById('more-sheet').classList.remove('show');
 }
 
 function renderOpponentPlan() {
@@ -1271,7 +1593,7 @@ function renderOpponentPlan() {
         <p>${plan.sizing}</p>
       </div>
     </div>
-    <table class="strategy-table">${rows}</table>
+    <div class="table-scroll"><table class="strategy-table">${rows}</table></div>
   `;
 }
 
@@ -1418,11 +1740,13 @@ function answerQuestion(idx) {
   quizResults.push({id:q.id, cat:q.cat, correct:isCorrect, yourAnswer:idx, correctAnswer:q.answer, explanation:q.explanation, choices:q.choices});
 
   const expDiv = document.getElementById('quiz-explanation');
-  expDiv.innerHTML = `<strong>${isCorrect ? '正解！' : '不正解'}</strong><br>${q.explanation}`;
+  expDiv.innerHTML = `<strong>${isCorrect ? '○ 正解！' : '× 不正解'}</strong><br>${q.explanation}`;
   expDiv.style.borderLeftColor = isCorrect ? 'var(--green)' : 'var(--red)';
   expDiv.classList.add('show');
-  document.getElementById('quiz-next').classList.add('show');
-  document.getElementById('quiz-next').textContent = quizIndex < currentQuiz.length - 1 ? '次の問題' : '結果を見る';
+  const nextBtn = document.getElementById('quiz-next');
+  nextBtn.classList.add('show');
+  nextBtn.textContent = quizIndex < currentQuiz.length - 1 ? '次の問題' : '結果を見る';
+  nextBtn.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function nextQuestion() {
@@ -1540,11 +1864,13 @@ function answerSizing(idx) {
   sizingResults.push({correct:isCorrect, situation:s.situation, explanation:s.explanation});
 
   const fb = document.getElementById('sizing-feedback');
-  fb.innerHTML = `<strong style="color:${isCorrect?'var(--green)':'var(--red)'}">${isCorrect?'正解！':'不正解'}</strong><br>${s.explanation}`;
+  fb.innerHTML = `<strong style="color:${isCorrect?'var(--green)':'var(--red)'}">${isCorrect?'○ 正解！':'× 不正解'}</strong><br>${s.explanation}`;
   fb.style.background = isCorrect ? '#3fb95011' : '#f8514911';
   fb.classList.add('show');
-  document.getElementById('sizing-next').classList.add('show');
-  document.getElementById('sizing-next').textContent = sizingIndex < currentSizing.length - 1 ? '次の問題' : '結果を見る';
+  const nextBtn = document.getElementById('sizing-next');
+  nextBtn.classList.add('show');
+  nextBtn.textContent = sizingIndex < currentSizing.length - 1 ? '次の問題' : '結果を見る';
+  nextBtn.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function nextSizing() {
@@ -1621,7 +1947,7 @@ function renderHistory() {
     document.getElementById('category-trend').innerHTML = '';
     return;
   }
-  let html = '<table class="history-table"><tr><th>日時</th><th>タイプ</th><th>スコア</th><th>正答率</th></tr>';
+  let html = '<div class="table-scroll"><table class="history-table"><tr><th>日時</th><th>タイプ</th><th>スコア</th><th>正答率</th></tr>';
   [...h].reverse().forEach(e => {
     const d = new Date(e.date);
     const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
@@ -1629,7 +1955,7 @@ function renderHistory() {
     const color = e.pct >= 80 ? 'var(--green)' : e.pct >= 60 ? 'var(--orange)' : 'var(--red)';
     html += `<tr><td>${dateStr}</td><td>${type}</td><td>${e.correct}/${e.total}</td><td style="color:${color};font-weight:600;">${e.pct}%</td></tr>`;
   });
-  html += '</table>';
+  html += '</table></div>';
   container.innerHTML = html;
 
   // category trend
@@ -1662,558 +1988,291 @@ function handLabel(r, c) {
 
 // Range definitions: each hand can be 'raise','call','3bet','bluff3bet','fold','mixed','mixed-call-3bet'
 const RANGE_DATA = {
-  // ===== TOURNAMENT GTO RFI BASE (75BB, MTT) =====
-  'mtt75-lj': {
-    title:'UTG/LJ RFI（MTT 75BB）', pct:'23.5%',
-    info:'<strong>基礎レンジ: 33+, A2s+, K6s+, Q9s+, J8s+, T8s+, 98s, 87s, 76s, A9o+, KTo+, QTo+</strong><br>6maxでは最初にアクションするポジションをUTGとして扱う。公開チャート上のLJ相当レンジを、アプリではUTG/LJとして表示。深いMTTではスーテッド系と小ペアの価値が高い。<br><span style="color:var(--accent)">最初はここを「トナメ深い時のUTG基準レンジ」として暗記。</span>',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+  // =========================================================================
+  // 6-max 100BB キャッシュ（画像チャート準拠）
+  //  ・オープン: 赤=オープン / 青=フォールド
+  //  ・BBディフェンス: 緑=コール / 赤=3bet / 青=フォールド
+  //  ・SB応手: 赤=3bet / 青=フォールド（コールなし）
+  //  ・IP応手: 赤=3bet / 緑=コール / 青=フォールド
+  // =========================================================================
+
+  // ===== オープン (RFI) 2.5bb / SBのみ3.5bb =====
+  'o-utg': {
+    title:'UTG オープン（6max 100BB / 2.5bb）', pct:'~17%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K9s+, Q9s+, J9s+, T9s, 98s, 87s, 76s, 65s, AJo+, KQo</strong><br>一番タイト。後ろに5人いるので強い側だけ。スーテッドのA・Kは広め、オフスートは AJo+/KQo まで。<br><span style="color:var(--accent)">合言葉「UTGで開けるハンドはどこでも開ける」。</span>',
+    grid: makeGrid({ raise:'22+,A2s+,K9s+,Q9s+,J9s+,T9s,98s,87s,76s,65s,AJo+,KQo' })
+  },
+  'o-hj': {
+    title:'HJ オープン（6max 100BB / 2.5bb）', pct:'~21%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K8s+, Q9s+, J8s+, T8s+, 97s+, 87s, 76s, 65s, 54s, ATo+, KJo+, QJo</strong><br>UTGに K8s / J8s / スーテッドコネクター / ATo / KJo / QJo を足す。',
+    grid: makeGrid({ raise:'22+,A2s+,K8s+,Q9s+,J8s+,T8s+,97s+,87s,76s,65s,54s,ATo+,KJo+,QJo' })
+  },
+  'o-co': {
+    title:'CO オープン（6max 100BB / 2.5bb）', pct:'~28%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K5s+, Q7s+, J7s+, T7s+, 96s+, 86s+, 75s+, 64s+, 54s, A8o+, KTo+, QTo+, JTo</strong><br>スチール開始ポジション。K5s/Q7s/弱スーテッドを大きく追加。',
+    grid: makeGrid({ raise:'22+,A2s+,K5s+,Q7s+,J7s+,T7s+,96s+,86s+,75s+,64s+,54s,A8o+,KTo+,QTo+,JTo' })
+  },
+  'o-btn': {
+    title:'BTN オープン（6max 100BB / 2.5bb）', pct:'~45%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K2s+, Q4s+, J6s+, T6s+, 95s+, 85s+, 74s+, 64s+, 53s+, 43s, A2o+, K8o+, Q8o+, J8o+, T8o+, 97o+, 87o, 76o</strong><br>最も広い。スーテッドはほぼ全部、オフスートも A2o+/K8o+ まで。<br><span style="color:var(--green)">全員降りたら必ず開ける。スチールを逃さない。</span>',
+    grid: makeGrid({ raise:'22+,A2s+,K2s+,Q4s+,J6s+,T6s+,95s+,85s+,74s+,64s+,53s+,43s,A2o+,K8o+,Q8o+,J8o+,T8o+,97o+,87o,76o' })
+  },
+  'o-sb': {
+    title:'SB オープン（6max 100BB / 3.5bb）', pct:'~44%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K2s+, Q4s+, J6s+, T6s+, 96s+, 85s+, 75s+, 64s+, 53s+, A2o+, K7o+, Q8o+, J8o+, T8o+, 98o</strong><br>SBはレイズかフォールドの2択（リンプなし）。OOPなのでサイズは大きめ3.5bb。BBが残るだけなので広く開ける。',
+    grid: makeGrid({ raise:'22+,A2s+,K2s+,Q4s+,J6s+,T6s+,96s+,85s+,75s+,64s+,53s+,A2o+,K7o+,Q8o+,J8o+,T8o+,98o' })
+  },
+
+  // ===== BB ディフェンス（相手2.5bbオープン / 3bet 13.5bb） =====
+  'bb-utg': {
+    title:'BB vs UTG オープン（3bet 13.5bb）', pct:'~33%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: QQ+, AKs, AKo, AQs, A5s, A4s</strong> ／ <strong>コール: 下記</strong><br>UTGはタイトなので絞って守る。BBはアクションを閉じられ最高のオッズ。小ペアはセット狙いでコール。',
     grid: makeGrid({
-      raise:'33+,A2s+,K6s+,Q9s+,J8s+,T8s+,98s,87s,76s,A9o+,KTo+,QTo+',
+      threeBet:'AA,KK,QQ,AKs,AKo,AQs,A5s,A4s',
+      call:'JJ,TT,99,88,77,66,55,44,33,22,AQo,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,T8s,98s,87s,76s,65s,54s,AJo,ATo,KQo,KJo,QJo'
     })
   },
-  'mtt75-hj': {
-    title:'HJ RFI（MTT 75BB）', pct:'27.9%',
-    info:'<strong>基礎レンジ: 22+, A2s+, K4s+, Q8s+, J8s+, T7s+, 97s+, 87s, 76s, 65s, 54s, A8o+, KTo+, QTo+, JTo</strong><br>LJからさらに広げる。小ペア全部、K4s+、JToが入る。<br>後ろにCO/BTNが残るので、オフスートの下側を広げすぎない。',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+  'bb-hj': {
+    title:'BB vs HJ オープン（3bet 13.5bb）', pct:'~37%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: JJ+, AKs/o, AQs/o, AJs, KJs, A5s-A3s</strong> ／ コール: 広め<br>HJはUTGより広いので守りも少し広く、3betのバリュー/ブラフも増やす。',
     grid: makeGrid({
-      raise:'22+,A2s+,K4s+,Q8s+,J8s+,T7s+,97s+,87s,76s,65s,54s,A8o+,KTo+,QTo+,JTo',
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs,AQo,AJs,KJs,A5s,A4s,A3s',
+      call:'TT,99,88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,A2s,KQs,KTs,K9s,K8s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,54s,AJo,ATo,A9o,KQo,KJo,KTo,QJo,QTo,JTo'
     })
   },
-  'mtt75-co': {
-    title:'CO RFI（MTT 75BB）', pct:'37.3%',
-    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q5s+, J7s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A5o+, K9o+, Q9o+, J9o+, T9o</strong><br>ここから明確なスチールポジション。堅実くんはCOで開き忘れやすい。<br><span style="color:var(--green)">全員フォールドなら攻撃する。</span>',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+  'bb-co': {
+    title:'BB vs CO オープン（3bet 13.5bb）', pct:'~45%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: TT+, AK, AQ, AJs, K4s-K5s, A2s-A5s</strong> ／ コール: かなり広い<br>COのスチールに広く反撃。ペアは全部コール以上。',
     grid: makeGrid({
-      raise:'22+,A2s+,K2s+,Q5s+,J7s+,T6s+,96s+,86s+,75s+,65s,54s,A5o+,K9o+,Q9o+,J9o+,T9o',
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,AJs,A5s,A4s,A3s,A2s,K5s,K4s',
+      call:'99,88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,96s,87s,86s,76s,75s,65s,54s,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o'
     })
   },
-  'mtt75-btn': {
-    title:'BTN RFI（MTT 75BB）', pct:'54.8%',
-    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q2s+, J3s+, T3s+, 95s+, 85s+, 74s+, 64s+, 53s+, 43s, A2o+, K5o+, Q8o+, J8o+, T7o+, 97o+, 87o</strong><br>トーナメントでチップを増やす主戦場。BTNで開けないとブラインドに削られる。<br>ただしBBがコールしすぎる相手なら、弱いオフスート下限は少し削る。',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
+  'bb-btn': {
+    title:'BB vs BTN オープン（3bet 13.5bb）', pct:'~55%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: 99+, AQ+, AJs, ATs, A2s-A5s, K5s-K9s, Q9s, J9s, T8s</strong> ／ コール: 非常に広い<br>キャッシュで最も多く起きる場面。BTNの広いレンジに広く反撃する。',
     grid: makeGrid({
-      raise:'22+,A2s+,K2s+,Q2s+,J3s+,T3s+,95s+,85s+,74s+,64s+,53s+,43s,A2o+,K5o+,Q8o+,J8o+,T7o+,97o+,87o',
+      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,ATs,A5s,A4s,A3s,A2s,KQs,K9s,K8s,K7s,K6s,K5s,Q9s,J9s,T8s',
+      call:'88,77,66,55,44,33,22,A9s,A8s,A7s,A6s,KJs,KTs,QJs,QTs,Q8s,Q7s,Q6s,Q5s,JTs,J8s,J7s,J6s,T9s,T7s,T6s,98s,97s,96s,87s,86s,85s,76s,75s,65s,64s,54s,53s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,98o'
     })
   },
-  'mtt75-sb': {
-    title:'SB 参加レンジ（MTT 75BB）', pct:'81.6%',
-    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+, 62s+, 52s+, 42s+, 32s, A2o+, K2o+, Q2o+, J2o+, T3o+, 95o+, 85o+, 75o+, 64o+, 54o</strong><br>公開表はraise or limpの総参加レンジ。SBは広いがOOPなので、強い側をレイズ、弱い側は相手次第。<br><span style="color:var(--orange)">最初は全部覚えようとせず、広い参加レンジだと理解する。</span>',
-    legend:[{c:'raise',l:'参加'},{c:'fold',l:'フォールド'}],
+  'bb-sb': {
+    title:'BB vs SB オープン（BvB / 3bet 13.5bb）', pct:'~62%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: 99+, AQ+, AJ, KQs, A2s-A5s, K5s-K9s, Q8s-Q9s, J9s, T9s</strong> ／ コール: 極めて広い<br>BBはSBに対してIP。最も有利なので最も広く守る。SBの弱いレンジを叩く。',
     grid: makeGrid({
-      raise:'22+,A2s+,K2s+,Q2s+,J2s+,T2s+,92s+,82s+,72s+,62s+,52s+,42s+,32s,A2o+,K2o+,Q2o+,J2o+,T3o+,95o+,85o+,75o+,64o+,54o',
+      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,AJo,KQs,A5s,A4s,A3s,A2s,K9s,K8s,K7s,K6s,K5s,Q9s,Q8s,J9s,T9s',
+      call:'88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,KJs,KTs,K4s,K3s,K2s,QJs,QTs,Q7s,Q6s,Q5s,Q4s,JTs,J8s,J7s,J6s,J5s,T8s,T7s,T6s,98s,97s,96s,95s,87s,86s,85s,76s,75s,74s,65s,64s,54s,53s,43s,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,87o,76o'
     })
   },
 
-  // ===== OPEN 40BB+ (with antes) =====
-  'open40-utg': {
-    title:'UTG オープン（40BB+）', pct:'~17%',
-    info:'<strong>オープンサイズ: 2.2-2.5BB</strong><br>ディープスタック時はキャッシュに近いレンジ。<br>アンティがあるのでスチール価値はやや高い。タイトに構える。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  // ===== SB の応手（相手2.5bbオープン / 3bet 11bb / コールなし） =====
+  'sb-utg': {
+    title:'SB vs UTG オープン（3betかフォールド / 11bb）', pct:'~6%',
+    legend:[{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: TT+, AKs, AKo, AQs, AJs, A5s, A4s</strong><br>SBはOOP（後ろにBBも残る）。コールは損なので3betかフォールドの2択。UTG相手は最も絞る。',
+    grid: makeGrid({ threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AJs,A5s,A4s' })
+  },
+  'sb-hj': {
+    title:'SB vs HJ オープン（3betかフォールド / 11bb）', pct:'~8%',
+    legend:[{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: 99+, AKs/o, AQs/o, AJs, KQs, A3s-A5s</strong><br>HJ相手は少し広げる。',
+    grid: makeGrid({ threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,KQs,A5s,A4s,A3s' })
+  },
+  'sb-co': {
+    title:'SB vs CO オープン（3betかフォールド / 11bb）', pct:'~11%',
+    legend:[{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: 99+, AK, AQ, AJs, ATs, KQs, KJs, A2s-A5s, K9s</strong><br>COのスチールには広く3betで反撃。',
+    grid: makeGrid({ threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,ATs,KQs,KJs,A5s,A4s,A3s,A2s,K9s' })
+  },
+  'sb-btn': {
+    title:'SB vs BTN オープン（3betかフォールド / 11bb）', pct:'~15%',
+    legend:[{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: 88+, AK, AQ, AJ, ATs, KQs, KJs, KTs, QJs, A2s-A5s, K8s-K9s, Q9s, J9s, T9s, 98s</strong><br>BTNの広いオープンに最も広く3bet。バリューもブラフもここが一番厚い。',
+    grid: makeGrid({ threeBet:'AA,KK,QQ,JJ,TT,99,88,AKs,AKo,AQs,AQo,AJs,AJo,ATs,KQs,KJs,KTs,QJs,A5s,A4s,A3s,A2s,K9s,K8s,Q9s,J9s,T9s,98s' })
+  },
+
+  // ===== IP の応手（後ろのポジションが3bet/コール / 3bet 8bb） =====
+  'ip-hj-utg': {
+    title:'HJ vs UTG オープン（IP / 3bet 8bb）', pct:'コール~5% / 3bet~3%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: QQ+, AKs, AKo, AQs, A5s, A4s</strong> ／ <strong>コール: JJ-77, AJs, ATs, KQs, KJs, QJs, JTs</strong><br>UTGはタイトなので軽い3betは禁物。プレミアムは3bet、強いブロードウェイ/ペアでセット狙いコール。',
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,AKo,AQo,AJo,ATo,KQo,KJo,QJo',
-      mixed:'55,K8s',
+      threeBet:'AA,KK,QQ,AKs,AKo,AQs,A5s,A4s',
+      call:'JJ,TT,99,88,77,AJs,ATs,KQs,KJs,QJs,JTs'
     })
   },
-  'open40-hj': {
-    title:'HJ オープン（40BB+）', pct:'~21%',
-    info:'<strong>オープンサイズ: 2.2-2.5BB</strong><br>UTGより広く。スーテッドコネクター追加。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  'ip-co-utg': {
+    title:'CO vs UTG オープン（IP / 3bet 8bb）', pct:'コール~7% / 3bet~3%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: QQ+, AKs, AKo, AQs, A5s, A4s</strong> ／ <strong>コール: JJ-66, AJs, ATs, A9s, KQs, KJs, KTs, QJs, QTs, JTs, T9s, 98s</strong><br>UTG相手はまだ慎重。スーテッド系でコールを広げる。',
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,AKo,AQo,AJo,ATo,KQo,KJo,KTo,QJo',
-      mixed:'44,K7s,T8s',
+      threeBet:'AA,KK,QQ,AKs,AKo,AQs,A5s,A4s',
+      call:'JJ,TT,99,88,77,66,AJs,ATs,A9s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,98s'
     })
   },
-  'open40-co': {
-    title:'CO オープン（40BB+）', pct:'~28%',
-    info:'<strong>オープンサイズ: 2.2-2.5BB</strong><br>スチールポジションの入口。アンティのおかげで広くオープン可能。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  'ip-co-hj': {
+    title:'CO vs HJ オープン（IP / 3bet 8bb）', pct:'コール~9% / 3bet~4%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: JJ+, AK, AQs, AQo, A5s-A3s</strong> ／ <strong>コール: TT-55, AJs, ATs, A9s, KQs-KTs, QJs, QTs, JTs, J9s, T9s, 98s, 87s</strong><br>HJ相手は一段広げる。',
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo,QTo,JTo',
-      mixed:'33,A8o,K4s',
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs,AQo,A5s,A4s,A3s',
+      call:'TT,99,88,77,66,55,AJs,ATs,A9s,KQs,KJs,KTs,QJs,QTs,JTs,J9s,T9s,98s,87s'
     })
   },
-  'open40-btn': {
-    title:'BTN オープン（40BB+）', pct:'~43%',
-    info:'<strong>オープンサイズ: 2-2.5BB</strong><br>最も広いオープン。アンティありでほぼ半分のハンドでレイズ。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  'ip-btn-utg': {
+    title:'BTN vs UTG オープン（IP / 3bet 8bb）', pct:'コール~8% / 3bet~4%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: QQ+, AK, AQs, KQs, A5s, A4s</strong> ／ <strong>コール: JJ-55, AJs, ATs, A9s, KJs, KTs, QJs, QTs, JTs, T9s, 98s, 76s</strong><br>BTNはIPの王様。プレミアムは3bet、それ以外は広くコールしてポジションを活かす。',
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,87s,86s,76s,75s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o',
-      mixed:'22,A4o,K8o,Q4s,J6s,T6s,64s,53s',
+      threeBet:'AA,KK,QQ,AKs,AKo,AQs,KQs,A5s,A4s',
+      call:'JJ,TT,99,88,77,66,55,AJs,ATs,A9s,KJs,KTs,QJs,QTs,JTs,T9s,98s,76s'
     })
   },
-  'open40-sb': {
-    title:'SB オープン（40BB+）', pct:'~48%',
-    info:'<strong>オープンサイズ: 2.5-3BB</strong><br>SBはレイズかフォールド。リンプ禁止。<br>BBにポジションがないため大きめサイズ。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  'ip-btn-hj': {
+    title:'BTN vs HJ オープン（IP / 3bet 8bb）', pct:'コール~11% / 3bet~5%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: JJ+, AK, AQs, AQo, KQs, A3s-A5s</strong> ／ <strong>コール: TT-44, AJs, ATs, A9s, A8s, KJs-K9s, QJs-Q9s, JTs, J9s, T9s, 98s, 87s, 76s, 65s</strong><br>HJ相手にコールを大きく広げる。',
     grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,JTs,J9s,J8s,J7s,J6s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,76s,75s,65s,64s,54s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,QJo,QTo,Q9o,Q8o,Q7o,JTo,J9o,J8o,T9o,T8o,98o,87o',
-      mixed:'Q3s,J5s,T5s,95s,85s,74s,63s,53s,K4o,Q6o,J7o,T7o',
+      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs,AQo,KQs,A5s,A4s,A3s',
+      call:'TT,99,88,77,66,55,44,AJs,ATs,A9s,A8s,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,65s'
+    })
+  },
+  'ip-btn-co': {
+    title:'BTN vs CO オープン（IP / 3bet 8bb）', pct:'コール~14% / 3bet~9%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: TT+, AK, AQs, AJs, KQs, KJs, QJs, A2s-A5s, T9s, 98s, 76s</strong> ／ <strong>コール: 99-22, AT s/o, A9s-A6s, KTs, K9s, QTs, Q9s, JTs, J9s, T8s, 97s, 87s, 65s, 54s, AQo, AJo, KQo</strong><br>BTN vs CO はキャッシュで最も利益が出る攻撃スポット。3betもコールも厚い。',
+    grid: makeGrid({
+      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AJs,KQs,KJs,QJs,A5s,A4s,A3s,A2s,T9s,98s,76s',
+      call:'99,88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,KTs,K9s,QTs,Q9s,JTs,J9s,T8s,97s,87s,65s,54s,AQo,AJo,KQo'
     })
   },
 
-  // ===== OPEN 25BB =====
-  'open25-utg': {
-    title:'UTG オープン（25BB）', pct:'~14%',
-    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>25BBではフラットコールされると困るため、レンジを絞る。<br>3betされたらフォールドかオールインの判断が必要。',
-    legend:[{c:'raise',l:'レイズ'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,AKs,AQs,AJs,ATs,A9s,A5s,A4s,KQs,KJs,QJs,JTs,AKo,AQo,AJo,KQo',
-    })
-  },
-  'open25-hj': {
-    title:'HJ オープン（25BB）', pct:'~17%',
-    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>UTGより少し広く。3betされたらフォールドかオールインの二択。',
-    legend:[{c:'raise',l:'レイズ'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A5s,A4s,A3s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,AKo,AQo,AJo,ATo,KQo,KJo',
-    })
-  },
-  'open25-co': {
-    title:'CO オープン（25BB）', pct:'~23%',
-    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>スチール意識。3betに対してオールインできるハンドを多めに含む。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo',
-      mixed:'33,K8s,76s',
-    })
-  },
-  'open25-btn': {
-    title:'BTN オープン（25BB）', pct:'~38%',
-    info:'<strong>オープンサイズ: 2-2.2BB</strong><br>ブラインドスチールが重要。広くオープンするが100BBよりやや絞る。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
-      mixed:'K4s,Q7s,T7s,86s,54s',
-    })
-  },
-  'open25-sb': {
-    title:'SB オープン（25BB）', pct:'~42%',
-    info:'<strong>オープンサイズ: 2.5BB or オールイン</strong><br>25BBではSBのレイズ→BB 3bet→SBオールインの展開が多い。<br>オープンするなら3betに対してオールインできる覚悟で。',
-    legend:[{c:'raise',l:'レイズ'},{c:'mixed',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,87s,86s,76s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,JTo,J9o,T9o,98o',
-      mixed:'Q5s,J6s,T6s,96s,75s,43s',
-    })
-  },
-
-  // ===== PUSH/FOLD 20BB =====
-  'push20-utg': {
-    title:'UTG プッシュレンジ（20BB）', pct:'~12%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>20BBではオープンレイズ→3betされて困る展開を避ける。<br>UTGからは強めのハンドのみプッシュ。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,AKs,AQs,AJs,ATs,A9s,A5s,A4s,KQs,KJs,KTs,QJs,AKo,AQo,AJo,ATo,KQo',
-    })
-  },
-  'push20-hj': {
-    title:'HJ プッシュレンジ（20BB）', pct:'~16%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>UTGより広く。スーテッドAx追加。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
-    })
-  },
-  'push20-co': {
-    title:'CO プッシュレンジ（20BB）', pct:'~22%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>スチール意識。ポケットペアも広く含む。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo',
-    })
-  },
-  'push20-btn': {
-    title:'BTN プッシュレンジ（20BB）', pct:'~35%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>ブラインドスチールが非常に重要。かなり広くプッシュ。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,87s,76s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
-    })
-  },
-  'push20-sb': {
-    title:'SB プッシュレンジ（20BB）', pct:'~45%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>SBからBBへのヘッズアップ。非常に広くプッシュ可能。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,87s,76s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,98o,87o',
-    })
-  },
-
-  // ===== PUSH/FOLD 15BB =====
-  'push15-utg': {
-    title:'UTG プッシュレンジ（15BB）', pct:'~16%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>15BBでは完全プッシュ/フォールド。UTGでも20BBより広くなる。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
-    })
-  },
-  'push15-hj': {
-    title:'HJ プッシュレンジ（15BB）', pct:'~20%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>小ポケットペアとスーテッドAx追加。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,KQs,KJs,KTs,K9s,QJs,QTs,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,KQo,KJo,KTo',
-    })
-  },
-  'push15-co': {
-    title:'CO プッシュレンジ（15BB）', pct:'~28%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>かなり広くプッシュ。スチール価値が高い。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo',
-    })
-  },
-  'push15-btn': {
-    title:'BTN プッシュレンジ（15BB）', pct:'~42%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>非常に広くプッシュ。ブラインドを奪い続けることが生存の鍵。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
-    })
-  },
-  'push15-sb': {
-    title:'SB プッシュレンジ（15BB）', pct:'~52%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>BB1人相手なので非常に広くプッシュ。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,J6s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,76s,75s,65s,54s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,87o',
-    })
-  },
-
-  // ===== PUSH/FOLD 10BB =====
-  'push10-utg': {
-    title:'UTG プッシュレンジ（10BB）', pct:'~22%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>10BBではかなり広くプッシュ。待っていたら死ぬ。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo',
-    })
-  },
-  'push10-hj': {
-    title:'HJ プッシュレンジ（10BB）', pct:'~28%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>広くプッシュ。Axスーテッド全部含む。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,AKo,AQo,AJo,ATo,A9o,A8o,A5o,KQo,KJo,KTo,QJo,QTo',
-    })
-  },
-  'push10-co': {
-    title:'CO プッシュレンジ（10BB）', pct:'~36%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>後ろに2人＋ブラインドしかいないので広くプッシュ。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,76s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,QJo,QTo,JTo',
-    })
-  },
-  'push10-btn': {
-    title:'BTN プッシュレンジ（10BB）', pct:'~50%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>ほぼ半分のハンドでプッシュ。生き残りに必須。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,T9s,T8s,T7s,98s,97s,96s,87s,86s,76s,75s,65s,54s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K5o,QJo,QTo,Q9o,Q8o,JTo,J9o,T9o,T8o,98o,87o',
-    })
-  },
-  'push10-sb': {
-    title:'SB プッシュレンジ（10BB）', pct:'~62%',
-    info:'<strong>アクション: オールイン or フォールド</strong><br>BB1人相手。ほぼなんでもプッシュ。',
-    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J7s,J6s,J5s,J4s,T9s,T8s,T7s,T6s,T5s,98s,97s,96s,95s,87s,86s,85s,76s,75s,65s,64s,54s,43s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,K3o,K2o,QJo,QTo,Q9o,Q8o,Q7o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,87o,86o,76o,65o',
-    })
-  },
-
-  // ===== BB CALL vs PUSH =====
-  'bbcall-vs-btn20': {
-    title:'BB コールレンジ vs BTNプッシュ（20BB）', pct:'~14%',
-    info:'<strong>BTNの20BBプッシュに対するBBのコールレンジ。</strong><br>リスクが大きいので強いハンドのみコール。<br>ポットオッズ: 約1.4:1（約42%必要）',
-    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      call:'AA,KK,QQ,JJ,TT,99,88,77,AKs,AQs,AJs,ATs,A9s,KQs,KJs,AKo,AQo,AJo,ATo,KQo',
-      'mixed-call-3bet':'66,A8s,KTs,QJs',
-    })
-  },
-  'bbcall-vs-btn15': {
-    title:'BB コールレンジ vs BTNプッシュ（15BB）', pct:'~20%',
-    info:'<strong>BTNの15BBプッシュに対するBBのコールレンジ。</strong><br>オッズが良くなるので少し広くコール。<br>ポットオッズ: 約1.7:1（約37%必要）',
-    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
-      'mixed-call-3bet':'44,A6s,K9s,T9s',
-    })
-  },
-  'bbcall-vs-btn10': {
-    title:'BB コールレンジ vs BTNプッシュ（10BB）', pct:'~30%',
-    info:'<strong>BTNの10BBプッシュに対するBBのコールレンジ。</strong><br>オッズが非常に良い。広くコール。<br>ポットオッズ: 約2.2:1（約31%必要）',
-    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,KQo,KJo,KTo,QJo,QTo,JTo',
-      'mixed-call-3bet':'22,K7s,Q8s,98s',
-    })
-  },
-  'bbcall-vs-sb20': {
-    title:'BB コールレンジ vs SBプッシュ（20BB）', pct:'~18%',
-    info:'<strong>SBの20BBプッシュに対するBBのコールレンジ。</strong><br>SBはBTNより広くプッシュするのでやや広くコール。',
-    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,AKs,AQs,AJs,ATs,A9s,A8s,A7s,KQs,KJs,KTs,QJs,QTs,JTs,AKo,AQo,AJo,ATo,KQo,KJo',
-      'mixed-call-3bet':'44,A6s,K9s,T9s',
-    })
-  },
-  'bbcall-vs-sb15': {
-    title:'BB コールレンジ vs SBプッシュ（15BB）', pct:'~25%',
-    info:'<strong>SBの15BBプッシュに対するBBのコールレンジ。</strong><br>SBのプッシュレンジは非常に広い。広めにコール。',
-    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,AKo,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo',
-      'mixed-call-3bet':'33,A3s,K8s,98s',
-    })
-  },
-  'bbcall-vs-sb10': {
-    title:'BB コールレンジ vs SBプッシュ（10BB）', pct:'~38%',
-    info:'<strong>SBの10BBプッシュに対するBBのコールレンジ。</strong><br>SBはほぼなんでもプッシュしている。非常に広くコール。',
-    legend:[{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      call:'AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,87s,AKo,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o,98o',
-      'mixed-call-3bet':'K6s,Q7s,76s',
-    })
-  },
-
-  // ===== 3BET (40BB+) =====
-  'threeBet-btn-vs-co': {
-    title:'BTN 3bet vs CO（40BB+）', pct:'~12%',
-    info:'<strong>3betサイズ: 7-8BB</strong><br>COのオープンに対してIPから3bet。<br>トーナメントではフラットコールも多いが、3betでポットを取りに行く。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AJs,KQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s,Q9s',
-      'mixed-call-3bet':'99,AQo,AJo,KJs,QJs',
-    })
-  },
-  'threeBet-sb-vs-btn': {
-    title:'SB 3bet vs BTN（40BB+）', pct:'~13%',
-    info:'<strong>3betサイズ: 9-10BB（OOPなので大きめ）</strong><br>SBはコールせず3betかフォールド（GTO）。<br>BTNの広いオープンに対して積極的に3bet。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,KQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,K9s,K5s,K4s,K3s,Q9s,J9s,T9s,98s,87s,76s,65s,54s',
-      'mixed-call-3bet':'99,AJs,KJs',
-    })
-  },
-  'threeBet-bb-vs-btn': {
-    title:'BB 3bet vs BTN（40BB+）', pct:'~10%',
-    info:'<strong>3betサイズ: 9-10BB</strong><br>BBからBTNに対する3bet。コールも多いがバリュー+ブラフの3betレンジを持つ。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,KQs',
-      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K5s,K4s,K3s,Q6s,Q5s,J7s,J6s,T7s,97s,87s,76s,65s,54s',
-      call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,J8s,T9s,T8s,98s,96s,86s,75s,64s,53s,43s,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,KQo,KJo,KTo,K9o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
-    })
-  },
-
-  // ===== BB DEFENSE vs OPEN (40BB+) =====
-  'bbdef-vs-utg': {
-    title:'BB ディフェンス vs UTG（40BB+）', pct:'~22%',
-    info:'<strong>UTGはタイトなのでBBは絞って守る。</strong><br>広く守りすぎるとOOPで不利なポストフロップに突入する。<br>コール: ペア、スーテッド系のIP値が高いハンド<br>3bet: QQ+, AKのバリュー + A5s,A4sのブラフ<br><span style="color:var(--red)">⚠️ ここを広く守りすぎて敗退しがち！</span>',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,AKs,AKo',
-      bluff3bet:'A5s,A4s',
-      call:'JJ,TT,99,88,77,66,55,44,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,KQo,KJo,QJo',
-      'mixed-call-3bet':'33,22',
-    })
-  },
-  'bbdef-vs-hj': {
-    title:'BB ディフェンス vs HJ（40BB+）', pct:'~27%',
-    info:'<strong>HJはUTGより少し広い。BBも少し広く守れる。</strong><br>コール: ペア全部、広めのスーテッド<br>3bet: JJ+, AK, AQsのバリュー + A5s-A3s, スーコネのブラフ',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
-      bluff3bet:'A5s,A4s,A3s,76s,65s,54s',
-      call:'TT,99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,A2s,KQs,KJs,KTs,K9s,K8s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,AQo,AJo,ATo,KQo,KJo,KTo,QJo',
-      'mixed-call-3bet':'T8s',
-    })
-  },
-  'bbdef-vs-co': {
-    title:'BB ディフェンス vs CO（40BB+）', pct:'~35%',
-    info:'<strong>COは広めにオープンするので、BBも広くディフェンス。</strong><br>3bet: JJ+, AK, AQs（バリュー）+ A5s-A2s, K5s等（ブラフ）<br>コール: TT以下のペア全部、広いスーテッド、AQo-A8o, KJo+等<br><span style="color:var(--orange)">ここからBBディフェンスが広くなる。ポストフロップの準備を。</span>',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,K5s,K4s,87s,76s,65s,54s',
-      call:'TT,99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,86s,75s,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
-      'mixed-call-3bet':'TT,T7s',
-    })
-  },
-  'bbdef-vs-sb': {
-    title:'BB ディフェンス vs SB（40BB+）', pct:'~55%',
-    info:'<strong>BBはSBに対してポジションがある＝最も広く守れる。</strong><br>SBのオープンレンジは広いので、BBは非常に広くディフェンス。<br>3bet: TT+, AQs+, AKo（バリュー）+ 広いブラフ3bet<br>コール: ほぼ全てのスーテッド、広いオフスーテッド<br><span style="color:var(--green)">SB vs BBはBBが有利。広く守ってOK。</span>',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,AJs,KQs',
-      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K8s,K7s,K6s,K5s,K4s,K3s,Q7s,Q6s,Q5s,J6s,J5s,T6s,T5s,96s,95s,85s,75s,64s,53s',
-      call:'99,88,77,66,55,44,33,22,ATs,A9s,KJs,KTs,K9s,K2s,QJs,QTs,Q9s,Q8s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J7s,J4s,J3s,J2s,T9s,T8s,T7s,T4s,T3s,98s,97s,87s,86s,76s,65s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,97o,87o,76o',
-    })
-  },
-
-  // ===== BB DEFENSE vs OPEN (25BB) =====
-  'bbdef25-vs-utg': {
-    title:'BB ディフェンス vs UTG（25BB）', pct:'~18%',
-    info:'<strong>25BBではフラットコールのリスクが上がる。</strong><br>コールよりも3bet(オールイン)かフォールドの判断が増える。<br>UTGのオープンは強いので狭く守る。<br><span style="color:var(--red)">⚠️ 25BBでUTGにワイドコールは危険！</span>',
-    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo',
-      call:'99,88,77,66,AJs,ATs,A9s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,98s,AJo,ATo,KQo,KJo',
-    })
-  },
-  'bbdef25-vs-co': {
-    title:'BB ディフェンス vs CO（25BB）', pct:'~28%',
-    info:'<strong>COは広めにオープン。3betオールインかコール。</strong><br>3betオールイン: TT+, AK, AQs<br>コール: ペア、スーテッド系<br>25BBではポストフロップが短いので、強いハンドは3bet(オールイン)寄り。',
-    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs',
-      call:'99,88,77,66,55,44,AJs,ATs,A9s,A8s,A7s,A5s,A4s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo',
-      'mixed-call-3bet':'33,A6s',
-    })
-  },
-  'bbdef25-vs-btn': {
-    title:'BB ディフェンス vs BTN（25BB）', pct:'~35%',
-    info:'<strong>BTNの広いスチールに対して広めにディフェンス。</strong><br>3betオールイン: 99+, AK, AQ, AJs<br>コール: 広いスーテッド、中ペア<br>25BBでの3betはほぼオールインと同義。覚悟を持って。',
-    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs',
-      call:'88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQs,KJs,KTs,K9s,K8s,K7s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,86s,76s,65s,54s,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
-      'mixed-call-3bet':'K6s',
-    })
-  },
-  'bbdef25-vs-sb': {
-    title:'BB ディフェンス vs SB（25BB）', pct:'~48%',
-    info:'<strong>BBはSBに対してポジションあり。広く守れる。</strong><br>3betオールイン: 88+, AK, AQ, AJs, KQs<br>コール: 非常に広い。SBのレンジは広いのでディフェンス広く。<br>25BBでのSB vs BBはBB有利。',
-    legend:[{c:'threeBet',l:'3bet/オールイン'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,99,88,AKs,AKo,AQs,AQo,AJs,KQs',
-      call:'77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,JTs,J9s,J8s,J7s,J6s,T9s,T8s,T7s,T6s,98s,97s,96s,87s,86s,76s,75s,65s,64s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,QJo,QTo,Q9o,Q8o,JTo,J9o,J8o,T9o,T8o,98o,87o,76o',
-    })
-  },
-
-  // ===== CASH GAME OPEN (100BB) =====
-  'cash-utg': {
-    title:'UTG/LJ RFI（6max 100BB）', pct:'17.6%',
-    info:'<strong>基礎レンジ: 66+, A3s+, K8s+, Q9s+, J9s+, T9s, ATo+, KJo+, QJo</strong><br>最初に覚える基準レンジ。早いポジションなので、オフスートの弱いAやKxsの下側は入れない。<br><span style="color:var(--accent)">迷ったら「UTGで開けるハンドはどこでも開ける」と覚える。</span>',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'66+,A3s+,K8s+,Q9s+,J9s+,T9s,ATo+,KJo+,QJo',
-    })
-  },
-  'cash-hj': {
-    title:'HJ RFI（6max 100BB）', pct:'21.4%',
-    info:'<strong>基礎レンジ: 55+, A2s+, K6s+, Q9s+, J9s+, T9s, 98s, 87s, 76s, ATo+, KTo+, QTo+</strong><br>UTGから小ペア、A2s、K6s、スーテッドコネクターが追加される。<br>まだ「広すぎる参加」はしない。',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'55+,A2s+,K6s+,Q9s+,J9s+,T9s,98s,87s,76s,ATo+,KTo+,QTo+',
-    })
-  },
-  'cash-co': {
-    title:'CO RFI（6max 100BB）', pct:'27.8%',
-    info:'<strong>基礎レンジ: 33+, A2s+, K3s+, Q6s+, J8s+, T7s+, 97s+, 87s, 76s, A8o+, KTo+, QTo+, JTo</strong><br>ここからスチールポジション。小ペアと広いスーテッド系を使える。<br>ただしCOは後ろにBTNがいるので、BTNほどは広げない。',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'33+,A2s+,K3s+,Q6s+,J8s+,T7s+,97s+,87s,76s,A8o+,KTo+,QTo+,JTo',
-    })
-  },
-  'cash-btn': {
-    title:'BTN RFI（6max 100BB）', pct:'43.5%',
-    info:'<strong>基礎レンジ: 33+, A2s+, K2s+, Q3s+, J4s+, T6s+, 96s+, 85s+, 75s+, 64s+, 53s+, A4o+, K8o+, Q9o+, J9o+, T8o+, 98o</strong><br>最も利益が出るポジション。広く開くが、J8oや弱いオフスート連結系まで雑に広げすぎない。<br><span style="color:var(--green)">堅実くん卒業ポイント: BTNのスチールは逃さない。</span>',
-    legend:[{c:'raise',l:'RFI'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'33+,A2s+,K2s+,Q3s+,J4s+,T6s+,96s+,85s+,75s+,64s+,53s+,A4o+,K8o+,Q9o+,J9o+,T8o+,98o',
-    })
-  },
-  'cash-sb': {
-    title:'SB BvB 参加レンジ（6max 100BB）', pct:'62.3%',
-    info:'<strong>基礎レンジ: 22+, A2s+, K2s+, Q2s+, J2s+, T3s+, 94s+, 84s+, 74s+, 63s+, 53s+, 43s, A2o+, K4o+, Q5o+, J7o+, T7o+, 96o+, 86o+, 76o</strong><br>公開表は「raise or call」の総参加レンジ。実戦では相手が弱ければレイズ中心、強いBB相手にはリンプ混合もあり。<br><span style="color:var(--orange)">あなた用簡略化: 迷うなら強い側を3BBレイズ、弱い側は無理に参加しない。</span>',
-    legend:[{c:'raise',l:'参加'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      raise:'22+,A2s+,K2s+,Q2s+,J2s+,T3s+,94s+,84s+,74s+,63s+,53s+,43s,A2o+,K4o+,Q5o+,J7o+,T7o+,96o+,86o+,76o',
-    })
-  },
-
-  // ===== CASH GAME 3BET =====
-  'cash3b-btn-vs-co': {
-    title:'BTN 3bet vs CO（キャッシュ100BB）', pct:'~12%',
-    info:'<strong>3betサイズ: 7.5BB（IP 3x）</strong><br>COの広いオープンに対して積極的に3bet。<br>IP3betは最も利益率が高いプレイの一つ。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AJs,KQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,T9s,98s,87s,76s,65s,54s,J9s,T8s,Q9s',
-      call:'99,88,77,66,55,44,33,22,ATs,A9s,A8s,A7s,A6s,KJs,KTs,K9s,K8s,QJs,QTs,Q8s,J8s,T7s,97s,86s,75s,64s,53s,AQo,AJo,ATo,A9o,KQo,KJo,KTo,QJo,QTo,JTo',
-      'mixed-call-3bet':'99,AQo',
-    })
-  },
-  'cash3b-sb-vs-btn': {
-    title:'SB 3bet vs BTN（キャッシュ100BB）', pct:'~13%',
-    info:'<strong>3betサイズ: 9-10BB（OOP 3.5x）</strong><br>SBはコールせず3betかフォールド（GTO）。<br>OOPなのでフラットコールは損。',
-    legend:[{c:'threeBet',l:'バリュー3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,AQo,KQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,K9s,K5s,K4s,K3s,Q9s,J9s,T9s,98s,87s,76s,65s,54s',
-      'mixed-call-3bet':'99,AJs,KJs',
-    })
-  },
-
-  // ===== CASH GAME BB DEFENSE =====
-  'cashbb-vs-utg': {
-    title:'BB ディフェンス vs UTG（キャッシュ100BB）', pct:'~25%',
-    info:'<strong>UTGはタイト。BBは絞って守る。</strong><br>キャッシュはオッズが良い（100BBの恩恵）のでトーナメントより少し広く守れる。<br>セットマイニングの価値が高い。<br><span style="color:var(--red)">ただしOOPで弱ハンドは危険。</span>',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,AKs,AKo',
-      bluff3bet:'A5s,A4s,A3s',
-      call:'JJ,TT,99,88,77,66,55,44,33,22,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A2s,KQs,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,AQo,AJo,ATo,KQo,KJo,QJo',
-    })
-  },
-  'cashbb-vs-co': {
-    title:'BB ディフェンス vs CO（キャッシュ100BB）', pct:'~38%',
-    info:'<strong>COは広め。BBも広くディフェンス。</strong><br>3bet: JJ+, AK, AQs + ブラフ3bet<br>コール: 広いペア、スーテッド、一部オフスーテッド<br>セットマイニングはペア全部OK（15倍ルール余裕）。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,AKs,AKo,AQs',
-      bluff3bet:'A5s,A4s,A3s,A2s,K5s,K4s,K3s,87s,76s,65s,54s',
-      call:'TT,99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,KQs,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s,JTs,J9s,J8s,T9s,T8s,98s,97s,86s,75s,AQo,AJo,ATo,A9o,A8o,KQo,KJo,KTo,QJo,QTo,JTo',
-      'mixed-call-3bet':'TT,T7s',
-    })
-  },
-  'cashbb-vs-btn': {
-    title:'BB ディフェンス vs BTN（キャッシュ100BB）', pct:'~48%',
-    info:'<strong>BTNは最も広い。BBも非常に広くディフェンス。</strong><br>3bet: TT+, AQs+, AKo, KQs（バリュー）+ 広いブラフ3bet<br>コール: 非常に広いスーテッド・オフスーテッド<br>キャッシュのBB vs BTNはBBが最も多くプレイする場面。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,AKs,AKo,AQs,KQs',
-      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K5s,K4s,K3s,Q6s,Q5s,J7s,J6s,T7s,97s,87s,76s,65s,54s',
-      call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,KJs,KTs,K9s,K8s,K7s,K6s,K2s,QJs,QTs,Q9s,Q8s,Q7s,Q4s,Q3s,Q2s,JTs,J9s,J8s,J5s,J4s,J3s,T9s,T8s,T6s,T5s,T4s,98s,96s,95s,86s,85s,75s,74s,64s,53s,43s,AQo,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,QJo,QTo,Q9o,JTo,J9o,T9o,T8o,98o',
-      'mixed-call-3bet':'99,AJs,AQo',
-    })
-  },
-  'cashbb-vs-sb': {
-    title:'BB ディフェンス vs SB（キャッシュ100BB）', pct:'~58%',
-    info:'<strong>BBはSBに対してIP。最も広く守れる。</strong><br>3bet: 99+, AQs+, AKo, AJs, KQs + 非常に広いブラフ3bet<br>コール: ほぼ全スーテッド、広いオフスーテッド<br>SB vs BBはBBが最も有利なマッチアップ。',
-    legend:[{c:'threeBet',l:'3bet'},{c:'bluff3bet',l:'ブラフ3bet'},{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
-    grid: makeGrid({
-      threeBet:'AA,KK,QQ,JJ,TT,99,AKs,AKo,AQs,AQo,AJs,KQs',
-      bluff3bet:'A8s,A7s,A6s,A5s,A4s,A3s,A2s,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,J7s,J6s,J5s,J4s,J3s,T6s,T5s,T4s,96s,95s,85s,84s,75s,74s,64s,53s',
-      call:'88,77,66,55,44,33,22,ATs,A9s,KJs,KTs,QJs,QTs,Q9s,JTs,J9s,J8s,J2s,T9s,T8s,T7s,T3s,98s,97s,87s,86s,76s,65s,54s,43s,AJo,ATo,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KQo,KJo,KTo,K9o,K8o,K7o,K6o,K5o,K4o,QJo,QTo,Q9o,Q8o,Q7o,Q6o,Q5o,JTo,J9o,J8o,J7o,T9o,T8o,T7o,98o,97o,96o,87o,86o,76o',
-    })
-  },
-
-  // ===== CASH GAME 4BET =====
-  'cash-4bet': {
-    title:'4bet レンジ（キャッシュ100BB）', pct:'~3-4%',
-    info:'<strong>4betサイズ: IP 2.5x / OOP 2.75-3x</strong><br>バリュー: AA, KK, QQ<br>ブラフ: A5s, A4s, A3s（Aブロッカー+エクイティ）<br>ミックス: JJ, AKs, AKo, AQs（状況次第）<br>5bet対応: AA=オールイン, KK=ほぼオールイン',
-    legend:[{c:'threeBet',l:'バリュー4bet'},{c:'bluff3bet',l:'ブラフ4bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド'}],
+  // ===== 4bet（補助：3betを受けた時） =====
+  'fourbet': {
+    title:'4bet レンジ（補助・100BB）', pct:'~3-4%',
+    legend:[{c:'threeBet',l:'バリュー4bet'},{c:'bluff3bet',l:'ブラフ4bet'},{c:'mixed-call-3bet',l:'ミックス'},{c:'fold',l:'フォールド/コール'}],
+    info:'<strong>4betサイズ: IP 2.2-2.5x / OOP 2.5-3x（3betの倍率）</strong><br>バリュー: AA, KK, QQ ／ ブラフ: A5s, A4s, A3s（Aブロッカー）<br>ミックス（状況でコール/4bet）: JJ, AKs, AKo, AQs。5bet来たら AA はオールイン、KK もほぼオールイン。',
     grid: makeGrid({
       threeBet:'AA,KK,QQ',
       bluff3bet:'A5s,A4s,A3s',
-      'mixed-call-3bet':'JJ,AKs,AKo,AQs,AQo',
+      'mixed-call-3bet':'JJ,AKs,AKo,AQs'
     })
+  },
+
+  // =========================================================================
+  // MTT（アンティあり）体系 — 01_プリフロップ/06_MTTレンジ表_アンティあり.md 準拠
+  //  ・アンティ分ポットが大きいので6maxキャッシュより広くオープン、BBはさらに広く守る
+  //  ・オープン: 赤=オープン(またはオールイン) / 青=フォールド
+  //  ・BBディフェンス: 緑=コール / 赤=3bet / 青=フォールド
+  // =========================================================================
+
+  // ===== A. 40BB オープン（2.2bb） =====
+  'm40-o-utg': {
+    title:'UTG オープン（MTT 40BB・アンティあり / 2.2bb）', pct:'~19%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, KTs+, QTs+, JTs, T9s, 98s, 87s, 76s, ATo+, KJo+</strong><br>アンティがある分ポットが最初から大きいので、100BBキャッシュのUTGレンジよりオープンサイズ(2.2bb)は小さく、レンジはやや広い。',
+    grid: makeGrid({ raise:'22+,A2s+,KTs+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+' })
+  },
+  'm40-o-hj': {
+    title:'HJ オープン（MTT 40BB・アンティあり / 2.2bb）', pct:'~24%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K8s+, Q9s+, J9s+, T8s+, 98s, 87s, 76s, 65s, A9o+, KTo+, QJo</strong><br>UTGに弱めのスーテッドとA9o+/KTo+/QJoを足して広げる。',
+    grid: makeGrid({ raise:'22+,A2s+,K8s+,Q9s+,J9s+,T8s+,98s,87s,76s,65s,A9o+,KTo+,QJo' })
+  },
+  'm40-o-co': {
+    title:'CO オープン（MTT 40BB・アンティあり / 2.2bb）', pct:'~30%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 97s+, 86s+, 75s+, 65s, 54s, A8o+, A5o, KTo+, QTo+, JTo</strong><br>スチール開始ポジション。弱スーテッドと A5o を大きく追加。',
+    grid: makeGrid({ raise:'22+,A2s+,K5s+,Q8s+,J8s+,T8s+,97s+,86s+,75s+,65s,54s,A8o+,A5o,KTo+,QTo+,JTo' })
+  },
+  'm40-o-btn': {
+    title:'BTN オープン（MTT 40BB・アンティあり / 2.2bb）', pct:'~45%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K2s+, Q4s+, J6s+, T6s+, 96s+, 85s+, 74s+, 64s+, 53s+, 43s, A2o+, K8o+, Q9o+, J9o+, T9o, 98o</strong><br>最も広い。全員降りたら必ず開ける。',
+    grid: makeGrid({ raise:'22+,A2s+,K2s+,Q4s+,J6s+,T6s+,96s+,85s+,74s+,64s+,53s+,43s,A2o+,K8o+,Q9o+,J9o+,T9o,98o' })
+  },
+  'm40-o-sb': {
+    title:'SB オープン（MTT 40BB・アンティあり / 2.2bb）', pct:'~40%',
+    legend:[{c:'raise',l:'オープン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K3s+, Q5s+, J7s+, T7s+, 96s+, 86s+, 75s+, 64s+, 54s, A3o+, K9o+, Q9o+, J9o+, T9o</strong><br>アンティ分ポットが大きい上にBBしか残らないので、キャッシュのSBよりオープンサイズを小さくしたまま広く開ける。',
+    grid: makeGrid({ raise:'22+,A2s+,K3s+,Q5s+,J7s+,T7s+,96s+,86s+,75s+,64s+,54s,A3o+,K9o+,Q9o+,J9o+,T9o' })
+  },
+
+  // ===== B. 40BB BBディフェンス（vs 2.2bbオープン） =====
+  'm40-bb-utg': {
+    title:'BB vs UTG オープン（MTT 40BB・3bet約9bb）', pct:'~17%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: QQ+, AKs, AKo, A5s, A4s</strong> ／ <strong>コール: JJ-22, AQs, AJs-A6s, A3s-A2s, KTs+, QTs+, JTs, T9s, 98s, 87s, 76s, 65s, 54s, AQo, AJo, KQo</strong><br>UTGはMTTでもタイトな部類なので、守りも絞る。3bet＋コールの合計はUTG相手としては標準的な広さ。',
+    grid: makeGrid({
+      threeBet:'QQ+,AKs,AKo,A5s,A4s',
+      call:'JJ,TT,99,88,77,66,55,44,33,22,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,KTs+,QTs+,JTs,T9s,98s,87s,76s,65s,54s,AQo,AJo,KQo'
+    })
+  },
+  'm40-bb-co': {
+    title:'BB vs CO オープン（MTT 40BB・3bet約9bb）', pct:'~21%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: JJ+, AQs+, AKo, A5s, A4s, KQs</strong> ／ <strong>コール: TT-22, AJs-A6s, A3s-A2s, K9s+, Q9s+, J9s+, T8s+, 97s+, 86s+, 76s, 65s, 54s, AQo, AJo, ATo, KJo+, QJo</strong><br>COのスチールに広く反撃。',
+    grid: makeGrid({
+      threeBet:'JJ+,AQs+,AKo,A5s,A4s,KQs',
+      call:'TT,99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,A3s,A2s,K9s+,Q9s+,J9s+,T8s+,97s+,86s+,76s,65s,54s,AQo,AJo,ATo,KJo+,QJo'
+    })
+  },
+  'm40-bb-btn': {
+    title:'BB vs BTN オープン（MTT 40BB・3bet約9bb）', pct:'~29%',
+    legend:[{c:'call',l:'コール'},{c:'threeBet',l:'3bet'},{c:'fold',l:'フォールド'}],
+    info:'<strong>3bet: TT+, AQs+, AQo+, A5s, A4s, A3s, K9s, Q9s, J9s</strong> ／ <strong>コール: 99-22, AJs-A6s, A2s, K8s+, Q8s+, J8s+, T7s+, 96s+, 86s+, 75s+, 64s+, 54s, AJo, ATo, A9o, A8o, KTo+, QTo+, JTo, T9o</strong><br>BTNの広いオープンに広く反撃する、最頻出スポット。',
+    grid: makeGrid({
+      threeBet:'TT+,AQs+,AQo+,A5s,A4s,A3s,K9s,Q9s,J9s',
+      call:'99,88,77,66,55,44,33,22,AJs,ATs,A9s,A8s,A7s,A6s,A2s,K8s+,Q8s+,J8s+,T7s+,96s+,86s+,75s+,64s+,54s,AJo,ATo,A9o,A8o,KTo+,QTo+,JTo,T9o'
+    })
+  },
+
+  // ===== D. 15BB プッシュ/フォールド（オールイン or フォールド） =====
+  'm15-push-utg': {
+    title:'UTG プッシュ（MTT 15BB・オールイン or フォールド）', pct:'~10%',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>66+, A9s+, A5s, A4s, KTs+, QJs, ATo+, KQo</strong><br>15BB以下はレイズせず「オールイン or フォールド」が基本形。',
+    grid: makeGrid({ raise:'66+,A9s+,A5s,A4s,KTs+,QJs,ATo+,KQo' })
+  },
+  'm15-push-hj': {
+    title:'HJ プッシュ（MTT 15BB・オールイン or フォールド）', pct:'~13%',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>55+, A7s+, A5s, A4s, A3s, A2s, KTs+, QTs+, JTs, ATo+, KJo+</strong>',
+    grid: makeGrid({ raise:'55+,A7s+,A5s,A4s,A3s,A2s,KTs+,QTs+,JTs,ATo+,KJo+' })
+  },
+  'm15-push-co': {
+    title:'CO プッシュ（MTT 15BB・オールイン or フォールド）', pct:'~17%',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>44+, A2s+, K9s+, QTs+, JTs, T9s, A8o+, A5o, KJo+, QJo</strong>',
+    grid: makeGrid({ raise:'44+,A2s+,K9s+,QTs+,JTs,T9s,A8o+,A5o,KJo+,QJo' })
+  },
+  'm15-push-btn': {
+    title:'BTN プッシュ（MTT 15BB・オールイン or フォールド）', pct:'~28%',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 98s, 87s, 76s, A2o+, K9o+, QTo+, JTo</strong>',
+    grid: makeGrid({ raise:'22+,A2s+,K5s+,Q8s+,J8s+,T8s+,98s,87s,76s,A2o+,K9o+,QTo+,JTo' })
+  },
+  'm15-push-sb': {
+    title:'SB プッシュ（MTT 15BB・オールイン or フォールド）', pct:'~42%',
+    legend:[{c:'raise',l:'オールイン'},{c:'fold',l:'フォールド'}],
+    info:'<strong>22+, A2s+, K2s+, Q4s+, J7s+, T7s+, 97s+, 86s+, 76s, 65s, A2o+, K7o+, Q9o+, J9o+, T9o</strong><br>SBは4割以上で押してくるので、BBは想像より広くコールしてよい。',
+    grid: makeGrid({ raise:'22+,A2s+,K2s+,Q4s+,J7s+,T7s+,97s+,86s+,76s,65s,A2o+,K7o+,Q9o+,J9o+,T9o' })
+  },
+  'm15-bbcall-sb': {
+    title:'BB vs SB プッシュ コール基準（MTT 15BB）', pct:'~19%',
+    legend:[{c:'call',l:'コール'},{c:'fold',l:'フォールド'}],
+    info:'<strong>コール: 33+, A2s+, K9s+, QTs+, JTs, A8o+, KJo+</strong><br>SBは4割以上で押してくるので、BBは想像より広くコールしてよい。',
+    grid: makeGrid({ call:'33+,A2s+,K9s+,QTs+,JTs,A8o+,KJo+' })
   },
 };
 
@@ -2272,45 +2331,37 @@ function handToCoord(hand) {
 }
 
 const RANGE_SCENARIOS = {
-  '── 絶対暗記 ──': [],
-  '1. RFI基礎 75BB': ['mtt75-lj','mtt75-hj','mtt75-co','mtt75-btn','mtt75-sb'],
-  '2. RFI 40BB+': ['open40-utg','open40-hj','open40-co','open40-btn','open40-sb'],
-  '3. RFI 25BB': ['open25-utg','open25-hj','open25-co','open25-btn','open25-sb'],
-  '4. Push 15BB': ['push15-utg','push15-hj','push15-co','push15-btn','push15-sb'],
-  '5. Push 10BB': ['push10-utg','push10-hj','push10-co','push10-btn','push10-sb'],
-  '6. BB Call vs Push': ['bbcall-vs-btn20','bbcall-vs-btn15','bbcall-vs-btn10','bbcall-vs-sb20','bbcall-vs-sb15','bbcall-vs-sb10'],
-  '── 次に覚える ──': [],
-  '7. BB Defense 40BB+': ['bbdef-vs-utg','bbdef-vs-hj','bbdef-vs-co','threeBet-bb-vs-btn','bbdef-vs-sb'],
-  '8. BB Defense 25BB': ['bbdef25-vs-utg','bbdef25-vs-co','bbdef25-vs-btn','bbdef25-vs-sb'],
-  '9. Push 20BB': ['push20-utg','push20-hj','push20-co','push20-btn','push20-sb'],
-  '10. 3bet 40BB+': ['threeBet-btn-vs-co','threeBet-sb-vs-btn'],
-  '── キャッシュ ──': [],
-  'キャッシュRFI基礎 (100BB)': ['cash-utg','cash-hj','cash-co','cash-btn','cash-sb'],
-  '3bet (100BB)': ['cash3b-btn-vs-co','cash3b-sb-vs-btn'],
-  'BBディフェンス (100BB)': ['cashbb-vs-utg','cashbb-vs-co','cashbb-vs-btn','cashbb-vs-sb'],
-  '4bet (100BB)': ['cash-4bet'],
+  '── オープン (RFI) ──': [],
+  'オープン': ['o-utg','o-hj','o-co','o-btn','o-sb'],
+  '── BB ディフェンス ──': [],
+  'BB vs オープン': ['bb-utg','bb-hj','bb-co','bb-btn','bb-sb'],
+  '── SB の応手 (3bet/Fold) ──': [],
+  'SB vs オープン': ['sb-utg','sb-hj','sb-co','sb-btn'],
+  '── IP の応手 (3bet/Call) ──': [],
+  'IP vs オープン': ['ip-hj-utg','ip-co-utg','ip-co-hj','ip-btn-utg','ip-btn-hj','ip-btn-co'],
+  '── 補助 ──': [],
+  '4bet': ['fourbet'],
+  '── MTT（アンティあり） ──': [],
+  'MTTオープン(40BB)': ['m40-o-utg','m40-o-hj','m40-o-co','m40-o-btn','m40-o-sb'],
+  'MTT BBディフェンス(40BB)': ['m40-bb-utg','m40-bb-co','m40-bb-btn'],
+  'プッシュ/フォールド(15BB)': ['m15-push-utg','m15-push-hj','m15-push-co','m15-push-btn','m15-push-sb','m15-bbcall-sb'],
 };
 
 const RANGE_LABELS = {
-  'mtt75-lj':'UTG','mtt75-hj':'HJ','mtt75-co':'CO','mtt75-btn':'BTN','mtt75-sb':'SB',
-  'open40-utg':'UTG','open40-hj':'HJ','open40-co':'CO','open40-btn':'BTN','open40-sb':'SB',
-  'open25-utg':'UTG','open25-hj':'HJ','open25-co':'CO','open25-btn':'BTN','open25-sb':'SB',
-  'push20-utg':'UTG','push20-hj':'HJ','push20-co':'CO','push20-btn':'BTN','push20-sb':'SB',
-  'push15-utg':'UTG','push15-hj':'HJ','push15-co':'CO','push15-btn':'BTN','push15-sb':'SB',
-  'push10-utg':'UTG','push10-hj':'HJ','push10-co':'CO','push10-btn':'BTN','push10-sb':'SB',
-  'bbdef-vs-utg':'vs UTG','bbdef-vs-hj':'vs HJ','bbdef-vs-co':'vs CO','bbdef-vs-sb':'vs SB',
-  'bbdef25-vs-utg':'vs UTG','bbdef25-vs-co':'vs CO','bbdef25-vs-btn':'vs BTN','bbdef25-vs-sb':'vs SB',
-  'bbcall-vs-btn20':'vs BTN 20BB','bbcall-vs-btn15':'vs BTN 15BB','bbcall-vs-btn10':'vs BTN 10BB',
-  'bbcall-vs-sb20':'vs SB 20BB','bbcall-vs-sb15':'vs SB 15BB','bbcall-vs-sb10':'vs SB 10BB',
-  'threeBet-btn-vs-co':'BTN vs CO','threeBet-sb-vs-btn':'SB vs BTN','threeBet-bb-vs-btn':'vs BTN',
-  'cash-utg':'UTG','cash-hj':'HJ','cash-co':'CO','cash-btn':'BTN','cash-sb':'SB',
-  'cash3b-btn-vs-co':'BTN vs CO','cash3b-sb-vs-btn':'SB vs BTN',
-  'cashbb-vs-utg':'vs UTG','cashbb-vs-co':'vs CO','cashbb-vs-btn':'vs BTN','cashbb-vs-sb':'vs SB',
-  'cash-4bet':'共通',
+  'o-utg':'UTG','o-hj':'HJ','o-co':'CO','o-btn':'BTN','o-sb':'SB',
+  'bb-utg':'vs UTG','bb-hj':'vs HJ','bb-co':'vs CO','bb-btn':'vs BTN','bb-sb':'vs SB',
+  'sb-utg':'vs UTG','sb-hj':'vs HJ','sb-co':'vs CO','sb-btn':'vs BTN',
+  'ip-hj-utg':'HJ vs UTG','ip-co-utg':'CO vs UTG','ip-co-hj':'CO vs HJ',
+  'ip-btn-utg':'BTN vs UTG','ip-btn-hj':'BTN vs HJ','ip-btn-co':'BTN vs CO',
+  'fourbet':'4bet',
+  'm40-o-utg':'UTG','m40-o-hj':'HJ','m40-o-co':'CO','m40-o-btn':'BTN','m40-o-sb':'SB',
+  'm40-bb-utg':'vs UTG','m40-bb-co':'vs CO','m40-bb-btn':'vs BTN',
+  'm15-push-utg':'UTG','m15-push-hj':'HJ','m15-push-co':'CO','m15-push-btn':'BTN','m15-push-sb':'SB',
+  'm15-bbcall-sb':'BBコール(vs SB)',
 };
 
-let currentRangeScenario = '1. RFI基礎 75BB';
-let currentRangeKey = 'mtt75-lj';
+let currentRangeScenario = 'オープン';
+let currentRangeKey = 'o-utg';
 
 function initRangeTabs() {
   const posTabs = document.getElementById('range-position-tabs');
@@ -2419,6 +2470,376 @@ function actionLabel(a) {
 
 initRangeTabs();
 renderRange();
+
+// ============================================================
+// PREFLOP RANGE DRILL（レンジ特訓・自動出題）
+// ============================================================
+const RD_GROUPS = [
+  { id:'open', label:'オープン',      keys:['o-utg','o-hj','o-co','o-btn','o-sb'] },
+  { id:'bb',   label:'BBディフェンス', keys:['bb-utg','bb-hj','bb-co','bb-btn','bb-sb'] },
+  { id:'sb',   label:'SBの応手',      keys:['sb-utg','sb-hj','sb-co','sb-btn'] },
+  { id:'ip',   label:'IPの応手',      keys:['ip-hj-utg','ip-co-utg','ip-co-hj','ip-btn-utg','ip-btn-hj','ip-btn-co'] },
+  { id:'mtt-open', label:'MTTオープン(40BB)',       keys:['m40-o-utg','m40-o-hj','m40-o-co','m40-o-btn','m40-o-sb'] },
+  { id:'mtt-bb',   label:'MTT BBディフェンス',      keys:['m40-bb-utg','m40-bb-co','m40-bb-btn'] },
+  { id:'mtt-push', label:'プッシュ/フォールド(15BB)', keys:['m15-push-utg','m15-push-hj','m15-push-co','m15-push-btn','m15-push-sb','m15-bbcall-sb'], actLabel:{raise:'オールイン'} },
+];
+const RD_ACT_LABEL = { raise:'オープン', call:'コール', threeBet:'3bet', fold:'フォールド' };
+// グループごとにアクション表示名を上書きしたい場合（例: プッシュ帯は raise→「オールイン」）。
+// 既存の RD_ACT_LABEL（raise:'オープン'）はそのまま残し、該当グループの時だけこちらを優先する。
+function rdActLabelFor(key, act) {
+  const g = RD_GROUPS.find(x => x.keys.includes(key));
+  if (g && g.actLabel && g.actLabel[act]) return g.actLabel[act];
+  return RD_ACT_LABEL[act];
+}
+let rdSelected = { open:true, bb:true, sb:true, ip:true };
+let rdPool = [], rdCur = null, rdStats = { c:0, t:0, streak:0 };
+let rdMissed = JSON.parse(localStorage.getItem('rdMissed') || '[]');
+
+function rdBuildFilter() {
+  const box = document.getElementById('rd-filter');
+  if (!box) return;
+  box.innerHTML = '';
+  RD_GROUPS.forEach(g => {
+    const b = document.createElement('button');
+    b.textContent = g.label;
+    b.className = rdSelected[g.id] ? 'on' : '';
+    b.onclick = () => { rdSelected[g.id] = !rdSelected[g.id]; rdBuildFilter(); };
+    box.appendChild(b);
+  });
+}
+
+function rdStart() {
+  rdPool = [];
+  RD_GROUPS.forEach(g => { if (rdSelected[g.id]) rdPool.push(...g.keys); });
+  if (!rdPool.length) { alert('出題範囲を1つ以上選んでください'); return; }
+  rdStats = { c:0, t:0, streak:0 };
+  document.getElementById('rd-area').style.display = 'block';
+  rdNext();
+  document.getElementById('rd-area').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function rdActionAt(key, r, c) {
+  return (RANGE_DATA[key].grid[r+','+c]) || 'fold';
+}
+
+function rdPick() {
+  // 30%: 過去に間違えた問題を再出題
+  if (rdMissed.length && Math.random() < 0.3) {
+    const m = rdMissed[Math.floor(Math.random()*rdMissed.length)];
+    if (rdPool.includes(m.key)) return { key:m.key, r:m.r, c:m.c };
+  }
+  const key = rdPool[Math.floor(Math.random()*rdPool.length)];
+  // 60%: アクションのあるセル（非フォールド）から、40%: 全169ハンドから
+  if (Math.random() < 0.6) {
+    const cells = [];
+    for (let r=0;r<13;r++) for (let c=0;c<13;c++) if (rdActionAt(key,r,c)!=='fold') cells.push([r,c]);
+    if (cells.length) { const [r,c]=cells[Math.floor(Math.random()*cells.length)]; return {key,r,c}; }
+  }
+  const r = Math.floor(Math.random()*13), c = Math.floor(Math.random()*13);
+  return { key, r, c };
+}
+
+function rdScenarioName(key) {
+  const g = RD_GROUPS.find(x=>x.keys.includes(key));
+  return (g?g.label:'') ;
+}
+
+function rdRenderCards(label) {
+  // label like 'AKs','AKo','77'
+  const SUIT = ['♠','♥','♦','♣'];
+  const isRed = s => (s==='♥'||s==='♦');
+  let cards = [];
+  const r1 = label[0], r2 = label[1];
+  const disp = ch => ch==='T' ? '10' : ch;
+  if (label.length === 2) { cards = [[r1,'♠'],[r2,'♥']]; }            // pair
+  else if (label[2] === 's') { cards = [[r1,'♠'],[r2,'♠']]; }          // suited
+  else { cards = [[r1,'♠'],[r2,'♥']]; }                                // offsuit
+  return cards.map(([rk,st]) =>
+    `<div class="rd-card${isRed(st)?' red':''}"><span class="rk">${disp(rk)}</span><span class="st">${st}</span></div>`
+  ).join('');
+}
+
+function rdNext() {
+  rdCur = rdPick();
+  const key = rdCur.key, data = RANGE_DATA[key];
+  const label = handLabel(rdCur.r, rdCur.c);
+  rdCur.label = label;
+  rdCur.answer = rdActionAt(key, rdCur.r, rdCur.c);
+
+  document.getElementById('rd-scenario').textContent = rdScenarioName(key);
+  document.getElementById('rd-position').textContent = data.title.replace(/（.*$/,'').trim();
+  document.getElementById('rd-cards').innerHTML = rdRenderCards(label);
+  document.getElementById('rd-handlabel').textContent = label;
+
+  // 選択肢: legend のアクション + fold
+  const acts = [];
+  data.legend.forEach(l => { if (RD_ACT_LABEL[l.c] && !acts.includes(l.c)) acts.push(l.c); });
+  if (!acts.includes('fold')) acts.push('fold');
+  const order = ['raise','call','threeBet','fold'];
+  acts.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+
+  const choices = document.getElementById('rd-choices');
+  choices.innerHTML = '';
+  acts.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'rd-choice';
+    b.textContent = rdActLabelFor(key, a);
+    b.onclick = () => rdAnswer(a, b);
+    choices.appendChild(b);
+  });
+  document.getElementById('rd-feedback').classList.remove('show');
+  document.getElementById('rd-next').style.display = 'none';
+}
+
+function rdAnswer(act, btn) {
+  const correct = (act === rdCur.answer) ||
+    // 'raise' と 'open' のゆらぎ吸収（同義）
+    (act==='raise' && rdCur.answer==='raise');
+  document.querySelectorAll('.rd-choice').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === rdActLabelFor(rdCur.key, rdCur.answer)) b.classList.add('correct');
+  });
+  if (!correct) btn.classList.add('wrong');
+
+  rdStats.t++;
+  if (correct) { rdStats.c++; rdStats.streak++; }
+  else {
+    rdStats.streak = 0;
+    rdMissed.push({ key:rdCur.key, r:rdCur.r, c:rdCur.c });
+    if (rdMissed.length > 80) rdMissed = rdMissed.slice(-80);
+    localStorage.setItem('rdMissed', JSON.stringify(rdMissed));
+  }
+  document.getElementById('rd-correct').textContent = rdStats.c;
+  document.getElementById('rd-total').textContent = rdStats.t;
+  document.getElementById('rd-streak').textContent = rdStats.streak;
+  document.getElementById('rd-rate').textContent = Math.round(rdStats.c/rdStats.t*100)+'%';
+
+  const fb = document.getElementById('rd-feedback');
+  const info = RANGE_DATA[rdCur.key].info.replace(/<br>/g,'　').replace(/<[^>]+>/g,'');
+  fb.innerHTML = `<strong style="color:${correct?'var(--green)':'var(--red)'}">${correct?'○ 正解！':'× 不正解'}</strong> ${rdCur.label} → <b>${rdActLabelFor(rdCur.key, rdCur.answer)}</b>`
+    + `<div style="margin-top:6px;color:var(--text-dim);font-size:12px;">${info}</div>`;
+  fb.classList.add('show');
+  const nextBtn = document.getElementById('rd-next');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ============================================================
+// FLOP DECISION DRILL（フロップ判断ドリル）
+// ============================================================
+const FLOP_Q = [
+  { sit:'あなたBTNでオープン、BBがコール。あなたのハンド: K♣J♦。\nフロップ: A♠ 7♥ 2♣（レインボー・ドライ）。BBがチェック。', board:['As','7h','2c'],
+    choices:[{t:'1/3ポットのCベット',correct:true},{t:'2/3ポットのCベット'},{t:'チェック'},{t:'ポットサイズベット'}],
+    exp:'A高のドライボードはレイザー（あなた）のレンジ有利が大きい。小サイズ(1/3)でレンジ全体をCベットできる定番スポット。KJはバックドアもあり、降ろし＋次のバレル設計で打つ。' },
+  { sit:'あなたBTNでオープン、BBがコール。あなたのハンド: A♥K♦。\nフロップ: 7♠ 6♠ 5♦（中央の連結・ツートーン）。BBがチェック。', board:['7s','6s','5d'],
+    choices:[{t:'チェック',correct:true},{t:'2/3ポットのCベット'},{t:'1/3ポットのCベット',acceptable:true},{t:'ポットサイズベット'}],
+    exp:'765のような中央連結ボードはBBのコールレンジ（87s,98s,小ペア等）に当たりやすくレンジ不利寄り。AK素の状態はエクイティもプロテクト需要も低いのでチェックが基本。打つなら小さく低頻度。' },
+  { sit:'あなたUTGでオープン、BBがコール。あなたのハンド: A♠Q♣。\nフロップ: K♥ 8♦ 3♠（レインボー・ドライ）。BBがチェック。', board:['Kh','8d','3s'],
+    choices:[{t:'1/3ポットのCベット',correct:true},{t:'チェック',acceptable:true},{t:'ポットサイズベット'},{t:'2/3ポットのCベット'}],
+    exp:'K高のドライボードはUTGのタイトレンジに非常に有利。AQはバックドア＋オーバーカード＋Kへのブロッカー薄め。小サイズで高頻度に打てる。OOPなので強いボードを取りこぼさない。' },
+  { sit:'あなたSBでオープン、BBがコール（あなたはOOP）。あなたのハンド: A♦A♣。\nフロップ: Q♠ J♠ 9♥（連結・ツートーン＝ウェット）。', board:['Qs','Js','9h'],
+    choices:[{t:'2/3〜ポットの大きいCベット',correct:true},{t:'1/3ポットのCベット'},{t:'チェック'},{t:'チェックレイズ狙い'}],
+    exp:'QJ9はドローが多い濡れたボード。オーバーペアのAAはバリュー＆プロテクトのため大きく打つ。安く打つとフラッシュ/ストレートドローに安いカードを与えてしまう。' },
+  { sit:'あなたBTNでオープン、BBがコール。あなたのハンド: 8♣8♦。\nフロップ: A♥ K♠ 4♦（レインボー）。BBがチェック。', board:['Ah','Ks','4d'],
+    choices:[{t:'1/3ポットのCベット',correct:true},{t:'チェック',acceptable:true},{t:'ポットサイズベット'},{t:'2/3ポットのCベット'}],
+    exp:'AKハイのレンジ有利ボード。88はショーダウン価値はあるが弱く、小サイズのレンジベットに乗せて薄く守る/降ろすのが標準。大きく打つ必要はない。チェックでポットコントロールも可。' },
+  { sit:'あなたはBB。BTNのオープンにコールした。あなたのハンド: T♥9♥。\nフロップ: T♣ 5♦ 5♠（ペアボード）。アクションはあなたから（OOP）。', board:['Tc','5d','5s'],
+    choices:[{t:'チェック（アグレッサーに渡す）',correct:true},{t:'1/2ポットのドンクベット'},{t:'ポットサイズのドンクベット'},{t:'オールイン'}],
+    exp:'シングルレイズドポットのBBは原則ドンクしない。チェックしてアグレッサー(BTN)のCベットを待ち、トップペアT9はチェックコール/チェックレイズで対応する。ドンクするとレンジが弱く読まれやすい。' },
+  { sit:'あなたCOでオープン、BBがコール。あなたのハンド: J♠T♠。\nフロップ: 9♠ 6♠ 2♥（フラッシュドロー＋オーバー＋ガットの強ドロー）。BBがチェック。', board:['9s','6s','2h'],
+    choices:[{t:'2/3ポットのCベット（セミブラフ）',correct:true},{t:'チェック',acceptable:true},{t:'1/3ポットのCベット'},{t:'フォールド'}],
+    exp:'JTのフラッシュドロー＋2オーバーは大きなエクイティを持つ強いセミブラフ。大きめに打って降ろし＋自分のドロー完成時のバリューを作る。フォールドは論外（チェックしてもよいが攻撃的に打つのが効率的）。' },
+  { sit:'あなたBTNでオープン、BBがコール。あなたのハンド: Q♦Q♣。\nフロップ: J♥ 8♥ 7♣（連結・ハートツートーン）。BBがチェック。', board:['Jh','8h','7c'],
+    choices:[{t:'2/3ポットのCベット',correct:true},{t:'チェック',acceptable:true},{t:'1/4ポットのCベット'},{t:'オールイン'}],
+    exp:'QQはオーバーペアだが J87 ツートーンはドローが非常に多い危険なボード。バリュー＆プロテクトで大きめに打つ。小さく打つと多くのドローに安く引かせてしまう。チェックでポットを抑える選択もあり。' },
+  { sit:'あなたBTNでオープン、BBがコール。あなたのハンド: 6♦6♠。\nフロップ: A♣ Q♦ 5♥（レインボー）。BBがチェック。', board:['Ac','Qd','5h'],
+    choices:[{t:'チェック',correct:true},{t:'2/3ポットのCベット'},{t:'ポットサイズベット'},{t:'1/3ポットのCベット',acceptable:true}],
+    exp:'AQ高はレンジ有利だが、66はショーダウン価値がそこそこあり、打っても良いハンドに降りられ悪いハンドにコールされやすい。チェックでショーダウンを目指すのが無難（小サイズのレンジベットに混ぜるのも可）。' },
+  { sit:'あなたBTNでオープン、BBがコール。あなたのハンド: A♠5♠。\nフロップ: K♠ 9♠ 4♥（Kハイ＋ナッツフラッシュドロー）。BBがチェック。', board:['Ks','9s','4h'],
+    choices:[{t:'2/3ポットのCベット（セミブラフ）',correct:true},{t:'チェック',acceptable:true},{t:'フォールド'},{t:'1/4ポットのCベット'}],
+    exp:'A♠5♠はナッツフラッシュドロー＋Aオーバー＋A♠ブロッカーで、強いセミブラフ。Kハイのレンジ有利も合わさり、大きめに打ってフォールドエクイティ＋完成時のバリューを取りにいく。' },
+  { sit:'あなたUTGでオープン、BBがコール。あなたのハンド: A♥K♥。\nフロップ: 5♣ 5♦ 2♠（ローのペアボード）。BBがチェック。', board:['5c','5d','2s'],
+    choices:[{t:'1/3ポットのCベット',correct:true},{t:'チェック',acceptable:true},{t:'ポットサイズベット'},{t:'フォールド'}],
+    exp:'低いペアボードはどちらにもヒットしづらく、強いレンジを持つUTGがレンジ有利。AKハイ＋2オーバー＋ナッツ級のブロッカーで小サイズのレンジベットが効く。降ろし＋オーバーカード完成の余地。' },
+  { sit:'あなたCOでオープン、BBがコール。あなたのハンド: 7♣7♦。\nフロップ: K♠ Q♠ 9♦（高くて濡れたボード）。BBがチェック。', board:['Ks','Qs','9d'],
+    choices:[{t:'チェック',correct:true},{t:'2/3ポットのCベット'},{t:'1/3ポットのCベット'},{t:'ポットサイズベット'}],
+    exp:'KQ9はブロードウェイ＆フラッシュドローが豊富で、BBのコールレンジに当たりやすい。77はオーバーカード2枚に負けていて、打ってもより良い手に降りられない。チェックして安く見るのが正解。' },
+];
+let flopOrder = [], flopIdx = 0, flopStats = { c:0, t:0 };
+
+function flopStart() {
+  flopOrder = [...FLOP_Q].map((q,i)=>i).sort(()=>Math.random()-0.5);
+  flopIdx = 0; flopStats = { c:0, t:0 };
+  document.getElementById('flopdrill-setup').style.display = 'none';
+  document.getElementById('flopdrill-area').style.display = 'block';
+  flopRender();
+}
+
+function flopCardHTML(card) {
+  const SY = { s:'♠', h:'♥', d:'♦', c:'♣' };
+  const rk = card[0]==='T' ? '10' : card[0];
+  const st = card[1];
+  const red = (st==='h'||st==='d');
+  return `<div class="flop-card${red?' red':''}"><span class="rk">${rk}</span><span class="st">${SY[st]}</span></div>`;
+}
+
+function flopRender() {
+  const q = FLOP_Q[flopOrder[flopIdx]];
+  document.getElementById('fd-situation').textContent = q.sit;
+  document.getElementById('fd-board').innerHTML = q.board.map(flopCardHTML).join('');
+  document.getElementById('fd-progress').textContent = `${flopIdx+1} / ${flopOrder.length}`;
+  document.getElementById('fd-correct').textContent = flopStats.c;
+  document.getElementById('fd-total').textContent = flopStats.t;
+  const box = document.getElementById('fd-choices');
+  box.innerHTML = '';
+  q.choices.forEach((ch,i) => {
+    const b = document.createElement('button');
+    b.className = 'quiz-choice';
+    b.textContent = ch.t;
+    b.onclick = () => flopAnswer(i, b);
+    box.appendChild(b);
+  });
+  const ex = document.getElementById('fd-explanation');
+  ex.classList.remove('show'); ex.innerHTML = '';
+  document.getElementById('fd-next').style.display = 'none';
+}
+
+function flopAnswer(i, btn) {
+  const q = FLOP_Q[flopOrder[flopIdx]];
+  const ch = q.choices[i];
+  document.querySelectorAll('#fd-choices .quiz-choice').forEach((b,j) => {
+    b.disabled = true;
+    if (q.choices[j].correct) b.classList.add('correct');
+    else if (q.choices[j].acceptable) b.classList.add('acceptable');
+  });
+  flopStats.t++;
+  if (ch.correct) { flopStats.c++; }
+  else if (!ch.acceptable) { btn.classList.add('wrong'); }
+  document.getElementById('fd-correct').textContent = flopStats.c;
+  document.getElementById('fd-total').textContent = flopStats.t;
+  const ex = document.getElementById('fd-explanation');
+  let head = ch.correct ? '<strong style="color:var(--green)">○ 正解！</strong> '
+           : ch.acceptable ? '<strong style="color:var(--orange)">△ 悪くない（ベストは緑）</strong> '
+           : '<strong style="color:var(--red)">× 不正解</strong> ';
+  ex.innerHTML = head + q.exp;
+  ex.classList.add('show');
+  const nextBtn = document.getElementById('fd-next');
+  nextBtn.style.display = flopIdx < flopOrder.length-1 ? 'inline-block' : 'none';
+  if (flopIdx >= flopOrder.length-1) {
+    ex.innerHTML += `<div style="margin-top:10px;color:var(--accent);font-weight:700;">フロップドリル終了！ 正解 ${flopStats.c}/${flopStats.t}　もう一度は「ドリル開始」を押してください。</div>`;
+    document.getElementById('flopdrill-setup').style.display = 'block';
+  }
+  ex.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function flopNext() { flopIdx++; flopRender(); }
+
+// ============================================================
+// MTT判断ドリル（アンティあり・弱点矯正 / 12問）
+// ============================================================
+const MTT_Q = [
+  // ① サイジング矯正
+  { sit:'あなたはMTT（アンティあり）40BBスタックのCOでオープンする場面。手札 A♦J♠。オープンサイズは？',
+    choices:[{t:'2.2bb',correct:true},{t:'2.5bb',acceptable:true},{t:'3bb'},{t:'4bb'}],
+    exp:'アンティがある分ポットは最初から大きいので、100BBキャッシュの2.5bbより小さい2.2bbが基準。大きすぎるサイズはチップを無駄に危険にさらすだけでスチール効率も下げる。' },
+  { sit:'あなたはMTTでUTGオープン→BBがコール。フロップ K♠8♦3♣（レインボー・ドライ）。BBがチェック。Cベットのサイズは？',
+    choices:[{t:'1/3ポットの小さいCベット',correct:true},{t:'2/3ポット'},{t:'ポットサイズ'},{t:'チェック'}],
+    exp:'K高のドライボードはレイザー有利が大きい。小サイズ(1/3)で高頻度にレンジ全体を打つのが効率的。大きすぎるサイジングは不要にリスクを増やすだけで得るものは変わらない。' },
+  { sit:'あなたはMTTでウェットなボードにナッツ級のツーペア以上の強い手を持っている。ベットサイズは？',
+    choices:[{t:'2/3〜ポットの厚いベット',correct:true},{t:'1/4ポットの小さいベット'},{t:'チェック'},{t:'1/2ポット'}],
+    exp:'強い手＆濡れたボードではバリューを太く取りに行く。ドローが多いボードで小さく打つと、相手に安くコールされて完成された時に負けを拡大させるだけでバリューも取り損なう。' },
+  // ② 攻撃スイッチ
+  { sit:'あなたはMTTで35BBのCOで A♠T♠ を持っている。前が全員フォールド。アクションは？',
+    choices:[{t:'2.2bbでオープン',correct:true},{t:'フォールド'},{t:'リンプ'},{t:'プッシュ（オールイン）'}],
+    exp:'35BBはまだプッシュ/フォールド帯ではなくレイズが打てる深さ。ATsのような強いハンドをフォールドするのは弱気すぎ、プッシュは不要にスタックを晒す。通常通りオープンレイズが正解。' },
+  { sit:'あなたのMTTスタックが30BBを切った。BTNで前が全員フォールドしてきた。方針は？',
+    choices:[{t:'スチール頻度を上げてオープンを広げる',correct:true},{t:'これまで通りの頻度で変えない'},{t:'スチールを控えて様子見'},{t:'リンプで様子を見る'}],
+    exp:'30BB前後からはブラインド＋アンティの相対負担が増すため、放置すると自然に目減りする。誰も見せていない今こそ、スチール頻度を積極的に上げて攻撃側に回るべき局面。' },
+  { sit:'次のレベルでブラインドが上がることが分かっている。あなたのスタックは25BB相当。意識すべきことは？',
+    choices:[{t:'上がる前にチップを増やす／守るプレーを意識する',correct:true},{t:'何も考えず普段通りに打つ'},{t:'極端にタイトに全部降りる'},{t:'手当たり次第プッシュする'}],
+    exp:'ブラインド上昇はスタックの相対的価値（実質BB数）を一段落とす。上昇前は無駄なリスクを避けつつ、良いスポットではチップを増やす意識を持つのが攻撃スイッチの一部。極端なタイト/ルースはどちらも損。' },
+  // ③ プッシュ/フォールド
+  { sit:'15BBのBTN、あなたのハンドは A♦7♣。前が全員フォールド。アクションは？',
+    choices:[{t:'オールイン（プッシュ）',correct:true},{t:'フォールド'},{t:'2.2bbでオープンレイズ'},{t:'リンプ'}],
+    exp:'15BB帯はレイズせず「オールイン or フォールド」が基本形。BTNの15BBプッシュ表（A2o+ を含む）にA7oは十分入る強さで、フォールドやスモールレイズは損。' },
+  { sit:'12BBのUTG、あなたのハンドは K♠Q♥。アクションは？',
+    choices:[{t:'オールイン（プッシュ）',correct:true},{t:'フォールド'},{t:'2.2bbでレイズ'},{t:'コール待ち'}],
+    exp:'スタックが12BBまで減ると、UTGでもプッシュレンジはさらに広がる（15BB基準のATo+/KQoよりもう一段浅い）。KQoはこの深さで十分プッシュ価値がある。中途半端なレイズはスタックを危険にさらすだけ。' },
+  { sit:'15BBのSB、あなたのハンドは 9♠6♠。BTNまで全員フォールド。アクションは？',
+    choices:[{t:'オールイン（プッシュ）',correct:true},{t:'フォールド'},{t:'コール（リンプ）'},{t:'2bbでオープン'}],
+    exp:'SBの15BBプッシュ表は約42%と全ポジション中もっとも広い（BBしか残らずフォールドエクイティが大きいため）。96sのようなミドル帯スーテッドもこの広さなら押して十分ペイする一枚。' },
+  // ④ ICM/バブル
+  { sit:'バブル（あと1人飛べば全員入賞）で、あなたは中スタック。5♦6♦をプッシュするのは？',
+    choices:[{t:'NG。基本はフォールド',correct:true},{t:'積極的にプッシュしてよい'},{t:'常に同じ判断でOK'},{t:'コールすべき'}],
+    exp:'バブルではICM（入賞順位による賞金の重み）プレッシャーが最大化し、飛んだ時の損失が実チップ以上に大きい。56sのような投機的ハンドでのオールインは、期待値が多少プラスでも見送るのが基本。' },
+  { sit:'バブル付近であなたは大スタック。中〜小スタックの相手が同卓している。方針は？',
+    choices:[{t:'積極的にプレッシャーをかけ、相手が降りやすいスポットを攻める',correct:true},{t:'大人しく様子を見て手を出さない'},{t:'何もアクションを起こさない'},{t:'常にオールインする'}],
+    exp:'大スタックはICM上失うものが相対的に少なく、他のプレイヤーは入賞を守りたいため降りやすい。バブル付近では大スタックがプレッシャーをかける側に回るのがセオリー。ただし無差別なオールインはやり過ぎ。' },
+  { sit:'バブルが近く、あなたのテーブルに自分よりかなり短いスタックの選手がいる。あなたのコール基準は？',
+    choices:[{t:'通常よりコール基準を上げて（絞って）、相手の生存圧力を利用する',correct:true},{t:'普段通りの基準でコールする'},{t:'コール基準を下げて広くコールする'},{t:'常にオールインで返す'}],
+    exp:'短いスタックが同卓しているとICM上、自分がリスクを取って負けた時の損失が大きい一方、放っておいても短いスタックが先に飛ぶ可能性が高い。無理にリスクを取らず、コール基準を引き締めるのが基本。' },
+];
+let mttOrder = [], mttIdx = 0, mttStats = { c:0, t:0 };
+
+function mttStart() {
+  mttOrder = [...MTT_Q].map((q,i)=>i).sort(()=>Math.random()-0.5);
+  mttIdx = 0; mttStats = { c:0, t:0 };
+  document.getElementById('mttdrill-setup').style.display = 'none';
+  document.getElementById('mttdrill-area').style.display = 'block';
+  mttRender();
+}
+
+function mttRender() {
+  const q = MTT_Q[mttOrder[mttIdx]];
+  document.getElementById('md-situation').textContent = q.sit;
+  document.getElementById('md-progress').textContent = `${mttIdx+1} / ${mttOrder.length}`;
+  document.getElementById('md-correct').textContent = mttStats.c;
+  document.getElementById('md-total').textContent = mttStats.t;
+  const box = document.getElementById('md-choices');
+  box.innerHTML = '';
+  q.choices.forEach((ch,i) => {
+    const b = document.createElement('button');
+    b.className = 'quiz-choice';
+    b.textContent = ch.t;
+    b.onclick = () => mttAnswer(i, b);
+    box.appendChild(b);
+  });
+  const ex = document.getElementById('md-explanation');
+  ex.classList.remove('show'); ex.innerHTML = '';
+  document.getElementById('md-next').style.display = 'none';
+}
+
+function mttAnswer(i, btn) {
+  const q = MTT_Q[mttOrder[mttIdx]];
+  const ch = q.choices[i];
+  document.querySelectorAll('#md-choices .quiz-choice').forEach((b,j) => {
+    b.disabled = true;
+    if (q.choices[j].correct) b.classList.add('correct');
+    else if (q.choices[j].acceptable) b.classList.add('acceptable');
+  });
+  mttStats.t++;
+  if (ch.correct) { mttStats.c++; }
+  else if (!ch.acceptable) { btn.classList.add('wrong'); }
+  document.getElementById('md-correct').textContent = mttStats.c;
+  document.getElementById('md-total').textContent = mttStats.t;
+  const ex = document.getElementById('md-explanation');
+  let head = ch.correct ? '<strong style="color:var(--green)">○ 正解！</strong> '
+           : ch.acceptable ? '<strong style="color:var(--orange)">△ 悪くない（ベストは緑）</strong> '
+           : '<strong style="color:var(--red)">× 不正解</strong> ';
+  ex.innerHTML = head + q.exp;
+  ex.classList.add('show');
+  const nextBtn = document.getElementById('md-next');
+  nextBtn.style.display = mttIdx < mttOrder.length-1 ? 'inline-block' : 'none';
+  if (mttIdx >= mttOrder.length-1) {
+    ex.innerHTML += `<div style="margin-top:10px;color:var(--accent);font-weight:700;">MTTドリル終了！ 正解 ${mttStats.c}/${mttStats.t}　もう一度は「ドリル開始」を押してください。</div>`;
+    document.getElementById('mttdrill-setup').style.display = 'block';
+  }
+  ex.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function mttNext() { mttIdx++; mttRender(); }
+
+rdBuildFilter();
 
 // ============================================================
 // INIT
